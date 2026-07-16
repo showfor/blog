@@ -26,7 +26,11 @@ function toggleTheme() {
   isDark.value = !isDark.value
   localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
   apply()
+  // 切换时的轻微弹跳，增强动态反馈
+  popping.value = true
+  setTimeout(() => (popping.value = false), 480)
 }
+const popping = ref(false)
 </script>
 
 <template>
@@ -38,7 +42,7 @@ function toggleTheme() {
       <nav class="nav-links">
         <a v-for="item in navItems" :key="item.id" :href="'#' + item.id">{{ item.label }}</a>
       </nav>
-      <button class="nav-theme" :title="isDark ? '切换到浅色' : '切换到深色'" @click="toggleTheme" aria-label="切换主题">
+      <button class="nav-theme" :class="{ pop: popping }" :title="isDark ? '切换到浅色' : '切换到深色'" @click="toggleTheme" aria-label="切换主题">
         <AppIcon :name="isDark ? 'sun' : 'moon'" />
       </button>
     </div>
@@ -110,9 +114,15 @@ function toggleTheme() {
   display: grid;
   place-items: center;
   font-size: 1.05rem;
-  transition: background .2s, transform .2s;
+  transition: background .3s ease, transform .3s cubic-bezier(.22, 1, .36, 1), border-color .3s ease;
 }
 .nav-theme:hover { background: var(--surface-2); transform: rotate(15deg); }
+.nav-theme.pop { animation: themePop .48s cubic-bezier(.22, 1, .36, 1); }
+@keyframes themePop {
+  0% { transform: rotate(0) scale(1); }
+  45% { transform: rotate(-25deg) scale(1.18); }
+  100% { transform: rotate(0) scale(1); }
+}
 
 @media (max-width: 640px) {
   .nav-links { display: none; }

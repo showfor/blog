@@ -11,7 +11,7 @@ import { asset } from '../utils.js'
       <p class="section-sub">在别人的故事里，照见自己的生活。</p>
     </div>
     <div class="movie-grid">
-      <div v-for="m in movieList" :key="m.title" class="movie-card">
+      <div v-for="(m, i) in movieList" :key="m.title" class="movie-card" v-reveal="i * 0.06">
         <div class="movie-cover">
           <img :src="asset(m.cover)" :alt="m.title" loading="lazy" />
           <span class="movie-year">{{ m.year }}</span>
@@ -36,12 +36,12 @@ import { asset } from '../utils.js'
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: transform .25s, box-shadow .25s, border-color .25s;
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1), box-shadow .5s ease, border-color .5s ease;
 }
 .movie-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-hover);
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover), 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
 }
 .movie-cover {
   position: relative;

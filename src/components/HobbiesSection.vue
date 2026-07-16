@@ -10,7 +10,7 @@ import { hobbies } from '../data/hobbies.js'
       <p class="section-sub">让生活慢下来、亮起来的那些小事。</p>
     </div>
     <div class="hobby-grid">
-      <div v-for="h in hobbies" :key="h.title" class="hobby-card">
+      <div v-for="(h, i) in hobbies" :key="h.title" class="hobby-card" v-reveal="i * 0.06">
         <div class="hobby-emoji">{{ h.emoji }}</div>
         <h3 class="hobby-title">{{ h.title }}</h3>
         <p class="hobby-desc">{{ h.desc }}</p>
@@ -30,12 +30,12 @@ import { hobbies } from '../data/hobbies.js'
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 26px 22px;
-  transition: transform .25s, box-shadow .25s, border-color .25s;
+  transition: transform .45s cubic-bezier(.22, 1, .36, 1), box-shadow .45s ease, border-color .45s ease;
 }
 .hobby-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: var(--shadow-hover), 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
 }
 .hobby-emoji {
   font-size: 2rem;

@@ -11,7 +11,7 @@ import { asset } from '../utils.js'
       <p class="section-sub">二度元里，藏着我的热血与温柔。</p>
     </div>
     <div class="anime-grid">
-      <div v-for="a in animeList" :key="a.title" class="anime-card">
+      <div v-for="(a, i) in animeList" :key="a.title" class="anime-card" v-reveal="i * 0.06">
         <div class="anime-cover">
           <img :src="asset(a.cover)" :alt="a.title" loading="lazy" />
         </div>
@@ -35,12 +35,12 @@ import { asset } from '../utils.js'
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: transform .25s, box-shadow .25s, border-color .25s;
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1), box-shadow .5s ease, border-color .5s ease;
 }
 .anime-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-hover);
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover), 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
 }
 .anime-cover {
   aspect-ratio: 3 / 4;

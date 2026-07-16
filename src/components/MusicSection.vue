@@ -14,7 +14,7 @@ import { asset } from '../utils.js'
     <div v-for="cat in musicCategories" :key="cat.name" class="music-cat">
       <h3 class="music-cat-name">{{ cat.name }}</h3>
       <div class="music-grid">
-        <div v-for="song in cat.songs" :key="song.title" class="music-card">
+        <div v-for="(song, i) in cat.songs" :key="song.title" class="music-card" v-reveal="i * 0.05">
           <div class="music-cover">
             <img :src="asset(song.cover)" :alt="song.title" loading="lazy" />
           </div>
@@ -53,12 +53,12 @@ import { asset } from '../utils.js'
   display: flex;
   gap: 14px;
   align-items: center;
-  transition: transform .25s, box-shadow .25s, border-color .25s;
+  transition: transform .45s cubic-bezier(.22, 1, .36, 1), box-shadow .45s ease, border-color .45s ease;
 }
 .music-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  transform: translateY(-5px) scale(1.015);
+  box-shadow: var(--shadow-hover), 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
 }
 .music-cover {
   flex: 0 0 64px;

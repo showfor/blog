@@ -37,6 +37,21 @@ import AppIcon from './AppIcon.vue'
 
 <style scoped>
 .hero { padding: 56px 0 12px; }
+/* 首屏加载：元素级联淡入（仅 transform/opacity，自然顺滑） */
+.hero-avatar, .hero-name, .hero-title, .hero-tagline, .hero-bio, .hero-meta, .hero-links {
+  animation: heroIn .85s cubic-bezier(.22, 1, .36, 1) both;
+}
+.hero-avatar { animation-delay: .05s; }
+.hero-name { animation-delay: .12s; }
+.hero-title { animation-delay: .19s; }
+.hero-tagline { animation-delay: .26s; }
+.hero-bio { animation-delay: .33s; }
+.hero-meta { animation-delay: .40s; }
+.hero-links { animation-delay: .47s; }
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: none; }
+}
 .hero-card {
   background: var(--surface);
   border: 1px solid var(--border);

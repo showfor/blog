@@ -43,18 +43,65 @@ body {
   text-rendering: optimizeLegibility;
   transition: background .3s, color .3s;
 }
-/* 顶部柔光背景 */
-body::before {
-  content: "";
+/* 流动极光背景（仅 transform 动画，GPU 友好、稳定 60fps） */
+.aurora {
   position: fixed;
-  inset: 0 0 auto 0;
-  height: 420px;
-  background:
-    radial-gradient(60% 100% at 15% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
-    radial-gradient(50% 100% at 90% 0%, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 70%);
-  z-index: -1;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--bg);
+}
+.aurora::before,
+.aurora::after {
+  content: "";
+  position: absolute;
+  width: 62vmax;
+  height: 62vmax;
+  border-radius: 50%;
+  filter: blur(46px);
+  opacity: .5;
+  will-change: transform;
+  background: radial-gradient(circle at 30% 30%, var(--accent), transparent 62%);
+  animation: auroraMove 19s ease-in-out infinite;
+}
+.aurora::after {
+  background: radial-gradient(circle at 70% 70%, var(--accent-2), transparent 62%);
+  animation-duration: 24s;
+  animation-direction: reverse;
+}
+@keyframes auroraMove {
+  0%   { transform: translate3d(-12%, -12%, 0) scale(1); }
+  50%  { transform: translate3d(12%, 14%, 0) scale(1.18); }
+  100% { transform: translate3d(-12%, -12%, 0) scale(1); }
+}
+
+/* 顶部滚动进度条（transform scaleX，仅合成层） */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  z-index: 60;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: var(--grad);
+  will-change: transform;
   pointer-events: none;
 }
+
+/* 滚动入场：淡入 + 上移，错峰由 transition-delay 控制 */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px) scale(.985);
+  transition:
+    opacity .8s cubic-bezier(.22, 1, .36, 1),
+    transform .8s cubic-bezier(.22, 1, .36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* 统一更顺滑的缓动曲线，提升过渡自然度 */
+.section-title::after { transition: width .5s cubic-bezier(.22, 1, .36, 1); }
 img { max-width: 100%; }
 a { color: inherit; }
 
@@ -99,4 +146,14 @@ a { color: inherit; }
   .section { padding: 44px 0; }
   .section-title { font-size: 1.45rem; }
   .hero-name { font-size: 1.7rem !important; }
+}
+
+/* 尊重「减少动态效果」系统偏好：关闭一切非必要动画 */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .aurora, .aurora::before, .aurora::after { animation: none !important; }
+  .scroll-progress { display: none !important; }
+  * { scroll-behavior: auto !important; }
+  .hero-avatar, .hero-name, .hero-title, .hero-tagline, .hero-bio,
+  .hero-meta, .hero-links { animation: none !important; }
 }
