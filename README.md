@@ -1,6 +1,8 @@
-# 我的博客（Vite + Vue 3 + GitHub Pages）
+# 个人主页（Vite + Vue 3 + GitHub Pages）
 
-一个零成本的个人博客框架：本地用 Vite 开发，推送 GitHub 后由 Actions 自动构建并部署到 GitHub Pages。
+一个零成本的**个人自我介绍展示网站**：个人简介 / 我的爱好 / 我爱的音乐 / 我爱看的动漫 / 我爱看的电影。纯静态、响应式、带深色模式，没有文章发布后台——只是把"你是谁、你喜欢什么"漂亮地陈列出来。
+
+本地用 Vite 开发，推送到 GitHub 后由 Actions 自动构建并部署到 GitHub Pages。
 
 ## 本地开发
 
@@ -9,40 +11,42 @@ npm install
 npm run dev        # 启动开发服务器
 ```
 
-## 写一篇新文章
+## 怎么换成你自己的内容
 
-在 `src/posts/` 下新建 `xxx.md`，顶部写上 frontmatter：
+所有展示内容都在 `src/data/` 下的数据文件里，**改文件即可，不用碰组件**：
 
-```md
----
-title: 文章标题
-date: 2026-07-16
-excerpt: 一句话摘要（可选）
----
+| 文件 | 控制板块 |
+|------|----------|
+| `src/data/profile.js` | 个人简介（名字、头衔、简介、所在地、社交链接） |
+| `src/data/hobbies.js` | 我的爱好（卡片列表） |
+| `src/data/music.js` | 我爱的音乐（按分类组织，含歌曲/歌手/专辑） |
+| `src/data/anime.js` | 我爱看的动漫（名称 + 信息） |
+| `src/data/movies.js` | 我爱看的电影（片名 + 年份 + 推荐语） |
 
-正文用 Markdown 写……
+### 替换封面 / 头像
+
+图片放在 `public/covers/` 下（现用的是渐变占位图）。把 `cover` 字段改成你的图片路径即可，例如：
+
+```js
+// src/data/music.js
+{ title: '晴天', artist: '周杰伦', album: '叶惠美', cover: 'covers/my-cover.jpg' }
 ```
 
-保存后首页会自动列出文章，点击进入详情页。
+把 `my-cover.jpg` 丢进 `public/covers/` 即可。音乐封面建议正方形，动漫/电影建议竖图。
 
 ## 部署到 GitHub Pages
 
-1. 把本项目推送到 GitHub 仓库（例如 `your-name/blog`）。
+1. 把本项目推送到 GitHub 仓库（如 `your-name/blog`）。
 2. 仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。
-3. 之后每次 `git push` 到 `main` 分支，Actions 会自动构建并发布。
+3. 之后每次 `git push` 到 `main` 分支，Actions 自动构建并发布。
 4. 访问 `https://<user>.github.io/<repo>/`。
 
-### 关于 base 路径（重要）
-
-- **项目站点**（`your-name/blog`）：URL 在子路径下，Actions 已自动传 `--base=/blog/`，无需改动。
-- **用户/组织站点**（`your-name.github.io`）：URL 在根路径 `/`，需把 `.github/workflows/deploy.yml` 里
-  `npm run build -- --base=/${{ github.event.repository.name }}/` 这一行删掉 `--base=...` 部分（即只保留 `npm run build`）。
-- 本地开发不受影响（默认 base 为 `/`）。
+> 本项目站点（仓库名不是 `*.github.io`）已自动处理子路径 base，无需改动。本地开发默认 base 为 `/`，也不受影响。
 
 ## 技术栈
 
 - Vite 5
-- Vue 3（`<script setup>` + SFC）
-- vue-router 4（history 模式，已适配 base）
-- marked（Markdown 渲染）
-- 文章即 `src/posts/*.md` 文件，无需数据库
+- Vue 3（`<script setup>` + 单文件组件）
+- 纯数据驱动：内容集中在 `src/data/`，组件只负责展示
+- 自带深色模式（跟随系统 + 手动切换，记忆偏好）
+- 响应式：桌面多列网格，移动端自动单列
