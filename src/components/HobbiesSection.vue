@@ -10,11 +10,12 @@ import { hobbies } from '../data/hobbies.js'
       <p class="section-sub">让生活慢下来、亮起来的那些小事。</p>
     </div>
     <div class="hobby-grid">
-      <div v-for="(h, i) in hobbies" :key="h.title" class="hobby-card" v-reveal="i * 0.06">
+      <a v-for="(h, i) in hobbies" :key="h.title" class="hobby-card" :href="h.douban" target="_blank" rel="noopener noreferrer" v-reveal="i * 0.06">
         <div class="hobby-emoji">{{ h.emoji }}</div>
         <h3 class="hobby-title">{{ h.title }}</h3>
         <p class="hobby-desc">{{ h.desc }}</p>
-      </div>
+        <span class="douban-badge">豆瓣</span>
+      </a>
     </div>
   </section>
 </template>
@@ -26,6 +27,9 @@ import { hobbies } from '../data/hobbies.js'
   gap: 18px;
 }
 .hobby-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -49,4 +53,22 @@ import { hobbies } from '../data/hobbies.js'
 }
 .hobby-title { font-size: 1.1rem; margin: 0 0 8px; }
 .hobby-desc { color: var(--text-muted); line-height: 1.7; font-size: 0.92rem; margin: 0; }
+.douban-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-top: 14px;
+  transition: background .25s ease, transform .25s ease;
+}
+.douban-badge::after { content: "\2197"; font-size: 0.85em; }
+a:hover .douban-badge {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  transform: translateX(2px);
+}
 </style>

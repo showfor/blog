@@ -11,16 +11,17 @@ import { asset } from '../utils.js'
       <p class="section-sub">在别人的故事里，照见自己的生活。</p>
     </div>
     <div class="movie-grid">
-      <div v-for="(m, i) in movieList" :key="m.title" class="movie-card" v-reveal="i * 0.06">
+      <a v-for="(m, i) in movieList" :key="m.title" class="movie-card" :href="m.douban" target="_blank" rel="noopener noreferrer" v-reveal="i * 0.06">
         <div class="movie-cover">
           <img :src="asset(m.cover)" :alt="m.title" loading="lazy" />
           <span class="movie-year">{{ m.year }}</span>
+          <span class="douban-badge cover-badge">豆瓣</span>
         </div>
         <div class="movie-info">
           <h3 class="movie-title">{{ m.title }}</h3>
           <p class="movie-note">{{ m.note }}</p>
         </div>
-      </div>
+      </a>
     </div>
   </section>
 </template>
@@ -32,6 +33,9 @@ import { asset } from '../utils.js'
   gap: 22px;
 }
 .movie-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);

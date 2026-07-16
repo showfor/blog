@@ -11,15 +11,16 @@ import { asset } from '../utils.js'
       <p class="section-sub">二度元里，藏着我的热血与温柔。</p>
     </div>
     <div class="anime-grid">
-      <div v-for="(a, i) in animeList" :key="a.title" class="anime-card" v-reveal="i * 0.06">
+      <a v-for="(a, i) in animeList" :key="a.title" class="anime-card" :href="a.douban" target="_blank" rel="noopener noreferrer" v-reveal="i * 0.06">
         <div class="anime-cover">
           <img :src="asset(a.cover)" :alt="a.title" loading="lazy" />
+          <span class="douban-badge cover-badge">豆瓣</span>
         </div>
         <div class="anime-info">
           <h3 class="anime-title">{{ a.title }}</h3>
           <p class="anime-meta">{{ a.meta }}</p>
         </div>
-      </div>
+      </a>
     </div>
   </section>
 </template>
@@ -31,6 +32,9 @@ import { asset } from '../utils.js'
   gap: 20px;
 }
 .anime-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -43,6 +47,7 @@ import { asset } from '../utils.js'
   border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
 }
 .anime-cover {
+  position: relative;
   aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--surface-2);

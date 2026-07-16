@@ -14,7 +14,7 @@ import { asset } from '../utils.js'
     <div v-for="cat in musicCategories" :key="cat.name" class="music-cat">
       <h3 class="music-cat-name">{{ cat.name }}</h3>
       <div class="music-grid">
-        <div v-for="(song, i) in cat.songs" :key="song.title" class="music-card" v-reveal="i * 0.05">
+        <a v-for="(song, i) in cat.songs" :key="song.title" class="music-card" :href="song.douban" target="_blank" rel="noopener noreferrer" v-reveal="i * 0.05">
           <div class="music-cover">
             <img :src="asset(song.cover)" :alt="song.title" loading="lazy" />
           </div>
@@ -22,8 +22,9 @@ import { asset } from '../utils.js'
             <p class="music-title">{{ song.title }}</p>
             <p class="music-artist">{{ song.artist }}</p>
             <p class="music-album">{{ song.album }}</p>
+            <span class="douban-badge">豆瓣</span>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   </section>
@@ -46,13 +47,15 @@ import { asset } from '../utils.js'
   gap: 18px;
 }
 .music-card {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 12px;
-  display: flex;
-  gap: 14px;
-  align-items: center;
   transition: transform .45s cubic-bezier(.22, 1, .36, 1), box-shadow .45s ease, border-color .45s ease;
 }
 .music-card:hover {

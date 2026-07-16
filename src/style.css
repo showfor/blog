@@ -157,3 +157,33 @@ a { color: inherit; }
   .hero-avatar, .hero-name, .hero-title, .hero-tagline, .hero-bio,
   .hero-meta, .hero-links { animation: none !important; }
 }
+
+/* ===== 豆瓣跳转角标（各板块卡片共用） ===== */
+.douban-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 3px 10px;
+  border-radius: 999px;
+  transition: background .25s ease, transform .25s ease;
+}
+.douban-badge::after { content: "\2197"; font-size: 0.85em; }
+a:hover .douban-badge {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  transform: translateX(2px);
+}
+/* 封面类卡片（动漫/电影）：角标浮在封面左下角 */
+.douban-badge.cover-badge {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  margin: 0;
+  color: #fff;
+  background: rgba(0,0,0,.5);
+  backdrop-filter: blur(4px);
+}
+a:hover .douban-badge.cover-badge { background: rgba(0,0,0,.7); }

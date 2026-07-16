@@ -1,9 +1,12 @@
 // 我的爱好 —— 在数组里增删条目即可，emoji 可换成你喜欢的图标。
+// douban 为点击卡片后跳转的豆瓣页面（这里用搜索页，换成真实条目 URL 也可）。
+import { doubanSearch } from '../utils.js'
+
 export const hobbies = [
-  { emoji: '📷', title: '摄影', desc: '用镜头记录城市与旅途中稍纵即逝的光，偏爱胶片质感与逆光。' },
-  { emoji: '✈️', title: '旅行', desc: '偏爱小众目的地，在陌生街头迷路也很快乐，地图永远只画一半。' },
-  { emoji: '🎮', title: '游戏', desc: '独立游戏与叙事向作品爱好者，享受被一个好故事打动的过程。' },
-  { emoji: '🍜', title: '烹饪', desc: '周末喜欢钻研一碗好面，相信治愈感藏在热气腾腾的厨房里。' },
-  { emoji: '✍️', title: '写作', desc: '偶尔写点随笔，把脑中的碎碎念整理成可以回看的文字。' },
-  { emoji: '🌿', title: '植物', desc: '阳台养了一排多肉和绿植，看它们慢慢长大是种奇妙的踏实。' },
+  { emoji: '📷', title: '摄影', desc: '用镜头记录城市与旅途中稍纵即逝的光，偏爱胶片质感与逆光。', douban: doubanSearch('摄影') },
+  { emoji: '✈️', title: '旅行', desc: '偏爱小众目的地，在陌生街头迷路也很快乐，地图永远只画一半。', douban: doubanSearch('旅行') },
+  { emoji: '🎮', title: '游戏', desc: '独立游戏与叙事向作品爱好者，享受被一个好故事打动的过程。', douban: doubanSearch('游戏') },
+  { emoji: '🍜', title: '烹饪', desc: '周末喜欢钻研一碗好面，相信治愈感藏在热气腾腾的厨房里。', douban: doubanSearch('烹饪') },
+  { emoji: '✍️', title: '写作', desc: '偶尔写点随笔，把脑中的碎碎念整理成可以回看的文字。', douban: doubanSearch('写作') },
+  { emoji: '🌿', title: '植物', desc: '阳台养了一排多肉和绿植，看它们慢慢长大是种奇妙的踏实。', douban: doubanSearch('植物') },
 ]
