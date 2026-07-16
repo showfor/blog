@@ -14,7 +14,7 @@ import { asset } from '../utils.js'
     <div v-for="cat in musicCategories" :key="cat.name" class="music-cat">
       <h3 class="music-cat-name">{{ cat.name }}</h3>
       <div class="music-grid">
-        <a v-for="(song, i) in cat.songs" :key="song.title" class="music-card" :href="song.douban" target="_blank" rel="noopener noreferrer" v-reveal="i * 0.05">
+        <a v-for="(song, i) in cat.songs" :key="song.title" class="music-card" :href="song.url" target="_blank" rel="noopener noreferrer" v-reveal="i * 0.05">
           <div class="music-cover">
             <img :src="asset(song.cover)" :alt="song.title" loading="lazy" />
           </div>
@@ -22,7 +22,7 @@ import { asset } from '../utils.js'
             <p class="music-title">{{ song.title }}</p>
             <p class="music-artist">{{ song.artist }}</p>
             <p class="music-album">{{ song.album }}</p>
-            <span class="douban-badge">豆瓣</span>
+            <span class="ne-badge">网易云</span>
           </div>
         </a>
       </div>

@@ -187,3 +187,19 @@ a:hover .douban-badge {
   backdrop-filter: blur(4px);
 }
 a:hover .douban-badge.cover-badge { background: rgba(0,0,0,.7); }
+
+/* 网易云跳转角标（音乐板块卡片用） */
+.ne-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fff;
+  background: #c20c0c;
+  padding: 3px 10px;
+  border-radius: 999px;
+  transition: background .25s ease, transform .25s ease;
+}
+.ne-badge::after { content: "\2197"; font-size: 0.85em; }
+a:hover .ne-badge { background: #e01a1a; transform: translateX(2px); }
