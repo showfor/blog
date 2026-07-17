@@ -11,7 +11,7 @@
   --shadow: 0 4px 20px rgba(20, 20, 50, .06);
   --shadow-hover: 0 14px 34px rgba(20, 20, 50, .13);
   --radius: 18px;
-  --maxw: 1080px;
+  --maxw: 1120px;
   --grad: linear-gradient(135deg, var(--accent), var(--accent-2));
 }
 [data-theme="dark"] {
@@ -112,16 +112,30 @@ a { color: inherit; }
 }
 
 /* ===== 区块通用 ===== */
-.section { padding: 56px 0; }
+.section {
+  padding: clamp(64px, 8.5vw, 96px) 0;
+  scroll-margin-top: 88px; /* 锚点跳转时不被吸顶导航遮挡 */
+}
+.section + .section { border-top: 1px solid var(--border); } /* 板块间的细分隔线，增强节奏 */
+#intro { scroll-margin-top: 88px; }
 .section-head { margin-bottom: 32px; }
 .eyebrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+}
+.eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--grad);
 }
 .section-title {
   font-size: 1.7rem;

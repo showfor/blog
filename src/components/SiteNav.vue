@@ -1,5 +1,6 @@
 <script setup>
 import AppIcon from './AppIcon.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const navItems = [
   { id: 'intro', label: '首页' },
@@ -15,13 +16,26 @@ const navItems = [
 const props = defineProps({ brand: { type: String, default: '我的主页' } })
 
 // 深色模式：读取本地偏好，默认跟随系统
-import { ref, onMounted } from 'vue'
 const isDark = ref(false)
+const activeId = ref('intro')
+let io = null
 onMounted(() => {
   const saved = localStorage.getItem('theme')
   isDark.value = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
   apply()
+
+  // 滚动监听：高亮当前所在板块（scrollspy）
+  const sections = navItems
+    .map(n => document.getElementById(n.id))
+    .filter(Boolean)
+  io = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) activeId.value = e.target.id }),
+    { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
+  )
+  sections.forEach(s => io.observe(s))
 })
+onUnmounted(() => io && io.disconnect())
+
 function apply() {
   document.documentElement.dataset.theme = isDark.value ? 'dark' : 'light'
 }
@@ -43,7 +57,7 @@ const popping = ref(false)
         <span class="nav-dot"></span>{{ brand }}
       </a>
       <nav class="nav-links">
-        <a v-for="item in navItems" :key="item.id" :href="'#' + item.id">{{ item.label }}</a>
+        <a v-for="item in navItems" :key="item.id" :href="'#' + item.id" :class="{ active: activeId === item.id }">{{ item.label }}</a>
       </nav>
       <button class="nav-theme" :class="{ pop: popping }" :title="isDark ? '切换到浅色' : '切换到深色'" @click="toggleTheme" aria-label="切换主题">
         <AppIcon :name="isDark ? 'sun' : 'moon'" />
@@ -105,6 +119,11 @@ const popping = ref(false)
   color: var(--text);
   background: var(--surface-2);
 }
+.nav-links a.active {
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: inset 0 -2px 0 0 var(--accent);
+}
 .nav-theme {
   margin-left: 4px;
   width: 38px;
@@ -128,7 +147,19 @@ const popping = ref(false)
 }
 
 @media (max-width: 640px) {
-  .nav-links { display: none; }
-  .nav-brand { margin-right: auto; }
+  /* 移动端不再隐藏导航，改为横向滚动，保证所有板块可直达 */
+  .nav-links {
+    display: flex;
+    margin-left: 10px;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { padding: 6px 10px; font-size: 0.85rem; white-space: nowrap; }
+  .nav-brand { font-size: 0.95rem; }
 }
 </style>

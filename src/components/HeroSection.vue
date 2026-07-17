@@ -50,6 +50,7 @@ import AppIcon from './AppIcon.vue'
   to   { opacity: 1; transform: none; }
 }
 .hero-card {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -59,6 +60,22 @@ import AppIcon from './AppIcon.vue'
   gap: 40px;
   align-items: center;
 }
+/* 极淡的渐变描边，呼应 accent，仅在 hover 时显现 */
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--grad);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+}
+.hero-card:hover::before { opacity: .7; }
 .hero-avatar {
   flex: 0 0 150px;
   width: 150px;
