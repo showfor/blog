@@ -2,11 +2,14 @@
 import AppIcon from './AppIcon.vue'
 
 const navItems = [
-  { id: 'intro', label: '简介' },
+  { id: 'intro', label: '首页' },
+  { id: 'about', label: '关于' },
   { id: 'hobbies', label: '爱好' },
   { id: 'music', label: '音乐' },
   { id: 'anime', label: '动漫' },
   { id: 'movies', label: '电影' },
+  { id: 'strengths', label: '优势' },
+  { id: 'contact', label: '联系' },
 ]
 
 const props = defineProps({ brand: { type: String, default: '我的主页' } })

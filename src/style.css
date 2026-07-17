@@ -139,6 +139,22 @@ a { color: inherit; }
   background: var(--grad);
 }
 .section-sub { color: var(--text-muted); margin: 16px 0 0; font-size: 0.95rem; }
+/* 板块大号序号（仿 gerenzhan 的 01/02/03 视觉）：浮在标题右上角 */
+.section-head { position: relative; padding-right: 72px; }
+.section-index {
+  position: absolute;
+  top: -6px; right: 0;
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: var(--text);
+  opacity: .12;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 600px) {
+  .section-index { font-size: 2rem; top: -2px; }
+}
 
 /* ===== 响应式 ===== */
 @media (max-width: 600px) {

@@ -1,10 +1,13 @@
 <script setup>
 import SiteNav from './components/SiteNav.vue'
 import HeroSection from './components/HeroSection.vue'
+import AboutSection from './components/AboutSection.vue'
 import HobbiesSection from './components/HobbiesSection.vue'
 import MusicSection from './components/MusicSection.vue'
 import AnimeSection from './components/AnimeSection.vue'
 import MoviesSection from './components/MoviesSection.vue'
+import StrengthsSection from './components/StrengthsSection.vue'
+import ContactSection from './components/ContactSection.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import { profile } from './data/profile.js'
 import { ref, onMounted, onUnmounted } from 'vue'
@@ -34,10 +37,13 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
   <main class="container">
     <HeroSection />
+    <AboutSection />
     <HobbiesSection />
     <MusicSection />
     <AnimeSection />
     <MoviesSection />
+    <StrengthsSection />
+    <ContactSection />
   </main>
 
   <SiteFooter />
