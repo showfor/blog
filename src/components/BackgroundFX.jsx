@@ -130,9 +130,9 @@ export default function BackgroundFX({
     }
 
     const dpr = QUALITY_DPR[quality] || QUALITY_DPR.medium
-    // 渲染分辨率降半：背景是流动渐变 + 噪点，降分辨率视觉不可感知，
-    // 但 GPU 像素数减 75%，消除 WebGL drawArrays 造成的滚动 long task（puppeteer 实测根因）
-    const resScale = 0.5
+    // 渲染分辨率降至 0.3：背景是流动渐变 + 噪点，降分辨率视觉不可感知，
+    // GPU 像素数较原始减 91%，消除 WebGL 合成造成的滚动 FPS 下降（puppeteer 实测）
+    const resScale = 0.3
     const resize = () => {
       const rect = container.getBoundingClientRect()
       const w = Math.max(1, Math.floor(rect.width))
