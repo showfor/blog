@@ -1,28 +1,57 @@
-// 精选项目（逐字照搬 PRD §6.4）
-// img 仅存相对路径，渲染时统一走 asset() 拼接 BASE_URL，避免子路径部署 404。
+// 6 个逐字项目（来自 aystba 站点实抓 JS，站主名统一改为 Amber River），每项 {en, cn, tech}，无外部图（CSS 占位）。
 export const projects = [
   {
     id: 1,
-    title: '品牌 VI 视觉升级',
-    meta: '2023.04 - 2023.06 / 视觉主设计师',
-    desc: '完成品牌色彩体系、字体规范、LOGO 延展、图标系统与全渠道视觉规范，推动品牌形象年轻化与标准化。',
-    img: 'assets/project-01.jpg',
-    crop: 'left center',
+    title: { en: 'Personal portfolio website', cn: '个人作品集网站' },
+    desc: {
+      en: 'Built with React, GSAP and WebGL; featuring dynamic gradient backgrounds, particle effects and high-end creative agency style animations',
+      cn: '使用 React、GSAP 和 WebGL 构建；含动态渐变背景、粒子效果和高端创意机构风格动画',
+    },
+    tech: ['React', 'GSAP', 'WebGL'],
   },
   {
     id: 2,
-    title: '全年节日营销视觉全案',
-    meta: '2022.08 - 至今 / 视觉设计师',
-    desc: '围绕电商大促、节日节点与品牌专场，输出活动首页、海报、详情页、引流配图与短视频封面。',
-    img: 'assets/project-02.jpg',
-    crop: 'center center',
+    title: { en: 'MiMo AI Desktop Client', cn: '小米MiMo AI桌面客户端' },
+    desc: {
+      en: 'Interacting with Xiaomi MiMo models through the official OpenAI-compatible API',
+      cn: '通过官方OpenAI兼容API与MiMo模型交互',
+    },
+    tech: ['MiMo', 'MiMo AI', 'Desktop Client'],
   },
   {
     id: 3,
-    title: '电商店铺视觉优化',
-    meta: '首页改版 / 详情页 / 主图精修',
-    desc: '优化页面视觉层级与浏览路径，提升商品呈现质感，并为运营活动提供稳定视觉支撑。',
-    img: 'assets/project-03.jpg',
-    crop: 'right center',
+    title: { en: 'Encryption Suite', cn: '加密套件' },
+    desc: {
+      en: 'Developing AI tools and secure encryption systems.',
+      cn: '支持文本和文件加密的多算法加密系统',
+    },
+    tech: ['Python', 'Rust', 'Encryption'],
+  },
+  {
+    id: 4,
+    title: { en: 'Smart inspiration management', cn: '智能灵感管理工具' },
+    desc: {
+      en: 'auto-captures ideas and AI-scores them',
+      cn: '自动捕获想法并进行AI评分',
+    },
+    tech: ['AI', 'Inspiration'],
+  },
+  {
+    id: 5,
+    title: { en: 'Desktop App', cn: '跨平台桌面应用' },
+    desc: {
+      en: 'Developing cross-platform desktop applications using Tauri and Vue.',
+      cn: '使用Tauri和Vue开发跨平台桌面应用。',
+    },
+    tech: ['Tauri', 'Vue', 'Desktop'],
+  },
+  {
+    id: 6,
+    title: { en: 'EdTech', cn: '教育科技项目' },
+    desc: {
+      en: 'EdTech — projects include moX and danci007',
+      cn: '教育科技',
+    },
+    tech: ['moX', 'danci007', 'EdTech'],
   },
 ]

@@ -1,124 +1,100 @@
 classDiagram
-    %% ============ 数据层（逐字照搬 PRD §6） ============
-    class Profile {
-        +String name = "琥珀川"
-        +String role = "Visual Designer"
-        +String intro
-        +String phone = "138XXXX6789"
-        +String email = "zixuan_design@163.com"
-        +String location
-        +Metric[] metrics
-        +Hero hero
+    %% ===== 数据模型（全部 {en,cn} 双字段，逐字来自 PRD） =====
+    class ProfileData {
+        +identity: {name, role, location}
+        +hero: {greeting, tags[]}
+        +about: {headline, paragraphs[], resume[]}
+        +contact: {email, phone, welcome}
     }
-    class Metric {
-        +String value  %% "3+"/"500+"/"95%+"/"20%+"
-        +String label
+    class ProjectData {
+        +id: number
+        +title: Bilingual
+        +desc: Bilingual
+        +tags: BilingualItem[]
     }
-    class Hero {
-        +String[] tags    %% [Portfolio][Visual Designer][2026]
-        +String headline = "琥珀川"
-        +String statValue = "500+"
-        +String statLabel = "Visual systems & commercial assets delivered yearly"
-        +String claim
-        +String[] slogan  %% ["DESIGN"," IS NOT","DECORATION"]
-        +Object primaryCta
-        +Object secondaryCta
-        +Object scrollHint
+    class SkillsData {
+        +categories: [{title, items[]}]
+        +techStack: [{name, type}]
+        +strengths: [{title, desc}]
     }
-    class Project {
-        +Number id
-        +String title
-        +String meta
-        +String desc
-        +String img   %% asset('assets/project-0X.jpg')
-        +String crop
+    class ServicesData {
+        +id: number
+        +title: Bilingual
+        +desc: Bilingual
+        +icon: string
     }
-    class Capability {
-        +Number id
-        +String title
-        +String desc
-    }
-    class Contact {
-        +String heading
-        +String email
-        +String phone
-    }
-    class NavLink {
-        +String label
-        +String href
-    }
-    class Nav {
-        +String mark = "琥"
-        +String brand = "琥珀川"
-        +NavLink[] links
-        +Object cta
+    class I18nData {
+        +ui: {switchLabel}
+        +nav: {brand, links[]}
+        +titles: {hero, about, projects, skills, services, opensource, contact}
+        +footer: {about}
     }
 
-    Profile "1" *-- "4" Metric : metrics
-    Profile "1" *-- "1" Hero : hero
-    Nav "1" *-- "4" NavLink : links
+    %% ===== 语言上下文（自建 i18n，无 i18next） =====
+    class LanguageContext {
+        +lang: 'en' | 'cn'
+        +setLang(lang)
+        +t(obj): string
+    }
+    class LanguageProvider {
+        +children: ReactNode
+        +useLang(): LanguageContext
+    }
+    LanguageProvider ..> LanguageContext : provides
 
-    %% ============ 复用组件 ============
-    class GlowCard {
-        +render(children)
-        +onMove()
+    %% ===== 组件 =====
+    class App {
+        +render(): 9 sections
     }
-    class Reveal {
-        +render(children)
-    }
-    class AppIcon {
-        +render(name)
-        +phone()
-    }
-
-    %% ============ 业务 Section ============
     class SiteNav {
-        +useState isFloating
-        +onScroll()
-        +render()
-    }
-    class HeroSection {
-        +render()
-    }
-    class AboutSection {
-        +useCountUp()
-        +render()
-    }
-    class SelectedWorkSection {
-        +render()
-    }
-    class StrengthsSection {
-        +render()
-    }
-    class ContactSection {
-        +render()
+        +onToggleLang()
     }
     class SiteFooter {
-        +render()
+        +onToggleLang()
     }
-    class App {
-        +render()
-    }
+    class HeroSection
+    class AboutSection
+    class SelectedProjectsSection
+    class SkillsSection
+    class ServicesSection
+    class OpenSourceSection
+    class ContactSection
+    class BackgroundFX
+    class GlowCard
+    class Reveal
+    class AppIcon
 
-    %% ============ 依赖关系 ============
-    HeroSection ..> Profile : 读 hero/email
-    HeroSection ..> GlowCard : 标签/按钮容器
-    AboutSection ..> Profile : 读 intro/metrics
-    AboutSection ..> Reveal : 入场
-    SelectedWorkSection ..> Project : 遍历渲染
-    SelectedWorkSection ..> GlowCard : 卡片
-    StrengthsSection ..> Capability : 遍历渲染
-    StrengthsSection ..> GlowCard : 卡片
-    StrengthsSection ..> AppIcon : 图标
-    ContactSection ..> Contact : 读 heading/email/phone
-    ContactSection ..> AppIcon : mail/phone
-    SiteFooter ..> Profile : 读 name/role/location
-    SiteNav ..> Nav : 读 links/cta/brand
-    SiteNav ..> AppIcon : mail
-    App ..> SiteNav
-    App ..> HeroSection
-    App ..> AboutSection
-    App ..> SelectedWorkSection
-    App ..> StrengthsSection
-    App ..> ContactSection
-    App ..> SiteFooter
+    %% ===== 组合关系 =====
+    App *-- SiteNav
+    App *-- HeroSection
+    App *-- AboutSection
+    App *-- SelectedProjectsSection
+    App *-- SkillsSection
+    App *-- ServicesSection
+    App *-- OpenSourceSection
+    App *-- ContactSection
+    App *-- SiteFooter
+    App ..> LanguageProvider : wraps
+
+    %% ===== 依赖（useLang / 数据） =====
+    SiteNav ..> LanguageContext : useLang()
+    SiteFooter ..> LanguageContext : useLang()
+    SiteNav ..> I18nData : nav + ui
+    SiteFooter ..> I18nData : footer + ui
+
+    HeroSection ..> ProfileData : hero/identity
+    HeroSection ..> BackgroundFX : CSS gradient/particle
+    AboutSection ..> ProfileData : about
+    SelectedProjectsSection ..> ProjectData
+    SkillsSection ..> SkillsData
+    ServicesSection ..> ServicesData
+    OpenSourceSection ..> I18nData : opensource
+    ContactSection ..> ProfileData : email/phone
+    ContactSection ..> I18nData : contact
+
+    SelectedProjectsSection ..> GlowCard
+    SkillsSection ..> GlowCard
+    ServicesSection ..> GlowCard
+    AboutSection ..> GlowCard
+    HeroSection ..> Reveal
+    AboutSection ..> Reveal

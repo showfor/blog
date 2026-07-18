@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { nav } from '../data/nav.js'
+import { i18n } from '../data/i18n.js'
+import { useLang } from '../context/LanguageProvider.jsx'
 import AppIcon from './AppIcon.jsx'
 
-// 顶部导航 SiteNav：Logo（琥珀川）+ 锚点 [经历][项目][优势][联系] + CTA 联系我。
-// 滚动超过首屏后进入 floating 高亮态（is-floating）。
+// 顶部导航 SiteNav：Logo（Amber River）+ 双语锚点 + 语言切换按钮 + CTA。
 export default function SiteNav() {
+  const { lang, setLang, t } = useLang()
   const [floating, setFloating] = useState(false)
 
   useEffect(() => {
@@ -14,37 +15,38 @@ export default function SiteNav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // 锚点跳转：阻止默认跳变，使用 scrollIntoView 平滑滚动（配合 CSS scroll-margin-top 偏移）。
   const go = (e, href) => {
     e.preventDefault()
     const el = document.querySelector(href)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const toggleLang = () => setLang(lang === 'en' ? 'cn' : 'en')
+
   return (
     <header className={`site-nav ${floating ? 'is-floating' : ''}`}>
       <div className="container site-nav-inner">
         <a className="site-nav-brand" href="#top" onClick={(e) => go(e, '#top')}>
-          <span className="site-nav-mark">{nav.mark}</span>
-          <span className="site-nav-brand-name">{nav.brand}</span>
+          <span className="site-nav-mark">{i18n.nav.mark}</span>
+          <span className="site-nav-brand-name">{i18n.nav.brand}</span>
         </a>
 
         <nav className="site-nav-links">
-          {nav.links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="site-nav-link"
-              onClick={(e) => go(e, l.href)}
-            >
-              [{l.label}]
+          {i18n.nav.links.map((l) => (
+            <a key={l.key} href={l.href} className="site-nav-link" onClick={(e) => go(e, l.href)}>
+              {t(l.label)}
             </a>
           ))}
         </nav>
 
-        <a className="btn btn-primary site-nav-cta" href={nav.cta.href}>
-          <AppIcon name="mail" /> {nav.cta.label}
-        </a>
+        <div className="site-nav-actions">
+          <button type="button" className="lang-toggle" onClick={toggleLang} aria-label="Toggle language">
+            {t(i18n.ui.switchLabel)}
+          </button>
+          <a className="btn btn-primary site-nav-cta" href={i18n.nav.cta.href} onClick={(e) => go(e, i18n.nav.cta.href)}>
+            <AppIcon name="mail" /> {t(i18n.nav.cta.label)}
+          </a>
+        </div>
       </div>
     </header>
   )
