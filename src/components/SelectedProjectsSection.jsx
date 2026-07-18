@@ -16,7 +16,7 @@ export default function SelectedProjectsSection() {
 
         <div className="work-grid">
           {projects.map((p, i) => (
-            <GlowCard key={p.id} className="work-card" delay={i * 0.08}>
+            <GlowCard key={p.id} className="work-card">
               <div className={`work-media pm-${i % 6}`} aria-hidden="true" />
               <div className="work-body">
                 <span className="work-index">{String(i + 1).padStart(2, '0')}</span>

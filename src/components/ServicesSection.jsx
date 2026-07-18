@@ -17,7 +17,7 @@ export default function ServicesSection() {
 
         <div className="services-grid">
           {services.map((s, i) => (
-            <GlowCard className="service-card" key={s.id} delay={i * 0.08}>
+            <GlowCard className="service-card" key={s.id}>
               <div className="service-icon">
                 <AppIcon name={s.icon} />
               </div>

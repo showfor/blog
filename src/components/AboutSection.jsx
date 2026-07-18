@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react'
 import { profile } from '../data/profile.js'
 import { i18n } from '../data/i18n.js'
 import { useLang } from '../context/LanguageProvider.jsx'
@@ -6,33 +5,10 @@ import GlowCard from './GlowCard.jsx'
 import AppIcon from './AppIcon.jsx'
 
 // 个人经历 AboutSection（#about）：左发光卡片（简介/联系/职业身份），右经历时间线，双语。
+// 滚动入场交由 GSAP ScrollTrigger.batch（.reveal 标记）统一处理，无需组件内 IO。
 export default function AboutSection() {
   const { t } = useLang()
   const { about } = profile
-  const [active, setActive] = useState(false)
-  const ref = useRef(null)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const reduce =
-      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce || typeof IntersectionObserver === 'undefined') {
-      setActive(true)
-      return
-    }
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => {
-        if (e.isIntersecting) {
-          setActive(true)
-          io.unobserve(el)
-        }
-      }),
-      { threshold: 0.3, rootMargin: '0px 0px -10% 0px' },
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
 
   return (
     <section id="about" className="section about">
@@ -63,7 +39,7 @@ export default function AboutSection() {
             </div>
           </GlowCard>
 
-          <div className={`about-resume reveal ${active ? 'is-visible' : ''}`} ref={ref}>
+          <div className="about-resume reveal">
             {about.resume.map((item, i) => (
               <div className="resume-item" key={i}>
                 <span className="resume-period">{t(item.period)}</span>

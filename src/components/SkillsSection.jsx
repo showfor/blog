@@ -47,7 +47,7 @@ export default function SkillsSection() {
           <h3 className="block-title">{t({ en: 'Personal Strengths', cn: '个人优势' })}</h3>
           <div className="strength-grid">
             {skills.strengths.map((s, i) => (
-              <GlowCard className="strength-card" key={s.title.en} delay={i * 0.06}>
+              <GlowCard className="strength-card" key={s.title.en}>
                 <h4 className="strength-title">{t(s.title)}</h4>
                 <p className="strength-desc">{t(s.desc)}</p>
               </GlowCard>

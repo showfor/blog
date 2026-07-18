@@ -54,6 +54,11 @@
   --edge-sensitivity: 30;
   --cone-spread: 25;
   --glow-padding: 1px;
+
+  /* ===== 动画缓动令牌 —— 复刻原站 --transition: .3s cubic-bezier(.4, 0, .2, 1) ===== */
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --nav-ease: cubic-bezier(.4, 0, .2, 1);
+  --nav-transition: .3s cubic-bezier(.4, 0, .2, 1);
 }
 
 /* ===== 基础重置 ===== */
@@ -78,16 +83,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* 滚动入场：淡入 + 上移，错峰由 transition-delay 控制 */
+/* 滚动入场：仅保留初始隐藏态。动画改由 GSAP ScrollTrigger（src/animations/siteAnimations.js）
+   驱动，与原站 gsap + ScrollTrigger 的「淡入 + 上移」揭示语感一致；这里只设初值避免 FOUC。 */
 .reveal {
   opacity: 0;
-  transform: translateY(30px) scale(.985);
-  transition:
-    opacity .8s cubic-bezier(.22, 1, .36, 1),
-    transform .8s cubic-bezier(.22, 1, .36, 1);
+  transform: translateY(30px);
   will-change: opacity, transform;
 }
-.reveal.is-visible { opacity: 1; transform: none; }
 
 img { max-width: 100%; }
 a { color: inherit; }
@@ -172,7 +174,8 @@ a { color: inherit; }
   transition: opacity .25s ease-out;
   pointer-events: none;
 }
-.glow-card:not(:hover):before { opacity: 0; transition: opacity .75s ease-in-out; }
+/* 未 hover 且未处于进场环扫时隐藏描边；GSAP 进场扫光期间会加 .sweep-active 使其可见 */
+.glow-card:not(:hover):not(.sweep-active):before { opacity: 0; transition: opacity .75s ease-in-out; }
 
 /* ===== AppIcon ===== */
 .app-icon { width: 1.25em; height: 1.25em; display: inline-block; vertical-align: -0.15em; }
@@ -189,8 +192,7 @@ a { color: inherit; }
   text-decoration: none;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform .3s cubic-bezier(.22, 1, .36, 1), background .3s ease,
-    border-color .3s ease, box-shadow .3s ease;
+  transition: all .3s var(--nav-ease); /* 对齐原站按钮 transition: all .3s cubic-bezier(.4,0,.2,1) */
 }
 .btn-primary {
   background: var(--grad);
@@ -216,21 +218,23 @@ a { color: inherit; }
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 50;
+  --np: 0; /* 连续滚动系数 0→1，由 JS 写入（scrollY / innerHeight 限幅）。复刻原站平滑浮起/收窄 */
   border-bottom: 1px solid transparent;
-  transition: background .35s ease, backdrop-filter .35s ease, border-color .35s ease;
-}
-.site-nav.is-floating {
-  background: color-mix(in srgb, var(--ink) 78%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-color: var(--borderColor);
+  /* 浮起背景 / 模糊 / 边框随 --np 渐入，缓动对齐原站 --transition */
+  background: color-mix(in srgb, var(--ink) calc(var(--np) * 78%), transparent);
+  backdrop-filter: blur(calc(var(--np) * 12px));
+  -webkit-backdrop-filter: blur(calc(var(--np) * 12px));
+  border-color: color-mix(in srgb, var(--borderColor) calc(var(--np) * 100%), transparent);
+  transition: background .4s var(--nav-ease), backdrop-filter .4s var(--nav-ease),
+    border-color .4s var(--nav-ease);
 }
 .site-nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  height: calc(72px - var(--np) * 12px); /* 滚动时随 --np 由 72px 收窄至 60px */
   gap: 16px;
+  transition: height .4s var(--nav-ease);
 }
 .site-nav-brand {
   display: flex;
@@ -255,7 +259,7 @@ a { color: inherit; }
   color: var(--textMuted);
   text-decoration: none;
   font-size: 0.92rem;
-  transition: color .25s ease;
+  transition: color var(--nav-transition); /* 对齐原站 .navbar-links a { transition: color var(--transition) } */
 }
 .site-nav-link:hover { color: var(--textColor); }
 .site-nav-actions { display: flex; align-items: center; gap: 12px; }
@@ -270,12 +274,118 @@ a { color: inherit; }
   color: var(--accentColor);
   border: 1px solid color-mix(in srgb, var(--accentColor) 35%, transparent);
   cursor: pointer;
-  transition: background .25s ease, transform .25s ease;
+  transition: background .3s var(--nav-ease), transform .25s ease, color .3s var(--nav-ease);
 }
 .lang-toggle:hover { background: color-mix(in srgb, var(--accentColor) 22%, transparent); transform: translateY(-1px); }
 .lang-toggle--ghost { background: transparent; border-color: var(--borderColor); color: var(--textMuted); }
 .lang-toggle--ghost:hover { color: var(--accentColor); border-color: color-mix(in srgb, var(--accentColor) 40%, transparent); }
 .site-nav-cta { padding: 9px 16px; font-size: 0.9rem; }
+
+/* ===== 移动端汉堡抽屉（≤760px 启用，替代被隐藏的桌面链接，修复"菜单消失"） ===== */
+.navbar-mobile-toggle {
+  display: none; /* 桌面端隐藏，仅窄屏显示 */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.navbar-mobile-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--textColor);
+  transition: transform .3s var(--nav-ease), opacity .2s var(--nav-ease);
+}
+.navbar-mobile-toggle.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.navbar-mobile-toggle.is-open span:nth-child(2) { opacity: 0; }
+.navbar-mobile-toggle.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.navbar-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, .6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s var(--nav-ease), visibility .3s var(--nav-ease);
+}
+.navbar-mobile-overlay.is-open { opacity: 1; visibility: visible; }
+
+.navbar-mobile-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 210;
+  width: min(320px, 82vw);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px 32px;
+  background: var(--bg-primary);
+  border-left: 1px solid var(--borderColor);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, .5);
+  transform: translateX(100%);
+  transition: transform .35s var(--nav-ease);
+}
+.navbar-mobile-panel.is-open { transform: translateX(0); }
+.navbar-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.navbar-mobile-title {
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--textMuted);
+}
+.navbar-mobile-close {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--textColor);
+  cursor: pointer;
+  transition: background .2s var(--nav-ease);
+}
+.navbar-mobile-close:hover { background: rgba(255, 255, 255, .08); }
+.navbar-mobile-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 12px 0;
+}
+.navbar-mobile-link {
+  padding: 14px 4px;
+  font-size: 1rem;
+  color: var(--textColor);
+  text-decoration: none;
+  border-bottom: 1px solid var(--borderColor);
+  transition: color .25s ease;
+}
+.navbar-mobile-link:hover { color: var(--accentColor); }
+.navbar-mobile-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 20px;
+}
+.navbar-mobile-actions .btn,
+.navbar-mobile-actions .lang-toggle { width: 100%; justify-content: center; }
 
 /* ===== Hero 首屏 ===== */
 .hero {
@@ -345,17 +455,11 @@ a { color: inherit; }
   text-decoration: none;
   font-size: 0.9rem;
 }
-.hero-scroll::before {
-  content: "";
+.hero-scroll-arrow {
   width: 16px; height: 16px;
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   transform: rotate(45deg);
-  animation: hero-bounce 1.6s infinite;
-}
-@keyframes hero-bounce {
-  0%, 100% { transform: translateY(0) rotate(45deg); }
-  50% { transform: translateY(6px) rotate(45deg); }
 }
 
 /* ===== 纯 CSS 背景（径向渐变 + grain + 粒子） ===== */
@@ -386,11 +490,8 @@ a { color: inherit; }
   background: var(--accentColor);
   opacity: .5;
   box-shadow: 0 0 12px var(--accentColor);
-  animation: particle-float 8s ease-in-out infinite;
-}
-@keyframes particle-float {
-  0%, 100% { transform: translateY(0); opacity: .25; }
-  50% { transform: translateY(-22px); opacity: .6; }
+  /* 漂浮动画改由 GSAP 驱动（src/animations/siteAnimations.js），与原站无等价项；
+     目标视觉沿用克隆版既有 8s 上下漂浮 + 透明度呼吸。 */
 }
 
 /* ===== About 个人经历 ===== */
@@ -623,14 +724,17 @@ a { color: inherit; }
   .container { padding: 0 18px; }
   .section { padding: 44px 0; }
   .section-title { font-size: 1.45rem; }
+  /* 窄屏隐藏桌面端链接 / CTA / 语言键，改用汉堡抽屉替代（不再"无替代直接消失"） */
   .site-nav-links { display: none; }
   .site-nav-cta { display: none; }
+  .site-nav-actions .lang-toggle { display: none; }
+  .navbar-mobile-toggle { display: flex; }
 }
 
 /* 尊重「减少动态效果」系统偏好：关闭一切非必要动画 */
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
   * { scroll-behavior: auto !important; }
-  .hero-scroll::before { animation: none !important; }
+  .hero-scroll-arrow { animation: none !important; }
   .particle { animation: none !important; }
 }

@@ -44,6 +44,7 @@ export default function HeroSection() {
         </div>
 
         <a className="hero-scroll" href={hero.scrollHint.href} onClick={(e) => go(e, hero.scrollHint.href)}>
+          <span className="hero-scroll-arrow" aria-hidden="true" />
           {t(hero.scrollHint)}
         </a>
       </div>

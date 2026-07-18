@@ -1,32 +1,15 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
-// 发光卡片：照搬 gerenzhan 的 .border-glow-card。
-// 鼠标移入时根据光标位置更新 --cursor-angle（描边跟随）与 --edge-proximity（接近边缘越亮），
-// 离开时复位。同时承担滚动入场（复用 .reveal 机制）。
-export default function GlowCard({ as: Tag = 'div', className = '', delay = 0, children, ...rest }) {
+// 发光卡片：沿用 gerenzhan 的 .glow-card（即原站 .border-glow-card）视觉。
+// 交互分工：
+//   · 鼠标移入/移动：根据光标位置实时更新 --cursor-angle（描边跟随）与 --edge-proximity（越近边缘越亮）。
+//   · 进场环扫：进入视口后由 GSAP 驱动 --cursor-angle / --edge-proximity 做一次 conic 扫光
+//     （见 src/animations/siteAnimations.js 的 runGlowSweep，1:1 复刻原站 delay:1500/duration:2250 段）。
+//   · 滚动入场：通过 .reveal 标记类交由 GSAP ScrollTrigger.batch 统一处理（不再各自挂 IO）。
+export default function GlowCard({ as: Tag = 'div', className = '', children, ...rest }) {
   const ref = useRef(null)
 
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce || typeof IntersectionObserver === 'undefined') {
-      el.classList.add('is-visible')
-      return
-    }
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => {
-        if (e.isIntersecting) {
-          el.classList.add('is-visible')
-          io.unobserve(el)
-        }
-      }),
-      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-
+  // 鼠标移动：把光标坐标换算为「相对卡片中心的角度」与「距最近边的接近度」。
   function onMove(e) {
     const el = ref.current
     if (!el) return
@@ -35,6 +18,7 @@ export default function GlowCard({ as: Tag = 'div', className = '', delay = 0, c
     const y = e.clientY - r.top
     const cx = r.width / 2
     const cy = r.height / 2
+    // 角度：以卡片中心为原点，0° 指向右、-90° 指向上，+90° 指向下；+90 让「环扫」从顶部开始。
     const angle = (Math.atan2(y - cy, x - cx) * 180) / Math.PI + 90
     el.style.setProperty('--cursor-angle', `${angle}deg`)
     const distTop = y
@@ -46,6 +30,7 @@ export default function GlowCard({ as: Tag = 'div', className = '', delay = 0, c
     el.style.setProperty('--edge-proximity', String(prox))
   }
 
+  // 离开：复位接近度（描边随之淡出，除非正处于 sweep-active 进场扫光中）。
   function onLeave() {
     const el = ref.current
     if (el) el.style.setProperty('--edge-proximity', '0')
@@ -55,7 +40,6 @@ export default function GlowCard({ as: Tag = 'div', className = '', delay = 0, c
     <Tag
       ref={ref}
       className={`glow-card reveal ${className}`.trim()}
-      style={delay ? { transitionDelay: `${delay}s` } : undefined}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       {...rest}
