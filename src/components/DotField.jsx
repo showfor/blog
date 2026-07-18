@@ -65,6 +65,7 @@ function DotField({
     const r = Math.min(window.devicePixelRatio || 1, 1.5)
     let a = true // 是否进入视口
     let o = !document.hidden // 是否可见
+    let grad = null // 缓存的静态线性渐变（仅在 resize 时重建，避免每帧 new）
 
     let i // resize 防抖 timer
 
@@ -89,6 +90,10 @@ function DotField({
       n.setTransform(r, 0, 0, r, 0, 0)
       b.current = { w: os, h: sh, offsetX: a.left + window.scrollX, offsetY: a.top + window.scrollY }
       l(os, sh)
+      // 缓存线性渐变：坐标仅在 resize 变化，颜色来自静态 props，无需每帧重建
+      grad = n.createLinearGradient(0, 0, os, sh)
+      grad.addColorStop(0, C.current.gradientFrom)
+      grad.addColorStop(1, C.current.gradientTo)
     }
     function l(e, t) {
       const n = C.current
@@ -147,10 +152,13 @@ function DotField({
       x.current += (f - x.current) * 0.08
       t && (t.setAttribute('cx', r.x), t.setAttribute('cy', r.y), (t.style.opacity = x.current))
       n.clearRect(0, 0, i, s)
-      const m = n.createLinearGradient(0, 0, i, s)
-      m.addColorStop(0, c.gradientFrom)
-      m.addColorStop(1, c.gradientTo)
-      n.fillStyle = m
+      // 复用缓存的静态渐变（仅在 resize 时重建），避免每帧 new createLinearGradient
+      if (!grad && i > 0 && s > 0) {
+        grad = n.createLinearGradient(0, 0, i, s)
+        grad.addColorStop(0, c.gradientFrom)
+        grad.addColorStop(1, c.gradientTo)
+      }
+      n.fillStyle = grad
       const g = c.cursorRadius
       const w = g * g
       const T = c.dotRadius / 2
@@ -203,6 +211,26 @@ function DotField({
       o ? T() : D()
     }
     document.addEventListener('visibilitychange', k)
+
+    // 交互节流：用户滚动/操作时暂停点阵渲染（点阵为 Canvas2D 主线程密集型），
+    // 让出主线程时间片给滚动事件处理；松手空闲 150ms 后自动恢复（静止观感不变）。
+    let idleTimer = 0
+    const markActive = () => {
+      D()
+      clearTimeout(idleTimer)
+      idleTimer = setTimeout(() => {
+        if (a && o) T()
+      }, 150)
+    }
+    const onScroll = () => markActive()
+    const onPointerDown = () => markActive()
+    const onTouchStart = () => markActive()
+    const onKeyDown = () => markActive()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('pointerdown', onPointerDown, { passive: true })
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('keydown', onKeyDown, { passive: true })
+
     c()
     window.addEventListener('resize', s)
     window.addEventListener('mousemove', u, { passive: true })
@@ -214,6 +242,11 @@ function DotField({
     teardown = () => {
       cancelAnimationFrame(y.current)
       clearTimeout(i)
+      clearTimeout(idleTimer)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('resize', s)
       window.removeEventListener('mousemove', u)
       document.removeEventListener('visibilitychange', k)

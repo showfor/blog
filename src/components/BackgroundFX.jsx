@@ -17,7 +17,7 @@ function hexToRGB(hex) {
 
 const QUALITY_DPR = {
   low: 1,
-  medium: typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 1.5) : 1.5,
+  medium: typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 1) : 1,
   high: typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 2,
 }
 
@@ -211,12 +211,37 @@ export default function BackgroundFX({
     }
     document.addEventListener('visibilitychange', onVisibility)
 
+    // 交互节流：fixed 全屏背景永远在视口内，IntersectionObserver(threshold:0)
+    // 不会触发 stopLoop，故额外监听交互事件，在用户滚动/操作时暂停 WebGL 渲染，
+    // 让出 GPU/主线程给页面滚动合成；松手空闲 150ms 后自动恢复动画（静止观感不变）。
+    let idleTimer = 0
+    const markActive = () => {
+      stopLoop()
+      clearTimeout(idleTimer)
+      idleTimer = setTimeout(() => {
+        if (intersecting && visible) startLoop()
+      }, 150)
+    }
+    const onScroll = () => markActive()
+    const onPointerDown = () => markActive()
+    const onTouchStart = () => markActive()
+    const onKeyDown = () => markActive()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('pointerdown', onPointerDown, { passive: true })
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('keydown', onKeyDown, { passive: true })
+
     startLoop()
       teardown = () => {
         stopLoop()
         ro.disconnect()
         io.disconnect()
         document.removeEventListener('visibilitychange', onVisibility)
+        window.removeEventListener('scroll', onScroll)
+        window.removeEventListener('pointerdown', onPointerDown)
+        window.removeEventListener('touchstart', onTouchStart)
+        window.removeEventListener('keydown', onKeyDown)
+        clearTimeout(idleTimer)
         const ext = gl.getExtension('WEBGL_lose_context')
         if (ext) ext.loseContext()
         if (canvas.parentNode) canvas.parentNode.removeChild(canvas)

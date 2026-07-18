@@ -221,7 +221,7 @@ export default function HeroSection({ openingComplete = true }) {
       <div className="hero-dotfield">
         <DotField
           dotRadius={1.5}
-          dotSpacing={21}
+          dotSpacing={28}
           cursorRadius={500}
           cursorForce={0.15}
           bulgeStrength={67}
