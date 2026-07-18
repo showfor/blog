@@ -2,8 +2,7 @@
    设计令牌 —— 逐字重建 aystba-portfolio.pages.dev：深底 + 酸橙绿(#c8ff00) + 白字
    纯深色主题，无明暗切换。
    ========================================================================= */
-/* 加载 Inter（与原站 aystba 完全一致：300–900 字重 + display=swap，避免 FOIT 白屏卡顿） */
-@import "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap";
+/* Inter 字体改由 index.html 非阻塞预加载（preload + onload 切 rel，保留 display=swap），见 index.html */
 :root {
   /* ===== aystba 实测令牌 ===== */
   --accent: #c8ff00;          /* 酸橙绿，品牌主色 */

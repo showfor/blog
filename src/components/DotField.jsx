@@ -55,6 +55,9 @@ function DotField({
   useEffect(() => {
     if (E.current) return
     E.current = true
+
+    let teardown = null
+    const init = () => {
     const e = m.current
     const t = g.current
     if (!e) return
@@ -121,18 +124,24 @@ function DotField({
       e.prevY = e.y
     }
     i = setTimeout(c, 100)
-    const f = setInterval(d, 20)
     let p = 0
     function h() {
+      const now = performance.now()
+      if (now - (h._last || 0) < 33.333333333333336) {
+        y.current = requestAnimationFrame(h)
+        return
+      }
+      h._last = now
       p++
+      d() // 光标速度衰减并入 rAF 循环（取代已移除的 setInterval(d,20) 50Hz 定时器）
       const e = _.current
       const r = v.current
       const { w: i, h: s } = b.current
       const c = C.current
       const l = e.length
       const u = p * 0.02
-      const d = Math.min(r.speed / 5, 1)
-      S.current += (d - S.current) * 0.06
+      const dn = Math.min(r.speed / 5, 1)
+      S.current += (dn - S.current) * 0.06
       S.current < 0.001 && (S.current = 0)
       const f = S.current
       x.current += (f - x.current) * 0.08
@@ -202,14 +211,25 @@ function DotField({
       const { w: e, h: t } = b.current
       e > 0 && t > 0 && l(e, t)
     }
-    return () => {
+    teardown = () => {
       cancelAnimationFrame(y.current)
-      clearInterval(f)
       clearTimeout(i)
       window.removeEventListener('resize', s)
       window.removeEventListener('mousemove', u)
       document.removeEventListener('visibilitychange', k)
       O.disconnect()
+    }
+    }
+
+    // 首屏关键路径优化：把点阵分配 + 起 rAF 循环从挂载同步初始化移出，
+    // 改为 requestIdleCallback 调度的「预热型」延迟 —— 首次滑动手势不再与
+    // 点阵初始化 + 首帧 draw 抢主线程。{ timeout: 200 } 保证持续滚动时也在
+    // 200ms 内启动，点阵空闲后出现、30fps 动画对细微点阵不可感知。
+    const ric = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 1))
+    const ricId = ric(() => init(), { timeout: 200 })
+    return () => {
+      if (window.cancelIdleCallback && ricId) cancelIdleCallback(ricId)
+      if (teardown) teardown()
     }
   }, [])
 

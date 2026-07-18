@@ -56,10 +56,11 @@ export default function BackgroundFX({
     let disposed = false
     let teardown = null
 
-    // 真正的 GL 初始化：与原站 A 一致，在首屏绘制「之前」同步执行
-    // （useLayoutEffect 阶段，浏览器绘制之前）。着色器编译的主线程阻塞被
-    // 吸收进加载阶段（白屏期），页面可见首帧即带背景——避免「先出页面
-    // 再冻结」的可感知卡顿。原站 A 的 bundle 中 requestIdleCallback=0，即同步初始化。
+    // GL 初始化：从 useLayoutEffect 的「同步」改为 requestIdleCallback 延迟（见下方
+    // ric(...) 调度，含 timeout:200 兜底）。React 挂载 + 首屏绘制先完成，
+    // 空闲时再 initGL——着色器编译/首帧 draw 这类重活不再阻塞初始挂载与
+    // 首次滑动。延迟期间 .grainient-container 显示 body 深色底（#0c0c0c），
+    // 深色主题下不可感知，且因 idle 调度不会在滑动手势进行中抢主线程。
     const initGL = () => {
     if (disposed || teardown) return
 
@@ -67,7 +68,6 @@ export default function BackgroundFX({
     canvas.style.width = '100%'
     canvas.style.height = '100%'
     canvas.style.display = 'block'
-    canvas.style.willChange = 'transform'
     container.appendChild(canvas)
 
     const gl = canvas.getContext('webgl2', { alpha: true, antialias: false, premultipliedAlpha: false })
@@ -223,12 +223,17 @@ export default function BackgroundFX({
       }
     }
 
-    // 与原站 A 一致：同步初始化（不再延迟到 idle / paint 之后）。
-    // useLayoutEffect 阶段运行于浏览器绘制之前，着色器编译的短暂阻塞
-    // 被吸收进加载期，避免「页面先出现再冻结」的可感知卡顿。
-    initGL()
+    // 首屏关键路径优化：把着色器编译/首帧 draw 这类重活从 useLayoutEffect 的
+    // 同步初始化移出，改为 requestIdleCallback 调度的「预热型」延迟 —— React 挂载
+    // + 首屏绘制先完成，空闲时再 initGL，首次滑动不再被 shader 编译卡住。
+    // { timeout: 200 } 保证即使用户持续滚动导致长期不 idle，也在 200ms 内启动，
+    // 背景不会迟迟不出现。延迟期间 .grainient-container 显示 body 深色底（#0c0c0c），
+    // 深色主题下不可感知。
+    const ric = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 1))
+    const ricId = ric(() => initGL(), { timeout: 200 })
     return () => {
       disposed = true
+      if (window.cancelIdleCallback && ricId) cancelIdleCallback(ricId)
       if (teardown) teardown()
     }
   }, [
