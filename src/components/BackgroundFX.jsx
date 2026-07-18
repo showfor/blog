@@ -134,6 +134,7 @@ export default function BackgroundFX({
     // 滚动时背景快速变化，轻微模糊不可见；松手 200ms 后恢复全分辨率。
     let resScale = 1.0
     let resScaleTimer = 0
+    let resScaleDirty = false
     const resize = () => {
       const rect = container.getBoundingClientRect()
       const w = Math.max(1, Math.floor(rect.width))
@@ -145,9 +146,9 @@ export default function BackgroundFX({
     }
     // 滚动时降分辨率（流畅），松手后恢复全分辨率（清晰）
     const onScrollRes = () => {
-      if (resScale !== 0.3) { resScale = 0.3; resize(); }
+      if (resScale !== 0.3) { resScale = 0.3; resScaleDirty = true; }
       clearTimeout(resScaleTimer)
-      resScaleTimer = setTimeout(() => { resScale = 1.0; resize(); }, 200)
+      resScaleTimer = setTimeout(() => { resScale = 1.0; resScaleDirty = true; }, 200)
     }
     const ro = new ResizeObserver(resize)
     ro.observe(container)
@@ -192,6 +193,7 @@ export default function BackgroundFX({
         return
       }
       last = now
+      if (resScaleDirty) { resize(); resScaleDirty = false; }
       gl.uniform1f(U.iTime, (now - start) * 0.001)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
       rafId = requestAnimationFrame(render)
