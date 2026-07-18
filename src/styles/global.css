@@ -313,7 +313,6 @@ a { color: inherit; }
   opacity: var(--np);
   background: rgba(18, 18, 18, calc(.72 * var(--np)));
   -webkit-backdrop-filter: blur(calc(var(--np) * 24px)) saturate(140%);
-  backdrop-filter: blur(calc(var(--np) * 24px)) saturate(140%);
   border: 1px solid rgba(255, 255, 255, calc(.08 * var(--np)));
   box-shadow: 0 calc(var(--np) * 4px) calc(var(--np) * 24px) rgba(0, 0, 0, calc(.4 * var(--np)));
   border-radius: 999px;
@@ -433,7 +432,6 @@ a { color: inherit; }
   z-index: 200;
   background: rgba(0, 0, 0, .6);
   -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
   opacity: 0;
   visibility: hidden;
 }

@@ -130,11 +130,9 @@ export default function BackgroundFX({
     }
 
     const dpr = QUALITY_DPR[quality] || QUALITY_DPR.medium
-    // 动态分辨率：滚动时 0.3（流畅 60fps），静止时 1.0（清晰，与原站全分辨率一致）。
-    // 滚动时背景快速变化，轻微模糊不可见；松手 200ms 后恢复全分辨率。
-    let resScale = 1.0
-    let resScaleTimer = 0
-    let resScaleDirty = false
+    // 全分辨率渲染，与原站 aystba 一致（原站 canvas 1440x900）。
+    // 原站不卡的根因是 backdrop-filter 不生效（只写 -webkit- 前缀），不是降分辨率。
+    const resScale = 1.0
     const resize = () => {
       const rect = container.getBoundingClientRect()
       const w = Math.max(1, Math.floor(rect.width))
@@ -143,12 +141,6 @@ export default function BackgroundFX({
       canvas.height = Math.floor(h * dpr * resScale)
       gl.viewport(0, 0, canvas.width, canvas.height)
       gl.uniform2f(U.iResolution, canvas.width, canvas.height)
-    }
-    // 滚动时降分辨率（流畅），松手后恢复全分辨率（清晰）
-    const onScrollRes = () => {
-      if (resScale !== 0.3) { resScale = 0.3; resScaleDirty = true; }
-      clearTimeout(resScaleTimer)
-      resScaleTimer = setTimeout(() => { resScale = 1.0; resScaleDirty = true; }, 200)
     }
     const ro = new ResizeObserver(resize)
     ro.observe(container)
@@ -193,7 +185,6 @@ export default function BackgroundFX({
         return
       }
       last = now
-      if (resScaleDirty) { resize(); resScaleDirty = false; }
       gl.uniform1f(U.iTime, (now - start) * 0.001)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
       rafId = requestAnimationFrame(render)
@@ -224,11 +215,8 @@ export default function BackgroundFX({
     document.addEventListener('visibilitychange', onVisibility)
 
     startLoop()
-    window.addEventListener('scroll', onScrollRes, { passive: true })
       teardown = () => {
         stopLoop()
-        clearTimeout(resScaleTimer)
-        window.removeEventListener('scroll', onScrollRes)
         ro.disconnect()
         io.disconnect()
         document.removeEventListener('visibilitychange', onVisibility)
