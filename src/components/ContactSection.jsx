@@ -15,9 +15,9 @@ export default function ContactSection() {
           <h2 className="section-title">{t(i18n.titles.contact)}</h2>
         </div>
 
-        <h3 className="contact-heading">{t(contact.welcome)}</h3>
+        <h3 className="contact-heading reveal">{t(contact.welcome)}</h3>
 
-        <div className="contact-cta">
+        <div className="contact-cta reveal">
           <a className="btn btn-primary" href={`mailto:${contact.email}`}>
             <AppIcon name="mail" /> {t({ en: 'Send Message', cn: '发送消息' })}
           </a>

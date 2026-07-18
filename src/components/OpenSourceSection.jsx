@@ -15,7 +15,7 @@ export default function OpenSourceSection() {
           <h2 className="section-title">{t(i18n.titles.opensource)}</h2>
         </div>
 
-        <GlowCard className="os-card">
+        <GlowCard className="os-card reveal" animated>
           <div className="os-head">
             <AppIcon name="github" />
             <span className="os-brand">GitHub</span>

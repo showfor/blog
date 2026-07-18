@@ -15,9 +15,9 @@ export default function ServicesSection() {
           <h2 className="section-title">{t(i18n.titles.services)}</h2>
         </div>
 
-        <div className="services-grid">
+        <div className="services-grid reveal">
           {services.map((s, i) => (
-            <GlowCard className="service-card" key={s.id}>
+            <GlowCard className="service-card" key={s.id} animated>
               <div className="service-icon">
                 <AppIcon name={s.icon} />
               </div>

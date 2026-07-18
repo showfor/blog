@@ -14,9 +14,9 @@ export default function SelectedProjectsSection() {
           <h2 className="section-title">{t(i18n.titles.projects)}</h2>
         </div>
 
-        <div className="work-grid">
+        <div className="work-grid reveal">
           {projects.map((p, i) => (
-            <GlowCard key={p.id} className="work-card">
+            <GlowCard key={p.id} className="work-card" animated>
               <div className={`work-media pm-${i % 6}`} aria-hidden="true" />
               <div className="work-body">
                 <span className="work-index">{String(i + 1).padStart(2, '0')}</span>

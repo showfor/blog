@@ -1,7 +1,8 @@
-import { useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 import { LanguageProvider } from './context/LanguageProvider.jsx'
-import { initSiteAnimations } from './animations/siteAnimations.js'
+import { useReveal } from './hooks/useReveal.js'
 import SiteNav from './components/SiteNav.jsx'
+import BackgroundFX from './components/BackgroundFX.jsx'
 import HeroSection from './components/HeroSection.jsx'
 import AboutSection from './components/AboutSection.jsx'
 import SelectedProjectsSection from './components/SelectedProjectsSection.jsx'
@@ -13,30 +14,40 @@ import SiteFooter from './components/SiteFooter.jsx'
 
 // 站点根组件：顶层包裹 LanguageProvider，按序组合 9 个区块（导航 + 7 内容 + 页脚）。
 export default function App() {
-  // 顶层初始化 GSAP 动画（复刻原站 aystba-portfolio.pages.dev）。
-  // useLayoutEffect 先于浏览器绘制执行，可避免 hero 入场闪烁；
-  // 返回的清理函数在卸载/StrictMode 重挂载时 revert 全部 tween/ScrollTrigger，避免泄漏。
-  useLayoutEffect(() => {
-    let cleanup
-    try {
-      cleanup = initSiteAnimations(document.body)
-    } catch (err) {
-      // 兜底：GSAP 初始化异常时，强制显示所有 .reveal，避免内容永久不可见。
-      console.error('[siteAnimations] init failed, falling back to visible:', err)
-      document
-        .querySelectorAll('.reveal')
-        .forEach((el) => {
-          el.style.opacity = '1'
-          el.style.transform = 'none'
-        })
-    }
-    return () => {
-      if (typeof cleanup === 'function') cleanup()
-    }
-  }, [])
+  // 原生滚动入场（替代原克隆版的 GSAP ScrollTrigger.batch）：观察 .reveal 加 .is-visible。
+  useReveal()
 
   return (
     <LanguageProvider>
+      {/* 全局原生 WebGL 着色器背景（原站 grainient-bg-wrapper / Yu），逐字取自混淆 bundle */}
+      <div className="grainient-bg-wrapper">
+        <BackgroundFX
+          className="grainient-bg"
+          timeSpeed={0.15}
+          colorBalance={0}
+          warpStrength={1.2}
+          warpFrequency={3}
+          warpSpeed={2}
+          warpAmplitude={50}
+          blendAngle={0}
+          blendSoftness={0.05}
+          rotationAmount={500}
+          noiseScale={2}
+          grainAmount={0.1}
+          grainScale={2}
+          grainAnimated={0}
+          contrast={1.5}
+          gamma={1}
+          saturation={1}
+          centerX={0}
+          centerY={0}
+          zoom={0.9}
+          color1="#78cb6e"
+          color2="#000000"
+          color3="#664b7e"
+        />
+      </div>
+
       <SiteNav />
       <main>
         <HeroSection />

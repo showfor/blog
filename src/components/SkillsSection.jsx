@@ -14,10 +14,10 @@ export default function SkillsSection() {
           <h2 className="section-title">{t(i18n.titles.skills)}</h2>
         </div>
 
-        <div className="skills-layout">
+        <div className="skills-layout reveal">
           <div className="skill-cats">
             {skills.categories.map((cat) => (
-              <GlowCard className="skill-cat" key={cat.title.en}>
+              <GlowCard className="skill-cat" key={cat.title.en} animated>
                 <h3 className="skill-cat-title">{t(cat.title)}</h3>
                 <div className="skill-tags">
                   {cat.items.map((it) => (
@@ -28,7 +28,7 @@ export default function SkillsSection() {
             ))}
           </div>
 
-          <GlowCard className="tech-stack-card">
+          <GlowCard className="tech-stack-card" animated>
             <h3 className="skill-cat-title">{t({ en: 'Tech Stack', cn: '技术栈' })}</h3>
             <div className="tech-pills">
               {skills.techStack.map((tech) => (
@@ -43,11 +43,11 @@ export default function SkillsSection() {
           </GlowCard>
         </div>
 
-        <div className="strengths-block">
+        <div className="strengths-block reveal">
           <h3 className="block-title">{t({ en: 'Personal Strengths', cn: '个人优势' })}</h3>
           <div className="strength-grid">
             {skills.strengths.map((s, i) => (
-              <GlowCard className="strength-card" key={s.title.en}>
+              <GlowCard className="strength-card" key={s.title.en} animated>
                 <h4 className="strength-title">{t(s.title)}</h4>
                 <p className="strength-desc">{t(s.desc)}</p>
               </GlowCard>
