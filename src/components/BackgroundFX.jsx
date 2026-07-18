@@ -130,12 +130,15 @@ export default function BackgroundFX({
     }
 
     const dpr = QUALITY_DPR[quality] || QUALITY_DPR.medium
+    // 渲染分辨率降半：背景是流动渐变 + 噪点，降分辨率视觉不可感知，
+    // 但 GPU 像素数减 75%，消除 WebGL drawArrays 造成的滚动 long task（puppeteer 实测根因）
+    const resScale = 0.5
     const resize = () => {
       const rect = container.getBoundingClientRect()
       const w = Math.max(1, Math.floor(rect.width))
       const h = Math.max(1, Math.floor(rect.height))
-      canvas.width = Math.floor(w * dpr)
-      canvas.height = Math.floor(h * dpr)
+      canvas.width = Math.floor(w * dpr * resScale)
+      canvas.height = Math.floor(h * dpr * resScale)
       gl.viewport(0, 0, canvas.width, canvas.height)
       gl.uniform2f(U.iResolution, canvas.width, canvas.height)
     }
