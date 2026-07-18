@@ -496,7 +496,7 @@ a { color: inherit; }
 
 @keyframes ring-spin { to { transform: rotate(360deg); } }
 @keyframes ring-spin-rev { to { transform: rotate(-360deg); } }
-@keyframes ring-pulse { 0%, to { opacity: .5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+@keyframes ring-pulse { 0%, to { opacity: .5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.04); } }
 
 /* ===== 背景（逐字自 aystba）：原生 WebGL 着色器背景 ===== */
 .grainient-bg-wrapper { z-index: 0; pointer-events: none; position: fixed; inset: 0; }
