@@ -1,57 +1,50 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { nav } from '../data/nav.js'
 import AppIcon from './AppIcon.jsx'
-import { useScrollSpy } from '../hooks/useScrollSpy.js'
-import { useTheme } from '../hooks/useTheme.js'
 
-const navItems = [
-  { id: 'intro', label: '首页' },
-  { id: 'about', label: '关于' },
-  { id: 'hobbies', label: '爱好' },
-  { id: 'music', label: '音乐' },
-  { id: 'anime', label: '动漫' },
-  { id: 'movies', label: '电影' },
-  { id: 'strengths', label: '优势' },
-  { id: 'contact', label: '联系' },
-]
+// 顶部导航 SiteNav：Logo（琥珀川）+ 锚点 [经历][项目][优势][联系] + CTA 联系我。
+// 滚动超过首屏后进入 floating 高亮态（is-floating）。
+export default function SiteNav() {
+  const [floating, setFloating] = useState(false)
 
-// 吸顶导航：移动端横向滚动，当前板块高亮（scrollspy）+ 明暗切换。
-export default function SiteNav({ brand = '我的主页' }) {
-  const [isDark, toggleTheme] = useTheme()
-  const [popping, setPopping] = useState(false)
-  const activeId = useScrollSpy(navItems.map((n) => n.id))
+  useEffect(() => {
+    const onScroll = () => setFloating(window.scrollY > window.innerHeight * 0.6)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
-  function onToggle() {
-    toggleTheme()
-    setPopping(true)
-    setTimeout(() => setPopping(false), 480)
+  // 锚点跳转：阻止默认跳变，使用 scrollIntoView 平滑滚动（配合 CSS scroll-margin-top 偏移）。
+  const go = (e, href) => {
+    e.preventDefault()
+    const el = document.querySelector(href)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
-    <header className="nav">
-      <div className="nav-inner">
-        <a href="#top" className="nav-brand">
-          <span className="nav-dot" />
-          {brand}
+    <header className={`site-nav ${floating ? 'is-floating' : ''}`}>
+      <div className="container site-nav-inner">
+        <a className="site-nav-brand" href="#top" onClick={(e) => go(e, '#top')}>
+          <span className="site-nav-mark">{nav.mark}</span>
+          <span className="site-nav-brand-name">{nav.brand}</span>
         </a>
-        <nav className="nav-links">
-          {navItems.map((item) => (
+
+        <nav className="site-nav-links">
+          {nav.links.map((l) => (
             <a
-              key={item.id}
-              href={`#${item.id}`}
-              className={activeId === item.id ? 'active' : undefined}
+              key={l.href}
+              href={l.href}
+              className="site-nav-link"
+              onClick={(e) => go(e, l.href)}
             >
-              {item.label}
+              [{l.label}]
             </a>
           ))}
         </nav>
-        <button
-          className={popping ? 'pop' : undefined}
-          title={isDark ? '切换到浅色' : '切换到深色'}
-          onClick={onToggle}
-          aria-label="切换主题"
-        >
-          <AppIcon name={isDark ? 'sun' : 'moon'} />
-        </button>
+
+        <a className="btn btn-primary site-nav-cta" href={nav.cta.href}>
+          <AppIcon name="mail" /> {nav.cta.label}
+        </a>
       </div>
     </header>
   )

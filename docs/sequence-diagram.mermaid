@@ -1,0 +1,37 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant App as App
+    participant Nav as SiteNav
+    participant Hero as HeroSection
+    participant About as AboutSection
+    participant Work as SelectedWorkSection
+    participant Str as StrengthsSection
+    participant Contact as ContactSection
+    participant Footer as SiteFooter
+    participant Asset as utils.asset()
+
+    Note over App: 首屏加载（初始化全站，无后端/无 CRUD）
+    App->>Nav: render(brand=琥珀川, links[4], cta)
+    App->>Hero: render(Profile.hero, Profile.email)
+    Hero->>Asset: asset('assets/hero-background.mp4')
+    Asset-->>Hero: /blog/assets/hero-background.mp4 (BASE_URL 拼接)
+    App->>About: render(Profile.intro, Profile.metrics[4])
+    App->>Work: render(projects[3])
+    Work->>Asset: asset('assets/project-0X.jpg') ×3
+    Asset-->>Work: base 感知图片 URL
+    App->>Str: render(capabilities[4])
+    App->>Contact: render(Contact)
+    App->>Footer: render(Profile.name/role/location)
+
+    Note over User,Nav: 交互①：导航锚点跳转
+    User->>Nav: 点击 [项目]
+    Nav->>Nav: e.preventDefault(); document.querySelector('#projects').scrollIntoView()
+    Note right of Nav: scroll-behavior:smooth + CSS scroll-margin-top
+
+    Note over User,Nav: 交互②：滚动 floating 高亮
+    User->>Nav: 滚动超过首屏阈值
+    Nav->>Nav: onScroll → setIsFloating(true) → 加 .is-floating
+
+    Note over About: 交互③：数字滚动入场
+    About->>About: IntersectionObserver 触发 → requestAnimationFrame 计数至 3+/500+/95%+/20%+

@@ -1,0 +1,124 @@
+classDiagram
+    %% ============ 数据层（逐字照搬 PRD §6） ============
+    class Profile {
+        +String name = "琥珀川"
+        +String role = "Visual Designer"
+        +String intro
+        +String phone = "138XXXX6789"
+        +String email = "zixuan_design@163.com"
+        +String location
+        +Metric[] metrics
+        +Hero hero
+    }
+    class Metric {
+        +String value  %% "3+"/"500+"/"95%+"/"20%+"
+        +String label
+    }
+    class Hero {
+        +String[] tags    %% [Portfolio][Visual Designer][2026]
+        +String headline = "琥珀川"
+        +String statValue = "500+"
+        +String statLabel = "Visual systems & commercial assets delivered yearly"
+        +String claim
+        +String[] slogan  %% ["DESIGN"," IS NOT","DECORATION"]
+        +Object primaryCta
+        +Object secondaryCta
+        +Object scrollHint
+    }
+    class Project {
+        +Number id
+        +String title
+        +String meta
+        +String desc
+        +String img   %% asset('assets/project-0X.jpg')
+        +String crop
+    }
+    class Capability {
+        +Number id
+        +String title
+        +String desc
+    }
+    class Contact {
+        +String heading
+        +String email
+        +String phone
+    }
+    class NavLink {
+        +String label
+        +String href
+    }
+    class Nav {
+        +String mark = "琥"
+        +String brand = "琥珀川"
+        +NavLink[] links
+        +Object cta
+    }
+
+    Profile "1" *-- "4" Metric : metrics
+    Profile "1" *-- "1" Hero : hero
+    Nav "1" *-- "4" NavLink : links
+
+    %% ============ 复用组件 ============
+    class GlowCard {
+        +render(children)
+        +onMove()
+    }
+    class Reveal {
+        +render(children)
+    }
+    class AppIcon {
+        +render(name)
+        +phone()
+    }
+
+    %% ============ 业务 Section ============
+    class SiteNav {
+        +useState isFloating
+        +onScroll()
+        +render()
+    }
+    class HeroSection {
+        +render()
+    }
+    class AboutSection {
+        +useCountUp()
+        +render()
+    }
+    class SelectedWorkSection {
+        +render()
+    }
+    class StrengthsSection {
+        +render()
+    }
+    class ContactSection {
+        +render()
+    }
+    class SiteFooter {
+        +render()
+    }
+    class App {
+        +render()
+    }
+
+    %% ============ 依赖关系 ============
+    HeroSection ..> Profile : 读 hero/email
+    HeroSection ..> GlowCard : 标签/按钮容器
+    AboutSection ..> Profile : 读 intro/metrics
+    AboutSection ..> Reveal : 入场
+    SelectedWorkSection ..> Project : 遍历渲染
+    SelectedWorkSection ..> GlowCard : 卡片
+    StrengthsSection ..> Capability : 遍历渲染
+    StrengthsSection ..> GlowCard : 卡片
+    StrengthsSection ..> AppIcon : 图标
+    ContactSection ..> Contact : 读 heading/email/phone
+    ContactSection ..> AppIcon : mail/phone
+    SiteFooter ..> Profile : 读 name/role/location
+    SiteNav ..> Nav : 读 links/cta/brand
+    SiteNav ..> AppIcon : mail
+    App ..> SiteNav
+    App ..> HeroSection
+    App ..> AboutSection
+    App ..> SelectedWorkSection
+    App ..> StrengthsSection
+    App ..> ContactSection
+    App ..> SiteFooter

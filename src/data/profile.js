@@ -1,34 +1,34 @@
-// 个人简介 —— 把下面的示例内容替换成你自己的信息即可。
+// 站主身份 + 个人经历 + 指标 + Hero 文案（逐字照搬 PRD §6）
 export const profile = {
   name: '琥珀川',
-  title: '产品设计师',
-  tagline: '在光影与旋律里寻找灵感，把日子过成喜欢的样子。',
-  // 仿 gerenzhan 的大字主张：用作「关于我」板块的收尾陈述。
-  slogan: '好设计，源于对生活细节的觉察。',
-  avatar: 'covers/avatar.svg',
-  location: '中国 · 杭州',
-  // 长简介：放在「关于我」板块（Hero 只保留简短 tagline + CTA）。
-  bio: '白天做产品，晚上追番看电影，耳机里永远在循环一首歌。相信好设计来自对生活细节的观察，也相信热爱能让平凡的日子发光。这里收录了我喜欢的一切——欢迎随便逛逛。',
-  // 关于我板块的四宫格数据（仿 gerenzhan 的 Profile 统计）。
-  stats: [
-    { num: '杭州', label: '现居城市' },
-    { num: '6', label: '日常爱好' },
-    { num: '9', label: '循环单曲' },
-    { num: '∞', label: '对热爱的投入' },
+  role: 'Visual Designer',
+  // 个人经历（About 左卡 H2）
+  headline: '视觉设计师，擅长把需求整理成清晰、可执行的视觉结果。',
+  // 个人经历（About 左卡段落，逐字）
+  intro:
+    '拥有 3 年专业视觉设计经验，覆盖品牌 VI、平面宣传、电商视觉、新媒体视觉与包装设计。' +
+    '擅长将品牌调性、用户审美与市场需求转译为稳定、高质感、可执行的视觉方案。',
+  phone: '138XXXX6789',
+  email: 'zixuan_design@163.com',
+  // 页脚 location（逐字）
+  location: 'Visual Communication / Brand / Campaign',
+  // 4 项指标（逐字）
+  metrics: [
+    { value: '3+', label: '年全职经验' },
+    { value: '500+', label: '年均落地作品' },
+    { value: '95%+', label: '客户满意度' },
+    { value: '20%+', label: '活动点击提升' },
   ],
-  // 个人优势（仿 gerenzhan 的 Capabilities），4 张能力卡。
-  strengths: [
-    { title: '设计感知', desc: '相信好设计来自对生活细节的观察，习惯从日常里提炼秩序与美感。' },
-    { title: '内容品味', desc: '在音乐、动漫与电影里打磨自己的审美，乐于把喜欢的作品分享给同好。' },
-    { title: '好奇探索', desc: '对新鲜事物保持开放，从一部番到一首歌，都愿意认真沉浸进去。' },
-    { title: '生活热情', desc: '把平凡的日子过成喜欢的样子，相信热爱能让日常发光。' },
-  ],
-  // 联系方式板块文案（仿 gerenzhan 的 Contact）。
-  contactText: '如果你也喜欢音乐、动漫或电影，或者只是想聊聊生活，欢迎随时找我。',
-  // 社交/联系方式，可自由增删。icon 支持：github / mail / bilibili / weibo / twitter / link
-  links: [
-    { label: 'GitHub', url: 'https://github.com/showfor', icon: 'github' },
-    { label: '邮箱', url: 'mailto:hello@example.com', icon: 'mail' },
-    { label: 'Bilibili', url: 'https://space.bilibili.com', icon: 'bilibili' },
-  ],
+  // 首屏 Hero 文案（逐字）
+  hero: {
+    tags: ['Portfolio', 'Visual Designer', '2026'],
+    headline: '琥珀川',
+    statValue: '500+',
+    statLabel: 'Visual systems & commercial assets delivered yearly',
+    claim: '以品牌秩序与商业审美，构建可落地的视觉系统。',
+    slogan: ['DESIGN', ' IS NOT', 'DECORATION'],
+    primaryCta: { label: '开始查看', href: '#projects' },
+    secondaryCta: { label: 'zixuan_design@163.com', href: 'mailto:zixuan_design@163.com' },
+    scrollHint: { label: '滚动到个人经历', href: '#about' },
+  },
 }
