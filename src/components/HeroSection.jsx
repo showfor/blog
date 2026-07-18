@@ -65,11 +65,17 @@ export default function HeroSection({ openingComplete = true }) {
   }, [openingComplete])
 
   // 自动滚动 + 拖拽惯性 + 轨道位移（rAF 循环，逐字自 bundle）
+  // 交互节流：页面滚动时暂停轮播 rAF，让出主线程给滚动合成；松手空闲 150ms 后恢复。
+  // 仅监听 scroll —— 不监听 pointerdown/touchstart，否则会打断轮播自身的拖拽跟手
+  // （拖拽 onMove 依赖 tick 更新 transform，暂停会导致卡片不跟手）。
   useEffect(() => {
     let rafId = 0
     let e = 0
     let last = 0
+    let paused = false
+    let idleTimer = 0
     const tick = (o) => {
+      if (paused) { rafId = 0; return }
       const now = performance.now()
       if (now - last < 33.333333333333336) {
         rafId = requestAnimationFrame(tick)
@@ -94,8 +100,21 @@ export default function HeroSection({ openingComplete = true }) {
       n.current && (n.current.style.transform = `translateX(${-h}px)`)
       rafId = requestAnimationFrame(tick)
     }
+    const start = () => { if (rafId === 0 && !paused) rafId = requestAnimationFrame(tick) }
+    const stop = () => { if (rafId !== 0) { cancelAnimationFrame(rafId); rafId = 0 } }
+    const markActive = () => {
+      stop()
+      clearTimeout(idleTimer)
+      paused = true
+      idleTimer = setTimeout(() => { paused = false; start() }, 150)
+    }
     rafId = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafId)
+    window.addEventListener('scroll', markActive, { passive: true })
+    return () => {
+      cancelAnimationFrame(rafId)
+      clearTimeout(idleTimer)
+      window.removeEventListener('scroll', markActive)
+    }
   }, [])
 
   // 拖拽 / 吸附 / 点击
@@ -142,6 +161,28 @@ export default function HeroSection({ openingComplete = true }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [E])
+
+  // 首屏性能：轮播图片用 data-src 占位，window.load + 空闲后才批量加载真实图片，
+  // 避免首屏 16 张外部 picsum 请求/解码抢占主线程导致首次滑动卡顿。
+  // 占位期间显示纯色背景 + placeholder 文字（与原站 .hero-carousel-placeholder 一致）。
+  useEffect(() => {
+    const loadImgs = () => {
+      const ric = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 1))
+      return ric(() => {
+        document.querySelectorAll('.hero-carousel-image[data-src]').forEach((img) => {
+          img.src = img.getAttribute('data-src')
+          img.removeAttribute('data-src')
+        })
+      }, { timeout: 3000 })
+    }
+    let ricId = null
+    if (document.readyState === 'complete') ricId = loadImgs()
+    else window.addEventListener('load', loadImgs, { once: true })
+    return () => {
+      window.removeEventListener('load', loadImgs)
+      if (window.cancelIdleCallback && ricId) window.cancelIdleCallback(ricId)
+    }
+  }, [])
 
   // 打开弹窗（FLIP：从源卡片 rect 动画到居中放大）
   const O = () => {
@@ -251,8 +292,11 @@ export default function HeroSection({ openingComplete = true }) {
       <div className="hero-carousel" ref={r}>
         <div className="hero-carousel-track" ref={n}>
           {E.map((item, idx) => (
-            <div className="hero-carousel-item" key={idx} ref={(el) => D(el, idx)}>
-              <img src={item.img} alt={item.label} className="hero-carousel-image" loading="lazy" decoding="async" />
+            <div className="hero-carousel-item" key={idx} ref={(el) => D(el, idx)} style={{ background: item.color }}>
+              {/* placeholder：图片未加载时的纯色 + 文字占位（复刻原站 .hero-carousel-placeholder），
+                  避免空白卡片 + 让首屏零外部图片请求 */}
+              <div className="hero-carousel-placeholder">{item.label}</div>
+              <img data-src={item.img} alt={item.label} className="hero-carousel-image" loading="lazy" decoding="async" />
               <div className="hero-carousel-label">{item.label}</div>
             </div>
           ))}

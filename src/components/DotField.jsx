@@ -256,8 +256,8 @@ function DotField({
 
     // 首屏关键路径优化：把点阵分配 + 起 rAF 循环从挂载同步初始化移出，
     // 改为 requestIdleCallback 调度的「预热型」延迟 —— 首次滑动手势不再与
-    // 点阵初始化 + 首帧 draw 抢主线程。{ timeout: 200 } 保证持续滚动时也在
-    // 200ms 内启动，点阵空闲后出现、30fps 动画对细微点阵不可感知。
+    // 点阵初始化 + 首帧 draw 抢主线程。{ timeout: 4000 } 兜底：持续滚动时也在
+    // 4s 内启动；正常情况首屏渲染后很快 idle，点阵及时出现、30fps 动画对细微点阵不可感知。
     const ric = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 1))
     const ricId = ric(() => init(), { timeout: 4000 })
     return () => {

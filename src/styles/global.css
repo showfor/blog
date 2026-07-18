@@ -70,6 +70,10 @@
 *, *::before, *::after { box-sizing: border-box; }
 html {
   scroll-behavior: smooth;
+  /* 复刻原站 aystba：细滚动条 + 深色滚动槽，与深底主题一致 */
+  scrollbar-width: thin;
+  scrollbar-color: #333 #0c0c0c;
+  overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
 }
 body {
@@ -79,6 +83,7 @@ body {
   color: var(--textColor);
   background-color: var(--bg-primary);
   line-height: 1.6;
+  overflow-x: hidden; /* 复刻原站 body{overflow-x:hidden}，防横向抖动 */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -523,6 +528,8 @@ a { color: inherit; }
 .hero-carousel-item:hover { filter: brightness(1.15); }
 .hero-carousel-image { object-fit: cover; width: 100%; height: 100%; }
 .hero-carousel-label { color: #fff; background: linear-gradient(#0000, #000c); padding: 12px; font-size: 11px; font-weight: 600; position: absolute; bottom: 0; left: 0; right: 0; }
+/* 复刻原站 .hero-carousel-placeholder：轮播图片未加载/懒加载时的居中文字占位，避免空白卡片 */
+.hero-carousel-placeholder { width: 100%; height: 100%; color: var(--textMuted); text-align: center; justify-content: center; align-items: center; padding: 12px; font-size: 11px; display: flex; }
 .hero-card-modal { z-index: 1000; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); opacity: 0; background: #000000eb; position: fixed; inset: 0; }
 .hero-card-modal-content { z-index: 1001; will-change: transform, left, top, width, height; position: fixed; overflow: hidden; box-shadow: 0 30px 100px #000c, 0 0 60px #0006; }
 .hero-card-modal-image { object-fit: cover; width: 100%; height: 100%; }
@@ -808,6 +815,23 @@ main { z-index: 1; background: 0 0; position: relative; }
   .hero-title { letter-spacing: -.03em; font-size: clamp(30px, 12vw, 52px); line-height: .95; }
   .hero-title-line.outline { -webkit-text-stroke: 1px #ffffff4d; }
   .hero-carousel-item { border-radius: 10px; width: 110px; height: 150px; transform: none !important; }
+  /* 复刻原站 ≤768：轮播间距收窄 + 底部留白 + 三环缩小（窄屏居中环不溢出） */
+  .hero-carousel-track { gap: 18px; }
+  .hero-carousel { padding-bottom: 20px; }
+  .ring-outer { width: 200px; height: 200px; top: calc(50% - 100px); left: calc(50% - 100px); }
+  .ring-mid { width: 170px; height: 170px; top: calc(50% - 85px); left: calc(50% - 85px); }
+  .ring-inner { width: 150px; height: 150px; top: calc(50% - 75px); left: calc(50% - 75px); }
+}
+
+/* 复刻原站 ≤480 断点：超窄屏（手机）背景元素进一步收缩 */
+@media (width<=480px) {
+  .hero-title { font-size: clamp(26px, 13vw, 44px); }
+  .hero-carousel-item { border-radius: 8px; width: 90px; height: 125px; transform: none !important; }
+  .hero-carousel-track { gap: 12px; }
+  .hero-content { padding: 150px 12px 24px; }
+  .ring-outer { width: 160px; height: 160px; top: calc(50% - 80px); left: calc(50% - 80px); }
+  .ring-mid { width: 140px; height: 140px; top: calc(50% - 70px); left: calc(50% - 70px); }
+  .ring-inner { width: 120px; height: 120px; top: calc(50% - 60px); left: calc(50% - 60px); }
 }
 
 /* 尊重「减少动态效果」系统偏好：关闭一切非必要动画 */

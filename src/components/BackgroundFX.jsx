@@ -251,9 +251,9 @@ export default function BackgroundFX({
     // 首屏关键路径优化：把着色器编译/首帧 draw 这类重活从 useLayoutEffect 的
     // 同步初始化移出，改为 requestIdleCallback 调度的「预热型」延迟 —— React 挂载
     // + 首屏绘制先完成，空闲时再 initGL，首次滑动不再被 shader 编译卡住。
-    // { timeout: 200 } 保证即使用户持续滚动导致长期不 idle，也在 200ms 内启动，
-    // 背景不会迟迟不出现。延迟期间 .grainient-container 显示 body 深色底（#0c0c0c），
-    // 深色主题下不可感知。
+    // { timeout: 4000 } 兜底：即使持续滚动导致长期不 idle，也在 4s 内启动；
+    // 正常情况下首屏渲染后很快 idle（轮播图片已懒加载，不抢主线程），背景及时出现。
+    // 延迟期间 .grainient-container 显示 body 深色底（#0c0c0c），深色主题下不可感知。
     const ric = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 1))
     const ricId = ric(() => initGL(), { timeout: 4000 })
     return () => {
