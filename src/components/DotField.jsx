@@ -226,7 +226,7 @@ function DotField({
     // 点阵初始化 + 首帧 draw 抢主线程。{ timeout: 200 } 保证持续滚动时也在
     // 200ms 内启动，点阵空闲后出现、30fps 动画对细微点阵不可感知。
     const ric = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 1))
-    const ricId = ric(() => init(), { timeout: 200 })
+    const ricId = ric(() => init(), { timeout: 4000 })
     return () => {
       if (window.cancelIdleCallback && ricId) cancelIdleCallback(ricId)
       if (teardown) teardown()

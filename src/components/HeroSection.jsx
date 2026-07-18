@@ -68,7 +68,14 @@ export default function HeroSection({ openingComplete = true }) {
   useEffect(() => {
     let rafId = 0
     let e = 0
+    let last = 0
     const tick = (o) => {
+      const now = performance.now()
+      if (now - last < 33.333333333333336) {
+        rafId = requestAnimationFrame(tick)
+        return
+      }
+      last = now
       e = e || o
       const s = Math.min((o - e) / 1000, 0.1)
       e = o
@@ -84,23 +91,6 @@ export default function HeroSection({ openingComplete = true }) {
         u.current >= ha && (u.current -= ha)
       }
       const h = ((u.current + d.current) % ha + ha) % ha
-      const g = r.current ? r.current.offsetWidth : window.innerWidth
-      if (g === 0) {
-        rafId = requestAnimationFrame(tick)
-        return
-      }
-      g / 2
-      const _ = i.current
-      for (let v = 0; v < _.length; v++) {
-        const y = _[v]
-        if (y) {
-          const b = (2 * (v * ma - h + pa / 2)) / g - 1
-          1 - Math.abs(b) * 0.05
-          b * 1.8
-          b * (g < 768 ? 0 : 1.8)
-          y.style.transition = 'none'
-        }
-      }
       n.current && (n.current.style.transform = `translateX(${-h}px)`)
       rafId = requestAnimationFrame(tick)
     }
