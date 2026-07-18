@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { VERTEX_SHADER, FRAGMENT_SHADER } from '../shaders.js'
 
 /**
@@ -50,14 +50,16 @@ export default function BackgroundFX({
   const containerRef = useRef(null)
 
   // 任意影响 uniform 的 prop 变化都会重建 GL 上下文（克隆版传入的 props 均为静态，故实际只建一次）。
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current
     if (!container) return
     let disposed = false
     let teardown = null
 
-    // 真正的 GL 初始化：延迟到首屏绘制完成之后，
-    // 避免着色器编译 + 首帧阻塞主线程造成的「打开瞬间卡顿」。
+    // 真正的 GL 初始化：与原站 A 一致，在首屏绘制「之前」同步执行
+    // （useLayoutEffect 阶段，浏览器绘制之前）。着色器编译的主线程阻塞被
+    // 吸收进加载阶段（白屏期），页面可见首帧即带背景——避免「先出页面
+    // 再冻结」的可感知卡顿。原站 A 的 bundle 中 requestIdleCallback=0，即同步初始化。
     const initGL = () => {
     if (disposed || teardown) return
 
@@ -221,19 +223,12 @@ export default function BackgroundFX({
       }
     }
 
-    // 延迟到首屏绘制之后：优先 requestIdleCallback，降级 setTimeout(0)（均在首次 paint 后）
-    if (typeof window !== 'undefined' && window.requestIdleCallback) {
-      const idleId = window.requestIdleCallback(initGL, { timeout: 250 })
-      return () => {
-        disposed = true
-        if (window.cancelIdleCallback) window.cancelIdleCallback(idleId)
-        if (teardown) teardown()
-      }
-    }
-    const timer = setTimeout(initGL, 0)
+    // 与原站 A 一致：同步初始化（不再延迟到 idle / paint 之后）。
+    // useLayoutEffect 阶段运行于浏览器绘制之前，着色器编译的短暂阻塞
+    // 被吸收进加载期，避免「页面先出现再冻结」的可感知卡顿。
+    initGL()
     return () => {
       disposed = true
-      clearTimeout(timer)
       if (teardown) teardown()
     }
   }, [
