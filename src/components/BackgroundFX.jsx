@@ -130,9 +130,10 @@ export default function BackgroundFX({
     }
 
     const dpr = QUALITY_DPR[quality] || QUALITY_DPR.medium
-    // 渲染分辨率降至 0.3：背景是流动渐变 + 噪点，降分辨率视觉不可感知，
-    // GPU 像素数较原始减 91%，消除 WebGL 合成造成的滚动 FPS 下降（puppeteer 实测）
-    const resScale = 0.3
+    // 动态分辨率：滚动时 0.3（流畅 60fps），静止时 1.0（清晰，与原站全分辨率一致）。
+    // 滚动时背景快速变化，轻微模糊不可见；松手 200ms 后恢复全分辨率。
+    let resScale = 1.0
+    let resScaleTimer = 0
     const resize = () => {
       const rect = container.getBoundingClientRect()
       const w = Math.max(1, Math.floor(rect.width))
@@ -141,6 +142,12 @@ export default function BackgroundFX({
       canvas.height = Math.floor(h * dpr * resScale)
       gl.viewport(0, 0, canvas.width, canvas.height)
       gl.uniform2f(U.iResolution, canvas.width, canvas.height)
+    }
+    // 滚动时降分辨率（流畅），松手后恢复全分辨率（清晰）
+    const onScrollRes = () => {
+      if (resScale !== 0.3) { resScale = 0.3; resize(); }
+      clearTimeout(resScaleTimer)
+      resScaleTimer = setTimeout(() => { resScale = 1.0; resize(); }, 200)
     }
     const ro = new ResizeObserver(resize)
     ro.observe(container)
@@ -215,8 +222,11 @@ export default function BackgroundFX({
     document.addEventListener('visibilitychange', onVisibility)
 
     startLoop()
+    window.addEventListener('scroll', onScrollRes, { passive: true })
       teardown = () => {
         stopLoop()
+        clearTimeout(resScaleTimer)
+        window.removeEventListener('scroll', onScrollRes)
         ro.disconnect()
         io.disconnect()
         document.removeEventListener('visibilitychange', onVisibility)
