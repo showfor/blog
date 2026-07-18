@@ -23,13 +23,7 @@ export default function SiteNav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // 抽屉开启时锁定 body 滚动，关闭时恢复，避免背景穿透滚动。
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [menuOpen])
+  // 注：原站 aystba 打开移动端抽屉时【不锁定】body 滚动，克隆版保持一致（不锁）。
 
   // 平滑滚动到锚点；桌面/移动点击后关闭抽屉（菜单本就关闭时为空操作）。
   const go = (e, href, close = true) => {

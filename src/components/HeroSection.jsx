@@ -225,7 +225,7 @@ export default function HeroSection({ openingComplete = true }) {
 
   return (
     <section id="top" className="hero">
-      <div className="hero-bg-image"><img src={da} alt="" /></div>
+      <div className="hero-bg-image"><img src={da} alt="" fetchpriority="high" loading="eager" decoding="async" /></div>
       <div className="hero-bg" />
       <div className="hero-frost" />
       <div className="hero-dotfield">
@@ -262,7 +262,7 @@ export default function HeroSection({ openingComplete = true }) {
         <div className="hero-carousel-track" ref={n}>
           {E.map((item, idx) => (
             <div className="hero-carousel-item" key={idx} ref={(el) => D(el, idx)}>
-              <img src={item.img} alt={item.label} className="hero-carousel-image" />
+              <img src={item.img} alt={item.label} className="hero-carousel-image" loading="lazy" decoding="async" />
               <div className="hero-carousel-label">{item.label}</div>
             </div>
           ))}

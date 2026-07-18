@@ -53,6 +53,13 @@ export default function BackgroundFX({
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
+    let disposed = false
+    let teardown = null
+
+    // 真正的 GL 初始化：延迟到首屏绘制完成之后，
+    // 避免着色器编译 + 首帧阻塞主线程造成的「打开瞬间卡顿」。
+    const initGL = () => {
+    if (disposed || teardown) return
 
     const canvas = document.createElement('canvas')
     canvas.style.width = '100%'
@@ -203,15 +210,31 @@ export default function BackgroundFX({
     document.addEventListener('visibilitychange', onVisibility)
 
     startLoop()
+      teardown = () => {
+        stopLoop()
+        ro.disconnect()
+        io.disconnect()
+        document.removeEventListener('visibilitychange', onVisibility)
+        const ext = gl.getExtension('WEBGL_lose_context')
+        if (ext) ext.loseContext()
+        if (canvas.parentNode) canvas.parentNode.removeChild(canvas)
+      }
+    }
 
+    // 延迟到首屏绘制之后：优先 requestIdleCallback，降级 setTimeout(0)（均在首次 paint 后）
+    if (typeof window !== 'undefined' && window.requestIdleCallback) {
+      const idleId = window.requestIdleCallback(initGL, { timeout: 250 })
+      return () => {
+        disposed = true
+        if (window.cancelIdleCallback) window.cancelIdleCallback(idleId)
+        if (teardown) teardown()
+      }
+    }
+    const timer = setTimeout(initGL, 0)
     return () => {
-      stopLoop()
-      ro.disconnect()
-      io.disconnect()
-      document.removeEventListener('visibilitychange', onVisibility)
-      const ext = gl.getExtension('WEBGL_lose_context')
-      if (ext) ext.loseContext()
-      if (canvas.parentNode) canvas.parentNode.removeChild(canvas)
+      disposed = true
+      clearTimeout(timer)
+      if (teardown) teardown()
     }
   }, [
     timeSpeed, colorBalance, warpStrength, warpFrequency, warpSpeed, warpAmplitude,

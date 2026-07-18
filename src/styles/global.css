@@ -2,6 +2,8 @@
    设计令牌 —— 逐字重建 aystba-portfolio.pages.dev：深底 + 酸橙绿(#c8ff00) + 白字
    纯深色主题，无明暗切换。
    ========================================================================= */
+/* 加载 Inter（与原站 aystba 完全一致：300–900 字重 + display=swap，避免 FOIT 白屏卡顿） */
+@import "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap";
 :root {
   /* ===== aystba 实测令牌 ===== */
   --accent: #c8ff00;          /* 酸橙绿，品牌主色 */
@@ -45,7 +47,6 @@
   --shadow: 0 4px 20px rgba(0, 0, 0, .35);
   --shadowHover: 0 14px 34px rgba(0, 0, 0, .5);
   --radius: 16px;
-  --maxWidth: 1120px;
   --grad: linear-gradient(135deg, var(--accentColor), var(--accentColor2));
 
   /* ===== 招牌交互变量（cursor 跟随发光） ===== */
@@ -101,21 +102,21 @@ img { max-width: 100%; }
 a { color: inherit; }
 
 .container {
-  max-width: var(--maxWidth);
+  max-width: var(--max-width); /* 原站 aystba 的 --max-width 未定义 → 容器不强制封顶，靠各区块内部 max-width 封顶 */
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 60px;
 }
 
 /* ===== 区块通用标题 ===== */
 .section {
-  padding: clamp(64px, 8.5vw, 96px) 0;
+  padding: 120px 0; /* 复刻原站 .section { padding:120px 0 } */
 }
 .section-head { margin-bottom: 32px; }
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 0.78rem;
+  font-size: 12px; /* 复刻原站 .section-label { font-size:12px } */
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -130,7 +131,7 @@ a { color: inherit; }
   background: var(--grad);
 }
 .section-title {
-  font-size: 1.7rem;
+  font-size: 42px; /* 复刻原站 .section-title { font-size:42px } */
   margin: 0 0 8px;
   letter-spacing: .5px;
   position: relative;
@@ -146,7 +147,7 @@ a { color: inherit; }
   background: var(--grad);
   transition: width .5s cubic-bezier(.22, 1, .36, 1);
 }
-.section-sub { color: var(--textMuted); margin: 16px 0 0; font-size: 0.95rem; }
+.section-sub { color: var(--textMuted); margin: 16px 0 0; font-size: 16px; } /* 复刻原站 .section-desc { font-size:16px } */
 
 /* ===== 发光卡片 border-glow-card（逐字自 aystba；cursor 跟随 conic 发光描边） ===== */
 .border-glow-card {
@@ -269,25 +270,42 @@ a { color: inherit; }
 /* ===== SiteNav（固定顶部导航） ===== */
 .site-nav {
   position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 50;
-  --np: 0; /* 连续滚动系数 0→1，由 JS 写入（scrollY / innerHeight 限幅）。复刻原站平滑浮起/收窄 */
-  border-bottom: 1px solid transparent;
-  /* 浮起背景 / 模糊 / 边框随 --np 渐入，缓动对齐原站 --transition */
-  background: color-mix(in srgb, var(--ink) calc(var(--np) * 78%), transparent);
-  backdrop-filter: blur(calc(var(--np) * 12px));
-  -webkit-backdrop-filter: blur(calc(var(--np) * 12px));
-  border-color: color-mix(in srgb, var(--borderColor) calc(var(--np) * 100%), transparent);
-  transition: background .4s var(--nav-ease), backdrop-filter .4s var(--nav-ease),
-    border-color .4s var(--nav-ease);
+  top: calc(var(--np) * 12px);
+  left: 0; right: 0;
+  z-index: 100;
+  --np: 0; /* 连续滚动系数 0→1，由 JS 写入（scrollY / innerHeight 限幅） */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 calc(120px + var(--np) * 40px); /* 复刻原站 .nav-wrapper 浮起收窄数学 */
+  max-width: 1280px;
+  margin: 0 auto;
 }
 .site-nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: calc(72px - var(--np) * 12px); /* 滚动时随 --np 由 72px 收窄至 60px */
-  gap: 16px;
-  transition: height .4s var(--nav-ease);
+  gap: 20px;
+  flex: 1;
+  position: relative;
+  /* 复刻原站 .navbar 内缩内边距 / 圆角随 --np 由 0→16px */
+  padding: calc(16px - var(--np) * 4px) calc(40px - var(--np) * 32px);
+  border-radius: calc(var(--np) * 16px);
+}
+/* 复刻原站 .navbar:before —— 滚动浮起时的模糊胶囊底（随 --np 渐入） */
+.site-nav-inner:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--np);
+  background: rgba(18, 18, 18, calc(.72 * var(--np)));
+  -webkit-backdrop-filter: blur(calc(var(--np) * 24px)) saturate(140%);
+  backdrop-filter: blur(calc(var(--np) * 24px)) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, calc(.08 * var(--np)));
+  box-shadow: 0 calc(var(--np) * 4px) calc(var(--np) * 24px) rgba(0, 0, 0, calc(.4 * var(--np)));
+  border-radius: 999px;
 }
 .site-nav-brand {
   display: flex;
@@ -341,8 +359,8 @@ a { color: inherit; }
   justify-content: center;
   align-items: center;
   gap: 5px;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   background: transparent;
   border: none;
@@ -356,10 +374,12 @@ a { color: inherit; }
   background: var(--textColor);
   transition: transform .3s var(--nav-ease), opacity .2s var(--nav-ease);
 }
-.navbar-mobile-toggle.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.navbar-mobile-toggle.is-open span:nth-child(2) { opacity: 0; }
-.navbar-mobile-toggle.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+/* 复刻原站汉堡→X 几何：rotate(±45deg) + translate(5px,5px) / scaleX(0) */
+.navbar-mobile-toggle.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.navbar-mobile-toggle.is-open span:nth-child(2) { transform: scaleX(0); }
+.navbar-mobile-toggle.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px, 5px); }
 
+/* 原站 A 的遮罩为条件渲染（开/关瞬间出现/消失，无淡入淡出）→ 移除过渡，与原站 1:1 */
 .navbar-mobile-overlay {
   position: fixed;
   inset: 0;
@@ -369,7 +389,6 @@ a { color: inherit; }
   backdrop-filter: blur(8px);
   opacity: 0;
   visibility: hidden;
-  transition: opacity .3s var(--nav-ease), visibility .3s var(--nav-ease);
 }
 .navbar-mobile-overlay.is-open { opacity: 1; visibility: visible; }
 
@@ -379,7 +398,7 @@ a { color: inherit; }
   right: 0;
   bottom: 0;
   z-index: 210;
-  width: min(320px, 82vw);
+  width: min(320px, 80vw);
   display: flex;
   flex-direction: column;
   padding: 20px 24px 32px;
@@ -394,7 +413,8 @@ a { color: inherit; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  border-bottom: 1px solid var(--borderColor);
+  padding: 20px 24px;
 }
 .navbar-mobile-title {
   font-size: 0.78rem;
@@ -723,20 +743,27 @@ main { z-index: 1; background: 0 0; position: relative; }
 /* ===== 锚点滚动偏移（避免被固定导航遮挡） ===== */
 #top, #about, #projects, #skills, #services, #opensource, #contact { scroll-margin-top: 84px; }
 
-/* ===== 响应式 ===== */
-@media (max-width: 880px) {
+/* ===== 响应式（断点逐字对齐原站 aystba：1100 / 768） ===== */
+@media (width<=1100px) {
+  .container { padding: 0 20px; }
   .skills-layout { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; }
 }
-@media (max-width: 760px) {
-  .container { padding: 0 18px; }
-  .section { padding: 44px 0; }
-  .section-title { font-size: 1.45rem; }
+@media (width<=768px) {
+  .container { padding: 0 20px; }
   /* 窄屏隐藏桌面端链接 / CTA / 语言键，改用汉堡抽屉替代（不再"无替代直接消失"） */
   .site-nav-links { display: none; }
   .site-nav-cta { display: none; }
   .site-nav-actions .lang-toggle { display: none; }
   .navbar-mobile-toggle { display: flex; }
+  /* 复刻原站 ≤768 规则 */
+  .site-nav { max-width: 100%; padding: 0 16px; top: 0; }
+  .site-nav-inner { justify-content: space-between; padding: 10px 14px; }
+  .hero { min-height: 560px; }
+  .hero-content { padding: 170px 16px 40px; }
+  .hero-title { letter-spacing: -.03em; font-size: clamp(30px, 12vw, 52px); line-height: .95; }
+  .hero-title-line.outline { -webkit-text-stroke: 1px #ffffff4d; }
+  .hero-carousel-item { border-radius: 10px; width: 110px; height: 150px; transform: none !important; }
 }
 
 /* 尊重「减少动态效果」系统偏好：关闭一切非必要动画 */

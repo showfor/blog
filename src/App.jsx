@@ -1,16 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { LanguageProvider } from './context/LanguageProvider.jsx'
 import { useReveal } from './hooks/useReveal.js'
 import SiteNav from './components/SiteNav.jsx'
 import BackgroundFX from './components/BackgroundFX.jsx'
 import HeroSection from './components/HeroSection.jsx'
-import AboutSection from './components/AboutSection.jsx'
-import SelectedProjectsSection from './components/SelectedProjectsSection.jsx'
-import SkillsSection from './components/SkillsSection.jsx'
-import ServicesSection from './components/ServicesSection.jsx'
-import OpenSourceSection from './components/OpenSourceSection.jsx'
-import ContactSection from './components/ContactSection.jsx'
-import SiteFooter from './components/SiteFooter.jsx'
+// 首屏以下区块按需懒加载（代码分割），降低首屏 JS 体积与 TTI
+const AboutSection = lazy(() => import('./components/AboutSection.jsx'))
+const SelectedProjectsSection = lazy(() => import('./components/SelectedProjectsSection.jsx'))
+const SkillsSection = lazy(() => import('./components/SkillsSection.jsx'))
+const ServicesSection = lazy(() => import('./components/ServicesSection.jsx'))
+const OpenSourceSection = lazy(() => import('./components/OpenSourceSection.jsx'))
+const ContactSection = lazy(() => import('./components/ContactSection.jsx'))
+const SiteFooter = lazy(() => import('./components/SiteFooter.jsx'))
 
 // 站点根组件：顶层包裹 LanguageProvider，按序组合 9 个区块（导航 + 7 内容 + 页脚）。
 export default function App() {
@@ -51,14 +52,16 @@ export default function App() {
       <SiteNav />
       <main>
         <HeroSection />
-        <AboutSection />
-        <SelectedProjectsSection />
-        <SkillsSection />
-        <ServicesSection />
-        <OpenSourceSection />
-        <ContactSection />
+        <Suspense fallback={null}>
+          <AboutSection />
+          <SelectedProjectsSection />
+          <SkillsSection />
+          <ServicesSection />
+          <OpenSourceSection />
+          <ContactSection />
+          <SiteFooter />
+        </Suspense>
       </main>
-      <SiteFooter />
     </LanguageProvider>
   )
 }
