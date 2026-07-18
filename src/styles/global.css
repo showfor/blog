@@ -91,7 +91,12 @@ body {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 1200ms cubic-bezier(.215, .61, .355, 1), transform 1200ms cubic-bezier(.215, .61, .355, 1);
-  will-change: opacity, transform;
+  /* 不在此处声明 will-change：原站 A 的 .reveal 无 will-change，
+     克隆版曾在此加 will-change:opacity,transform，会对【每个】.reveal
+     元素（全站各板块标题/卡片，达数十个）常驻合成层，
+     滚动时数十个常驻层造成合成器开销与 GPU 压力 → 滚动卡顿。
+     opacity/transform 本就是可合成属性，过渡时浏览器会自动提升层，
+     无需常驻 will-change。移除后与 A 的层数量对齐（仅 hero/carousel 3 处）。 */
 }
 .reveal.is-visible {
   opacity: 1;
