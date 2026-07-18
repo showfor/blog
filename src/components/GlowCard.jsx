@@ -88,6 +88,9 @@ export default function GlowCard({
   ...rest
 }) {
   const p = useRef(null)
+  // rAF 节流句柄 + 最新指针事件缓存（避免每次 pointermove 都强制同步布局）。
+  const pointerRaf = useRef(0)
+  const lastPointerEvent = useRef(null)
   const m = useCallback((e) => {
     const { width, height } = e.getBoundingClientRect()
     return [width / 2, height / 2]
@@ -118,21 +121,35 @@ export default function GlowCard({
     },
     [m]
   )
-  // pointermove 处理（原站 _）
+  // pointermove 处理（原站 _）：rAF 合并，每帧最多读 1 次 rect + 写 1 次变量。
+  // 角度/接近度计算完全沿用原站 h()/g()，数学与像素输出零变化。
   const _ = useCallback(
     (e) => {
-      const t = p.current
-      if (!t) return
-      const n = t.getBoundingClientRect()
-      const r = e.clientX - n.left
-      const i = e.clientY - n.top
-      const a = h(t, r, i)
-      const o = g(t, r, i)
-      t.style.setProperty('--edge-proximity', `${(a * 100).toFixed(3)}`)
-      t.style.setProperty('--cursor-angle', `${o.toFixed(3)}deg`)
+      lastPointerEvent.current = e
+      if (pointerRaf.current) return
+      pointerRaf.current = requestAnimationFrame(() => {
+        pointerRaf.current = 0
+        const e = lastPointerEvent.current
+        const t = p.current
+        if (!e || !t) return
+        const n = t.getBoundingClientRect()
+        const r = e.clientX - n.left
+        const i = e.clientY - n.top
+        const a = h(t, r, i)
+        const o = g(t, r, i)
+        t.style.setProperty('--edge-proximity', `${(a * 100).toFixed(3)}`)
+        t.style.setProperty('--cursor-angle', `${o.toFixed(3)}deg`)
+      })
     },
     [h, g]
   )
+
+  // 卸载时取消未执行的 pointermove rAF，避免卸载后回调访问已销毁节点。
+  useEffect(() => {
+    return () => {
+      if (pointerRaf.current) cancelAnimationFrame(pointerRaf.current)
+    }
+  }, [])
 
   // 进场环扫（原站 qc 的 animated 分支，原生 Kc）
   useEffect(() => {

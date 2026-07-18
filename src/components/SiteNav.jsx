@@ -14,9 +14,17 @@ export default function SiteNav() {
   // 连续 --np：复刻原站 nav 平滑浮起/收窄。写入 .site-nav，子元素通过 CSS 变量继承。
   useEffect(() => {
     const el = document.querySelector('.site-nav')
+    // rAF 合并：每个滚动事件不再同步写 --np，改为每帧最多写 1 次。
+    // 视觉输出/交互结果与即时写入完全一致（原站 A 的 --np 限幅 0~1 语义不变）。
+    let ticking = false
     const onScroll = () => {
-      const np = Math.min(1, Math.max(0, window.scrollY / window.innerHeight))
-      if (el) el.style.setProperty('--np', String(np))
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        ticking = false
+        const np = Math.min(1, Math.max(0, window.scrollY / window.innerHeight))
+        if (el) el.style.setProperty('--np', String(np))
+      })
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
