@@ -275,6 +275,7 @@ a { color: inherit; }
 /* ===== SiteNav（固定顶部导航） ===== */
 .site-nav {
   position: fixed;
+  contain: layout style; /* 把 --np 每帧重算（含语言条）隔离在顶栏子树内，绝不无效化文档级布局 */
   top: calc(var(--np) * 12px);
   left: 0; right: 0;
   z-index: 100;
@@ -362,6 +363,7 @@ a { color: inherit; }
    作为 .site-nav 的 flex-wrap 第二行，自然位于导航行下方并随顶栏一起移动。 */
 .site-nav-langbar {
   flex: 1 1 100%;
+  contain: layout style; /* 语言条独立 flex 行，把其 --np 重算锁死在自身，避免波及顶栏其余行 */
   display: flex;
   justify-content: flex-end;
   align-items: center;

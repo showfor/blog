@@ -43,11 +43,19 @@ export function useReveal() {
     if (!els.length) return
     const io = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible')
-            io.unobserve(entry.target)
-          }
+        // 收集本次回调中进入视口的元素，按文档顺序（顶部优先）排序，避免乱序触发；
+        // 随后错峰分配 transition-delay，把"建层+起动画"摊到若干帧，消除首帧的建层爆发
+        // （对齐参考站 A 的 GSAP ScrollTrigger.batch + stagger 波浪式入场语义）。
+        const intersecting = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+        intersecting.forEach((entry, i) => {
+          const el = entry.target
+          // transition-delay 必须在加 .is-visible 之前设置，过渡才会带上延迟；
+          // 封顶 7*60=420ms，避免后段元素等待过久。视觉上由"齐发"变"轻微波浪依次出现"。
+          el.style.transitionDelay = Math.min(i, 7) * 60 + 'ms'
+          el.classList.add('is-visible')
+          io.unobserve(el)
         })
       },
       { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
