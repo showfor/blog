@@ -25,7 +25,7 @@ export default function App() {
   return (
     <LanguageProvider>
       {/* 全局原生 WebGL 着色器背景（原站 grainient-bg-wrapper / Yu），逐字取自混淆 bundle */}
-      <div className="rainient-bg-wrapper">
+      <div className="grainient-bg-wrapper">
         <BackgroundFX
           className="rainient-bg"
           timeSpeed={0.15}
