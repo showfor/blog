@@ -35,6 +35,21 @@ export default function SiteNav() {
 
   const toggleLang = () => setLang(lang === 'en' ? 'cn' : 'en')
 
+  // 两段式语言切换按钮：左=当前语言，右=可切换的目标语言（如 EN ⇄ 中），点击即切换。
+  // 视觉沿用现有 accent 胶囊语言按钮风格（与页脚/抽屉一致），并复用 useLang 实时切换（无需刷新）。
+  const langSwitchButton = (extraClass = '') => (
+    <button
+      type="button"
+      className={`lang-switch ${extraClass}`.trim()}
+      onClick={toggleLang}
+      aria-label={`${t(i18n.ui.switchHint)} ${t(i18n.ui.langName)}`}
+    >
+      <span className="lang-switch-current">{t(i18n.ui.langCurrent)}</span>
+      <span className="lang-switch-sep" aria-hidden="true">⇄</span>
+      <span className="lang-switch-target">{t(i18n.ui.langTarget)}</span>
+    </button>
+  )
+
   return (
     <header className="site-nav">
       <div className="container site-nav-inner">
@@ -52,9 +67,6 @@ export default function SiteNav() {
         </nav>
 
         <div className="site-nav-actions">
-          <button type="button" className="lang-toggle" onClick={toggleLang} aria-label="Toggle language">
-            {t(i18n.ui.switchLabel)}
-          </button>
           <a
             className="btn btn-primary site-nav-cta"
             href={i18n.nav.cta.href}
@@ -77,6 +89,13 @@ export default function SiteNav() {
             <span />
           </button>
         </div>
+      </div>
+
+      {/* 新增：固定顶栏正下方的细语言条（桌面+移动均可见，右对齐）。
+          作为 <header className="site-nav"> 的 flex-wrap 第二行，自然位于导航行下方并随顶栏一起移动；
+          z-index 继承顶栏(100)，低于移动端抽屉面板(210)。 */}
+      <div className="site-nav-langbar">
+        {langSwitchButton()}
       </div>
 
       {/* 移动端抽屉：遮罩 + 右侧滑入面板。复刻原站 .navbar-mobile-overlay/panel 行为，
@@ -112,9 +131,7 @@ export default function SiteNav() {
         </nav>
 
         <div className="navbar-mobile-actions">
-          <button type="button" className="lang-toggle" onClick={toggleLang}>
-            {t(i18n.ui.switchLabel)}
-          </button>
+          {langSwitchButton()}
           <a
             className="btn btn-primary"
             href={i18n.nav.cta.href}

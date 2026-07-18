@@ -280,6 +280,7 @@ a { color: inherit; }
   z-index: 100;
   --np: 0; /* 连续滚动系数 0→1，由 JS 写入（scrollY / innerHeight 限幅） */
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   padding: 0 calc(120px + var(--np) * 40px); /* 复刻原站 .nav-wrapper 浮起收窄数学 */
@@ -356,6 +357,41 @@ a { color: inherit; }
 .lang-toggle--ghost { background: transparent; border-color: var(--borderColor); color: var(--textMuted); }
 .lang-toggle--ghost:hover { color: var(--accentColor); border-color: color-mix(in srgb, var(--accentColor) 40%, transparent); }
 .site-nav-cta { padding: 9px 16px; font-size: 0.9rem; }
+
+/* 新增：固定顶栏正下方的细语言条 —— 右对齐容器，桌面+移动均可见。
+   作为 .site-nav 的 flex-wrap 第二行，自然位于导航行下方并随顶栏一起移动。 */
+.site-nav-langbar {
+  flex: 1 1 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  /* 右侧内边距与 .site-nav-inner 的水平内边距对齐，使按钮右缘与导航行 CTA 对齐 */
+  padding: 2px calc(40px - var(--np) * 32px) 8px;
+}
+/* 两段式语言切换按钮（当前 ⇄ 目标），沿用 accent 胶囊语言按钮风格，
+   与页脚/抽屉语言按钮视觉统一；复用 useLang 实时切换（无需刷新）。 */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accentColor) 12%, transparent);
+  color: var(--accentColor);
+  border: 1px solid color-mix(in srgb, var(--accentColor) 35%, transparent);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .3s var(--nav-ease), transform .25s ease, color .3s var(--nav-ease);
+}
+.lang-switch:hover {
+  background: color-mix(in srgb, var(--accentColor) 22%, transparent);
+  transform: translateY(-1px);
+}
+.lang-switch-current { font-weight: 700; color: var(--accentColor); }
+.lang-switch-target { font-weight: 600; color: var(--textMuted); }
+.lang-switch-sep { opacity: .55; }
 
 /* ===== 移动端汉堡抽屉（≤760px 启用，替代被隐藏的桌面链接，修复"菜单消失"） ===== */
 .navbar-mobile-toggle {
@@ -463,7 +499,7 @@ a { color: inherit; }
   padding-top: 20px;
 }
 .navbar-mobile-actions .btn,
-.navbar-mobile-actions .lang-toggle { width: 100%; justify-content: center; }
+.navbar-mobile-actions .lang-switch { width: 100%; justify-content: center; }
 
 /* ===== Hero 首屏（逐字自 aystba） ===== */
 .hero { z-index: 10; background: #0c0c0c; flex-direction: column; width: 100%; height: 100vh; min-height: 700px; display: flex; position: relative; overflow: hidden; }
@@ -759,11 +795,13 @@ main { z-index: 1; background: 0 0; position: relative; }
   /* 窄屏隐藏桌面端链接 / CTA / 语言键，改用汉堡抽屉替代（不再"无替代直接消失"） */
   .site-nav-links { display: none; }
   .site-nav-cta { display: none; }
-  .site-nav-actions .lang-toggle { display: none; }
   .navbar-mobile-toggle { display: flex; }
   /* 复刻原站 ≤768 规则 */
   .site-nav { max-width: 100%; padding: 0 16px; top: 0; }
   .site-nav-inner { justify-content: space-between; padding: 10px 14px; }
+  /* 语言条在移动端仍为独立右对齐行，且点击区 ≥44px，320px 下不溢出 */
+  .site-nav-langbar { padding: 2px 14px 6px; }
+  .lang-switch { min-height: 44px; padding: 8px 14px; font-size: 0.85rem; }
   .hero { min-height: 560px; }
   .hero-content { padding: 170px 16px 40px; }
   .hero-title { letter-spacing: -.03em; font-size: clamp(30px, 12vw, 52px); line-height: .95; }

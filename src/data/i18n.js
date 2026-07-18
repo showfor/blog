@@ -2,7 +2,15 @@
 export const i18n = {
   ui: {
     // 文案显示「要切换到的语言」：当前 en 显示「切换到中文」，当前 cn 显示 "Switch to English"。
+    // 保留给页脚 ghost 语言按钮。
     switchLabel: { en: '切换到中文', cn: 'Switch to English' },
+    // 顶栏语言条两段式按钮：左=当前语言，右=可切换的目标语言。
+    // langCurrent/langTarget 的 {en,cn} 互为镜像：en 态显示「EN ⇄ 中」，cn 态显示「中 ⇄ EN」。
+    langCurrent: { en: 'EN', cn: '中' },
+    langTarget: { en: '中', cn: 'EN' },
+    // 可访问性用：完整语言名 + 提示语。
+    langName: { en: 'English', cn: '中文' },
+    switchHint: { en: 'Switch language, current:', cn: '切换语言，当前：' },
   },
   nav: {
     brand: 'Amber River',
