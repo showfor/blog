@@ -230,10 +230,26 @@ export default function BackgroundFX({
     // 正常情况下首屏渲染后很快 idle（轮播图片已懒加载，不抢主线程），背景及时出现。
     // 延迟期间 .grainient-container 显示 body 深色底（#0c0c0c），深色主题下不可感知。
     const ric = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 1))
-    const ricId = ric(() => initGL(), { timeout: 4000 })
+    // 首屏滑动卡顿修复：rIC 触发后若用户正在滑动，推迟 initGL 到滑动停止，
+    // 避免 shader 编译（同步 10-50ms）撞首次滑动手势造成掉帧。
+    let lastScrollAt = 0
+    let scrollRetry = 0
+    const onScrollCheck = () => { lastScrollAt = performance.now() }
+    window.addEventListener('scroll', onScrollCheck, { passive: true })
+    const tryInit = () => {
+      if (performance.now() - lastScrollAt < 300) {
+        scrollRetry = setTimeout(tryInit, 200)
+        return
+      }
+      window.removeEventListener('scroll', onScrollCheck)
+      initGL()
+    }
+    const ricId = ric(tryInit, { timeout: 4000 })
     return () => {
       disposed = true
       if (window.cancelIdleCallback && ricId) cancelIdleCallback(ricId)
+      clearTimeout(scrollRetry)
+      window.removeEventListener('scroll', onScrollCheck)
       if (teardown) teardown()
     }
   }, [

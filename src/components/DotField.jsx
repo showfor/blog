@@ -150,49 +150,55 @@ function DotField({
       S.current < 0.001 && (S.current = 0)
       const f = S.current
       x.current += (f - x.current) * 0.08
-      t && (t.setAttribute('cx', r.x), t.setAttribute('cy', r.y), (t.style.opacity = x.current))
-      n.clearRect(0, 0, i, s)
-      // 复用缓存的静态渐变（仅在 resize 时重建），避免每帧 new createLinearGradient
-      if (!grad && i > 0 && s > 0) {
-        grad = n.createLinearGradient(0, 0, i, s)
-        grad.addColorStop(0, c.gradientFrom)
-        grad.addColorStop(1, c.gradientTo)
+      // 光标静止（速度+glow 衰减到 0）且无 sparkle/wave → 点阵完全静止，
+      // 跳过 clearRect/遍历/fill 节省 CPU（滚动时主线程让给页面合成）。
+      // rAF 循环继续（满足"背景不停"），仅回调变轻；光标移动时立即恢复重绘。
+      const idle = !c.sparkle && c.waveAmplitude === 0 && x.current < 0.001 && S.current < 0.001
+      if (!idle) {
+        t && (t.setAttribute('cx', r.x), t.setAttribute('cy', r.y), (t.style.opacity = x.current))
+        n.clearRect(0, 0, i, s)
+        // 复用缓存的静态渐变（仅在 resize 时重建），避免每帧 new createLinearGradient
+        if (!grad && i > 0 && s > 0) {
+          grad = n.createLinearGradient(0, 0, i, s)
+          grad.addColorStop(0, c.gradientFrom)
+          grad.addColorStop(1, c.gradientTo)
+        }
+        n.fillStyle = grad
+        const g = c.cursorRadius
+        const w = g * g
+        const T = c.dotRadius / 2
+        const E = c.bulgeOnly
+        n.beginPath()
+        for (let t = 0; t < l; t++) {
+          const i = e[t]
+          const a = r.x - i.ax
+          const o = r.y - i.ay
+          const s = a * a + o * o
+          if (s < w && f > 0.01) {
+            const e = Math.sqrt(s)
+            if (E) {
+              const t = 1 - e / g
+              const n = t * t * c.bulgeStrength * f
+              const r = Math.atan2(o, a)
+              i.sx += (i.ax - Math.cos(r) * n - i.sx) * 0.15
+              i.sy += (i.ay - Math.sin(r) * n - i.sy) * 0.15
+            } else {
+              const t = Math.atan2(o, a)
+              const n = (500 / e) * (r.speed * c.cursorForce)
+              i.vx += Math.cos(t) * -n
+              i.vy += Math.sin(t) * -n
+            }
+          } else E && ((i.sx += (i.ax - i.sx) * 0.1), (i.sy += (i.ay - i.sy) * 0.1))
+          E || ((i.vx *= 0.9), (i.vy *= 0.9), (i.x = i.ax + i.vx), (i.y = i.ay + i.vy), (i.sx += (i.x - i.sx) * 0.1), (i.sy += (i.y - i.sy) * 0.1))
+          let l = i.sx
+          let d = i.sy
+          c.waveAmplitude > 0 && ((d += Math.sin(i.ax * 0.03 + u) * c.waveAmplitude), (l += Math.cos(i.ay * 0.03 + u * 0.7) * c.waveAmplitude * 0.5))
+          c.sparkle && ((t * 2654435761 ^ p >> 3) >>> 0) % 100 < 3
+            ? (n.moveTo(l + T * 1.8, d), n.arc(l, d, T * 1.8, 0, TAU))
+            : (n.moveTo(l + T, d), n.arc(l, d, T, 0, TAU))
+        }
+        n.fill()
       }
-      n.fillStyle = grad
-      const g = c.cursorRadius
-      const w = g * g
-      const T = c.dotRadius / 2
-      const E = c.bulgeOnly
-      n.beginPath()
-      for (let t = 0; t < l; t++) {
-        const i = e[t]
-        const a = r.x - i.ax
-        const o = r.y - i.ay
-        const s = a * a + o * o
-        if (s < w && f > 0.01) {
-          const e = Math.sqrt(s)
-          if (E) {
-            const t = 1 - e / g
-            const n = t * t * c.bulgeStrength * f
-            const r = Math.atan2(o, a)
-            i.sx += (i.ax - Math.cos(r) * n - i.sx) * 0.15
-            i.sy += (i.ay - Math.sin(r) * n - i.sy) * 0.15
-          } else {
-            const t = Math.atan2(o, a)
-            const n = (500 / e) * (r.speed * c.cursorForce)
-            i.vx += Math.cos(t) * -n
-            i.vy += Math.sin(t) * -n
-          }
-        } else E && ((i.sx += (i.ax - i.sx) * 0.1), (i.sy += (i.ay - i.sy) * 0.1))
-        E || ((i.vx *= 0.9), (i.vy *= 0.9), (i.x = i.ax + i.vx), (i.y = i.ay + i.vy), (i.sx += (i.x - i.sx) * 0.1), (i.sy += (i.y - i.sy) * 0.1))
-        let l = i.sx
-        let d = i.sy
-        c.waveAmplitude > 0 && ((d += Math.sin(i.ax * 0.03 + u) * c.waveAmplitude), (l += Math.cos(i.ay * 0.03 + u * 0.7) * c.waveAmplitude * 0.5))
-        c.sparkle && ((t * 2654435761 ^ p >> 3) >>> 0) % 100 < 3
-          ? (n.moveTo(l + T * 1.8, d), n.arc(l, d, T * 1.8, 0, TAU))
-          : (n.moveTo(l + T, d), n.arc(l, d, T, 0, TAU))
-      }
-      n.fill()
       a && o && (y.current = requestAnimationFrame(h))
     }
     const T = () => {
@@ -235,9 +241,25 @@ function DotField({
     // 点阵初始化 + 首帧 draw 抢主线程。{ timeout: 4000 } 兜底：持续滚动时也在
     // 4s 内启动；正常情况首屏渲染后很快 idle，点阵及时出现、30fps 动画对细微点阵不可感知。
     const ric = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 1))
-    const ricId = ric(() => init(), { timeout: 4000 })
+    // 首屏滑动卡顿修复：rIC 触发后若用户正在滑动，推迟 init 到滑动停止，
+    // 避免点阵网格构建 + 首帧 draw 撞首次滑动手势造成掉帧。
+    let lastScrollAt = 0
+    let scrollRetry = 0
+    const onScrollCheck = () => { lastScrollAt = performance.now() }
+    window.addEventListener('scroll', onScrollCheck, { passive: true })
+    const tryInit = () => {
+      if (performance.now() - lastScrollAt < 300) {
+        scrollRetry = setTimeout(tryInit, 200)
+        return
+      }
+      window.removeEventListener('scroll', onScrollCheck)
+      init()
+    }
+    const ricId = ric(tryInit, { timeout: 4000 })
     return () => {
       if (window.cancelIdleCallback && ricId) cancelIdleCallback(ricId)
+      clearTimeout(scrollRetry)
+      window.removeEventListener('scroll', onScrollCheck)
       if (teardown) teardown()
     }
   }, [])
