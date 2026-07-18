@@ -212,25 +212,6 @@ function DotField({
     }
     document.addEventListener('visibilitychange', k)
 
-    // 交互节流：用户滚动/操作时暂停点阵渲染（点阵为 Canvas2D 主线程密集型），
-    // 让出主线程时间片给滚动事件处理；松手空闲 150ms 后自动恢复（静止观感不变）。
-    let idleTimer = 0
-    const markActive = () => {
-      D()
-      clearTimeout(idleTimer)
-      idleTimer = setTimeout(() => {
-        if (a && o) T()
-      }, 150)
-    }
-    const onScroll = () => markActive()
-    const onPointerDown = () => markActive()
-    const onTouchStart = () => markActive()
-    const onKeyDown = () => markActive()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('pointerdown', onPointerDown, { passive: true })
-    window.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('keydown', onKeyDown, { passive: true })
-
     c()
     window.addEventListener('resize', s)
     window.addEventListener('mousemove', u, { passive: true })
@@ -242,11 +223,6 @@ function DotField({
     teardown = () => {
       cancelAnimationFrame(y.current)
       clearTimeout(i)
-      clearTimeout(idleTimer)
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('pointerdown', onPointerDown)
-      window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('resize', s)
       window.removeEventListener('mousemove', u)
       document.removeEventListener('visibilitychange', k)
