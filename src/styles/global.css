@@ -482,7 +482,7 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
   padding: 20px 24px 32px;
-  background: var(--bg-primary);
+  background: #0c0c0c; /* 纯黑兜底，避免任何透明度 */
   border-left: 1px solid var(--borderColor);
   box-shadow: -10px 0 40px rgba(0, 0, 0, .5);
   transform: translateX(100%);
@@ -539,6 +539,21 @@ a { color: inherit; }
 }
 .navbar-mobile-actions .btn,
 .navbar-mobile-actions .lang-switch { width: 100%; justify-content: center; }
+
+/* 抽屉打开时：隐藏顶栏右侧所有动作（CTA + 汉堡 + 语言条），避免与抽屉叠加 */
+.site-nav[data-menu-open="true"] .site-nav-actions,
+.site-nav[data-menu-open="true"] .site-nav-langbar {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity .2s, visibility 0s .2s;
+}
+/* 抽屉打开时，桌面上仍可见的 .site-nav-links 也一并隐藏 */
+.site-nav[data-menu-open="true"] .site-nav-links {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
 
 /* ===== Hero 首屏（逐字自 aystba） ===== */
 .hero { z-index: 10; background: #0c0c0c; flex-direction: column; width: 100%; height: 100vh; min-height: 700px; display: flex; position: relative; overflow: hidden; }

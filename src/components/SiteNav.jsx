@@ -59,7 +59,7 @@ export default function SiteNav() {
   )
 
   return (
-    <header className="site-nav">
+    <header className="site-nav" data-menu-open={menuOpen}>
       <div className="container site-nav-inner">
         <a className="site-nav-brand" href="#top" onClick={(e) => go(e, '#top')}>
           <span className="site-nav-mark">{i18n.nav.mark}</span>
