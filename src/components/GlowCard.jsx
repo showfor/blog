@@ -123,6 +123,7 @@ export default function GlowCard({
   )
   // pointermove 处理（原站 _）：rAF 合并，每帧最多读 1 次 rect + 写 1 次变量。
   // 角度/接近度计算完全沿用原站 h()/g()，数学与像素输出零变化。
+  // 扩展：同时写入 --tilt-x / --tilt-y 实现 3D 倾斜效果（max ±8deg）。
   const _ = useCallback(
     (e) => {
       lastPointerEvent.current = e
@@ -139,6 +140,11 @@ export default function GlowCard({
         const o = g(t, r, i)
         t.style.setProperty('--edge-proximity', `${(a * 100).toFixed(3)}`)
         t.style.setProperty('--cursor-angle', `${o.toFixed(3)}deg`)
+        // 3D tilt: 鼠标相对卡片中心偏移 → rotateX / rotateY
+        const cx = r / n.width - 0.5   // -0.5 ~ 0.5
+        const cy = i / n.height - 0.5  // -0.5 ~ 0.5
+        t.style.setProperty('--tilt-x', `${(-cy * 16).toFixed(2)}deg`)
+        t.style.setProperty('--tilt-y', `${(cx * 16).toFixed(2)}deg`)
       })
     },
     [h, g]
@@ -187,11 +193,20 @@ export default function GlowCard({
     })
   }, [animated])
 
+  // 鼠标离开复位 tilt
+  const onLeave = useCallback(() => {
+    const t = p.current
+    if (!t) return
+    t.style.setProperty('--tilt-x', '0deg')
+    t.style.setProperty('--tilt-y', '0deg')
+  }, [])
+
   const v = zc(glowColor, glowIntensity)
   return (
     <Tag
       ref={p}
       onPointerMove={_}
+      onPointerLeave={onLeave}
       className={`border-glow-card ${className}`.trim()}
       style={{
         '--card-bg': backgroundColor,

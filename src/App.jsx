@@ -16,12 +16,24 @@ import ServicesSection from './components/ServicesSection.jsx'
 import OpenSourceSection from './components/OpenSourceSection.jsx'
 import ContactSection from './components/ContactSection.jsx'
 import DevPanel from './components/DevPanel.jsx'
+import CursorTrail from './components/CursorTrail.jsx'
 import SiteFooter from './components/SiteFooter.jsx'
 
 // 站点根组件：顶层包裹 LanguageProvider，按序组合 9 个区块（导航 + 7 内容 + 页脚）。
 export default function App() {
   // 原生滚动入场（替代原克隆版的 GSAP ScrollTrigger.batch）：观察 .reveal 加 .is-visible。
   useReveal()
+
+  // 滚动进度条：驱动 CSS 变量 --scroll（0→1），顶栏酸橙绿线随滚读增长
+  useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight
+      document.documentElement.style.setProperty('--scroll', h > 0 ? String(window.scrollY / h) : '0')
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <LanguageProvider>
@@ -66,6 +78,7 @@ export default function App() {
         <SiteFooter />
       </main>
       <DevPanel />
+      <CursorTrail />
     </LanguageProvider>
   )
 }
