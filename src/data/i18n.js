@@ -13,7 +13,7 @@ export const i18n = {
     switchHint: { en: 'Switch language, current:', cn: '切换语言，当前：' },
   },
   nav: {
-    brand: 'Amber River',
+    brand: { en: 'Amber River', cn: '琥珀川' },
     mark: 'AR',
     links: [
       { key: 'about', label: { en: 'About', cn: '关于我' }, href: '#about' },

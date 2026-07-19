@@ -249,10 +249,13 @@ export default function HeroSection({ openingComplete = true }) {
 
   const D = useMemo(() => (e, t) => { i.current[t] = e }, [])
 
-  const name = t(profile.identity.name) // "Amber River"
-  const nameParts = name.split(' ')
-  const title1 = nameParts[0] || 'Amber'
-  const title2 = nameParts.slice(1).join(' ') || 'River'
+  const name = t(profile.identity.name) // "Amber River" | "琥珀川"
+  // 名字按空格拆两行：英文 "Amber River" → accent=Amber, outline=River；
+  // 中文 "琥珀川"（无空格）→ 只渲染 accent 行，避免 outline 行回退到硬编码 'River'。
+  const nameParts = name.split(' ').filter(Boolean)
+  const title1 = nameParts[0] || ''
+  const title2 = nameParts.slice(1).join(' ')
+  const hasSubtitle = nameParts.length > 1
 
   return (
     <section id="top" className="hero">
@@ -285,7 +288,7 @@ export default function HeroSection({ openingComplete = true }) {
       <div className="hero-content">
         <h1 className="hero-title">
           <span className="hero-title-line accent" ref={a}>{title1}</span>
-          <span className="hero-title-line outline" ref={o}>{title2}</span>
+          {hasSubtitle && <span className="hero-title-line outline" ref={o}>{title2}</span>}
         </h1>
       </div>
 

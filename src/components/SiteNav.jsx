@@ -63,7 +63,7 @@ export default function SiteNav() {
       <div className="container site-nav-inner">
         <a className="site-nav-brand" href="#top" onClick={(e) => go(e, '#top')}>
           <span className="site-nav-mark">{i18n.nav.mark}</span>
-          <span className="site-nav-brand-name">{i18n.nav.brand}</span>
+          <span className="site-nav-brand-name">{t(i18n.nav.brand)}</span>
         </a>
 
         <nav className="site-nav-links">
@@ -119,7 +119,7 @@ export default function SiteNav() {
         aria-hidden={!menuOpen}
       >
         <div className="navbar-mobile-header">
-          <span className="navbar-mobile-title">{i18n.nav.brand}</span>
+          <span className="navbar-mobile-title">{t(i18n.nav.brand)}</span>
           <button
             type="button"
             className="navbar-mobile-close"

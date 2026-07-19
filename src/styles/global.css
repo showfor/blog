@@ -64,6 +64,9 @@
   --ease: cubic-bezier(.4, 0, .2, 1);
   --nav-ease: cubic-bezier(.4, 0, .2, 1);
   --nav-transition: .3s cubic-bezier(.4, 0, .2, 1);
+
+  /* ===== 招牌 section 标题条用颗粒噪点（inline SVG feTurbulence，无外部图） ===== */
+  --noise-url: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
 /* ===== 基础重置 ===== */
@@ -120,42 +123,63 @@ a { color: inherit; }
 .section {
   padding: 120px 0; /* 复刻原站 .section { padding:120px 0 } */
 }
-.section-head { margin-bottom: 32px; }
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12px; /* 复刻原站 .section-label { font-size:12px } */
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--accentColor);
-  margin-bottom: 10px;
-}
-.eyebrow::before {
-  content: "";
-  width: 26px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--grad);
-}
-.section-title {
-  font-size: 42px; /* 复刻原站 .section-title { font-size:42px } */
-  margin: 0 0 8px;
-  letter-spacing: .5px;
+/* ===== 招牌 section 标题条：径向渐变酸橙绿光晕 + 颗粒噪点（左上扩散自然 fade 到深底） =====
+   - 改用 ::before/::after 双层绝对定位伪元素模拟「光晕」效果：
+     · ::before = 径向渐变（var(--accent) 中心 → transparent 边缘），绿色从左上 25%/35% 处扩散；
+     · ::after  = 噪点纹理，用同一径向渐变作为 mask，让噪点只出现在绿色光晕范围内（深底上看不见）；
+   - 伪元素范围超过 section-head 自身（上 120px / 下 200px，左 240px / 右 240px），让绿色自然渗到下方的卡片区域；
+   - 不再用 full-bleed 实色矩形，文字直接落在深底 + 绿色光晕上，更接近参考图。 */
+.section-head {
   position: relative;
-  display: inline-block;
-  color: var(--paper);
+  isolation: isolate;
+  margin: 0 0 48px;
+  padding: clamp(36px, 5vw, 64px) 0;
 }
-.section-title::after {
+.section-head::before {
   content: "";
   position: absolute;
-  left: 0; bottom: -8px;
-  width: 44px; height: 4px;
-  border-radius: 4px;
-  background: var(--grad);
-  transition: width .5s cubic-bezier(.22, 1, .36, 1);
+  top: -120px;
+  left: -240px;
+  right: -240px;
+  bottom: -200px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 55% 55% at 25% 35%, var(--accent) 0%, transparent 65%);
 }
+.section-head::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: -240px;
+  right: -240px;
+  bottom: -200px;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--noise-url);
+  background-size: 240px 240px;
+  -webkit-mask-image: radial-gradient(ellipse 55% 55% at 25% 35%, #000 0%, transparent 65%);
+          mask-image: radial-gradient(ellipse 55% 55% at 25% 35%, #000 0%, transparent 65%);
+}
+.eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #FFC107; /* 琥珀 */
+  margin: 0 0 16px;
+}
+.section-title {
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+  display: block;
+  position: static;
+  color: var(--paper);
+}
+/* 旧版 .section-title::after 的渐变小条已移除 */
 .section-sub { color: var(--textMuted); margin: 16px 0 0; font-size: 16px; } /* 复刻原站 .section-desc { font-size:16px } */
 
 /* ===== 发光卡片 border-glow-card（逐字自 aystba；cursor 跟随 conic 发光描边） ===== */
@@ -736,8 +760,7 @@ main { z-index: 1; background: 0 0; position: relative; }
 .service-desc { color: var(--textMuted); line-height: 1.7; font-size: 0.94rem; margin: 0; }
 
 /* ===== Open Source 开源贡献 ===== */
-.opensource .section-head { text-align: center; }
-.opensource .section-head .section-title::after { left: 50%; transform: translateX(-50%); }
+/* 注：旧版 .opensource/.contact 居中覆盖已移除——section-head banner 化后全站统一左对齐 */
 .os-card {
   max-width: 720px;
   margin: 0 auto;
@@ -755,8 +778,7 @@ main { z-index: 1; background: 0 0; position: relative; }
 .os-list li::marker { color: var(--accentColor); }
 
 /* ===== Contact 联系方式 ===== */
-.contact .section-head { text-align: center; }
-.contact .section-head .section-title::after { left: 50%; transform: translateX(-50%); }
+/* 注：旧版 .contact 居中覆盖已移除——section-head banner 化后全站统一左对齐 */
 .contact-heading {
   font-size: clamp(1.4rem, 3.5vw, 2.1rem);
   color: var(--paper);
@@ -765,6 +787,39 @@ main { z-index: 1; background: 0 0; position: relative; }
   line-height: 1.5;
 }
 .contact-cta { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+
+/* ===== GlobeSection 地球仪 ===== */
+.globe-section { padding: 40px 0 60px; }
+.globe-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.globe-wrapper canvas {
+  display: block;
+  border-radius: 50%;
+}
+.globe-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--textMuted);
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+.globe-label-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: globe-pulse 2s ease-in-out infinite;
+}
+@keyframes globe-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.6); }
+}
 
 /* ===== SiteFooter 页脚 ===== */
 .site-footer {
@@ -795,6 +850,14 @@ main { z-index: 1; background: 0 0; position: relative; }
   .container { padding: 0 20px; }
   .skills-layout { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; }
+  /* 招牌 section 标题条：窄屏收缩伪元素外延范围，光晕仍按 25%/35% 左上锚定 */
+  .section-head::before,
+  .section-head::after {
+    top: -80px;
+    left: -120px;
+    right: -120px;
+    bottom: -140px;
+  }
 }
 @media (width<=768px) {
   .container { padding: 0 20px; }
