@@ -140,11 +140,6 @@ export default function GlowCard({
         const o = g(t, r, i)
         t.style.setProperty('--edge-proximity', `${(a * 100).toFixed(3)}`)
         t.style.setProperty('--cursor-angle', `${o.toFixed(3)}deg`)
-        // 3D tilt: 鼠标相对卡片中心偏移 → rotateX / rotateY
-        const cx = r / n.width - 0.5   // -0.5 ~ 0.5
-        const cy = i / n.height - 0.5  // -0.5 ~ 0.5
-        t.style.setProperty('--tilt-x', `${(-cy * 16).toFixed(2)}deg`)
-        t.style.setProperty('--tilt-y', `${(cx * 16).toFixed(2)}deg`)
       })
     },
     [h, g]
@@ -193,20 +188,47 @@ export default function GlowCard({
     })
   }, [animated])
 
-  // 鼠标离开复位 tilt
-  const onLeave = useCallback(() => {
-    const t = p.current
-    if (!t) return
-    t.style.setProperty('--tilt-x', '0deg')
-    t.style.setProperty('--tilt-y', '0deg')
-  }, [])
+  // 进场环扫（原站 qc 的 animated 分支，原生 Kc）
+  useEffect(() => {
+    if (!animated || !p.current) return
+    const e = p.current
+    e.classList.add('sweep-active')
+    e.style.setProperty('--cursor-angle', '110deg')
+    Kc({ duration: 500, onUpdate: (t) => e.style.setProperty('--edge-proximity', t) })
+    Kc({
+      ease: Gc,
+      duration: 1500,
+      end: 50,
+      onUpdate: (t) => {
+        e.style.setProperty('--cursor-angle', `${t / 100 * 355 + 110}deg`)
+      },
+    })
+    Kc({
+      ease: Wc,
+      delay: 1500,
+      duration: 2250,
+      start: 50,
+      end: 100,
+      onUpdate: (t) => {
+        e.style.setProperty('--cursor-angle', `${t / 100 * 355 + 110}deg`)
+      },
+    })
+    Kc({
+      ease: Gc,
+      delay: 2500,
+      duration: 1500,
+      start: 100,
+      end: 0,
+      onUpdate: (t) => e.style.setProperty('--edge-proximity', t),
+      onEnd: () => e.classList.remove('sweep-active'),
+    })
+  }, [animated])
 
   const v = zc(glowColor, glowIntensity)
   return (
     <Tag
       ref={p}
       onPointerMove={_}
-      onPointerLeave={onLeave}
       className={`border-glow-card ${className}`.trim()}
       style={{
         '--card-bg': backgroundColor,
