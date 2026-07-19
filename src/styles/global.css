@@ -845,6 +845,161 @@ main { z-index: 1; background: 0 0; position: relative; }
 /* ===== 锚点滚动偏移（避免被固定导航遮挡） ===== */
 #top, #about, #projects, #skills, #services, #opensource, #contact { scroll-margin-top: 84px; }
 
+/* ===== DevPanel 开发者面板 ===== */
+/* 折叠态：右下角悬浮胶囊 */
+.devpanel-toggle {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--borderColor);
+  background: color-mix(in srgb, var(--bg-primary) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: var(--textMuted);
+  transition: all .25s var(--ease);
+}
+.devpanel-toggle:hover {
+  border-color: var(--accentColor);
+  color: var(--paper);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,.5);
+}
+.devpanel-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.devpanel-fps { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 26px; text-align: right; }
+.devpanel-arrow { font-size: 0.6rem; opacity: .5; }
+
+/* 展开态 */
+.devpanel {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  z-index: 9999;
+  width: 300px;
+  max-height: 480px;
+  border-radius: 16px;
+  border: 1px solid var(--borderColor);
+  background: color-mix(in srgb, var(--bg-primary) 94%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 12px 48px rgba(0,0,0,.65);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: devpanel-in .2s var(--ease);
+}
+@keyframes devpanel-in {
+  from { opacity: 0; transform: translateY(12px) scale(.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 头部 */
+.devpanel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--borderColor);
+  flex-shrink: 0;
+}
+.devpanel-tabs { display: flex; gap: 4px; }
+.devpanel-tab {
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--textMuted);
+  cursor: pointer;
+  transition: all .15s;
+}
+.devpanel-tab:hover { background: var(--borderColor); color: var(--paper); }
+.devpanel-tab.active { background: color-mix(in srgb, var(--accentColor) 18%, transparent); color: var(--accentColor); }
+.devpanel-close {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--textMuted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all .15s;
+}
+.devpanel-close:hover { background: var(--borderColor); color: var(--paper); }
+
+/* 主体区 */
+.devpanel-body { padding: 14px; overflow-y: auto; flex: 1; min-height: 0; }
+
+/* 性能指标 */
+.devpanel-metric { margin-bottom: 14px; }
+.devpanel-metric-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  color: var(--textMuted);
+  margin-bottom: 4px;
+}
+.devpanel-bar-bg {
+  width: 100%; height: 4px;
+  border-radius: 2px;
+  background: var(--borderColor);
+  overflow: hidden;
+}
+.devpanel-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .4s var(--ease);
+}
+
+/* 日志区 */
+.devpanel-logs {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.68rem;
+  line-height: 1.55;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+}
+.devpanel-logs::-webkit-scrollbar { width: 4px; }
+.devpanel-logs::-webkit-scrollbar-thumb { background: var(--borderColor); border-radius: 2px; }
+.devpanel-log-line {
+  display: flex;
+  gap: 8px;
+  padding: 1px 0;
+  white-space: nowrap;
+}
+.devpanel-log-ts { opacity: .4; flex-shrink: 0; }
+.devpanel-log-msg { overflow: hidden; text-overflow: ellipsis; }
+.devpanel-log-extra { opacity: .5; margin-left: auto; flex-shrink: 0; font-size: 0.62rem; }
+
+/* 提示文字 */
+.devpanel-hint {
+  font-size: 0.62rem;
+  color: var(--textMuted);
+  opacity: .5;
+  margin: 8px 0 0;
+}
+.devpanel-hint kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--borderColor);
+  font-family: inherit;
+  font-size: 0.6rem;
+}
+
 /* ===== 响应式（断点逐字对齐原站 aystba：1100 / 768） ===== */
 @media (width<=1100px) {
   .container { padding: 0 20px; }

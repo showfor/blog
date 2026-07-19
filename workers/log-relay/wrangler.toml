@@ -1,0 +1,14 @@
+# wrangler.toml - Cloudflare Worker 配置
+name = "log-relay"
+main = "src/index.js"
+compatibility_date = "2025-07-19"
+
+# Durable Object 绑定：每个 LogRoom 实例管理一组 WebSocket 连接
+durable_objects.bindings = [
+  { name = "LOG_ROOM", class_name = "LogRoom" }
+]
+
+# Durable Object 迁移（首次部署用 new_sqlite_classes，新版 DO 语法）
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["LogRoom"]

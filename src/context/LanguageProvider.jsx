@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { emit } from '../utils/eventBus.js'
 
 // 语言上下文：提供 lang 状态、setLang（写入 localStorage）与取数函数 t。
 // 默认语言为 'en'；t(obj) 取 obj[lang]，缺失时回退 obj.en。
@@ -21,7 +22,10 @@ export function LanguageProvider({ children }) {
   }, [lang])
 
   const setLang = (next) => {
-    if (next === 'en' || next === 'cn') setLangState(next)
+    if (next === 'en' || next === 'cn') {
+      setLangState(next)
+      emit('log:lang', { msg: `Language switched to ${next === 'en' ? 'English' : '中文'}`, extra: next })
+    }
   }
 
   const t = (obj) => {

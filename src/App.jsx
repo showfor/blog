@@ -16,6 +16,7 @@ import ServicesSection from './components/ServicesSection.jsx'
 import OpenSourceSection from './components/OpenSourceSection.jsx'
 import ContactSection from './components/ContactSection.jsx'
 import GlobeSection from './components/GlobeSection.jsx'
+import DevPanel from './components/DevPanel.jsx'
 import SiteFooter from './components/SiteFooter.jsx'
 
 // 站点根组件：顶层包裹 LanguageProvider，按序组合 9 个区块（导航 + 7 内容 + 页脚）。
@@ -66,6 +67,7 @@ export default function App() {
         <GlobeSection />
         <SiteFooter />
       </main>
+      <DevPanel />
     </LanguageProvider>
   )
 }

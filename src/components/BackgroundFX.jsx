@@ -187,6 +187,7 @@ export default function BackgroundFX({
       last = now
       gl.uniform1f(U.iTime, (now - start) * 0.001)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
+      window.__wbGlFrames = (window.__wbGlFrames || 0) + 1
       rafId = requestAnimationFrame(render)
     }
     const startLoop = () => {

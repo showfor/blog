@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
+import { emit } from '../utils/eventBus.js'
 
 // ============================================================
 //  实时访客地球仪 — Canvas 2D orthographic projection
@@ -126,9 +127,11 @@ export default function GlobeSection() {
         visitorsRef.current = [...SEED_CITIES, ...stored]
         newVisitorTimeRef.current = performance.now() * 0.001
         setVisitorCount(SEED_CITIES.length + stored.length)
+        emit('log:visitor', { msg: `New visitor from ${entry.city || 'Unknown'}`, extra: entry.country || '' })
       }
     } catch {
       // API 静默失败 — 退回到种子+本地已有数据
+      emit('log:warn', { msg: 'Geolocation fetch failed', extra: 'using cached data' })
     }
   }, [])
 
@@ -137,6 +140,9 @@ export default function GlobeSection() {
     const stored = loadStored()
     visitorsRef.current = [...SEED_CITIES, ...stored]
     setVisitorCount(SEED_CITIES.length + stored.length)
+    if (stored.length) {
+      emit('log:visitor', { msg: `Globe loaded`, extra: `${stored.length} past visitors` })
+    }
     // 异步获取当前访客 IP（不阻塞首帧渲染）
     fetchLocation()
   }, [fetchLocation])
