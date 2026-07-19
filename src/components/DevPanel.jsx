@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState } from 'react'
-import { on } from '../utils/eventBus.js'
 import { WS_URL } from '../utils/wsConfig.js'
 
 // ============================================================
@@ -13,37 +12,37 @@ import { WS_URL } from '../utils/wsConfig.js'
 const BC_NAME = 'devpanel-logs' // BroadcastChannel 回退名称
 const MAX_LOGS = 200 // 最多保留 200 条日志
 
-// ── 日志条目 ──
+// ── 全局日志缓冲（组件挂载前的事件也能被捕获） ──
+const _logBuffer = []
 function nowISO() {
   const d = new Date()
-  return d.toTimeString().slice(0, 8) // HH:MM:SS
+  return d.toTimeString().slice(0, 8)
 }
 
-function addLogEntry(entry) {
-  const transport = _transportRef.current
-  const ts = nowISO()
-  const e = { ts, ...entry }
-  try {
-    if (transport && transport.readyState === undefined) {
-      // BroadcastChannel → postMessage
-      transport.postMessage(e)
-    } else if (transport && transport.readyState === WebSocket.OPEN) {
-      // WebSocket → send JSON
-      transport.send(JSON.stringify(e))
-    }
-  } catch { /* 传输层发送失败，本地仍保留 */ }
-  // 本地推送
-  if (_subRef.current) _subRef.current(e)
-}
-
-// 静态引用（rAF 循环和事件总线不需要 React state 触发重渲染）
-const _transportRef = { current: null }
-const _subRef = { current: null }
-
-// ── 导出的便捷日志函数（组件外部可直接调用） ──
+/** 在任何组件中调用 devLog(...) 即可推送日志——不依赖 React 生命周期 */
 export function devLog(type, msg, extra) {
-  addLogEntry({ type, msg, extra: extra || '' })
+  const ts = nowISO()
+  const entry = { ts, type, msg, extra: extra || '' }
+  // 先写入全局缓冲
+  _logBuffer.push(entry)
+  if (_logBuffer.length > MAX_LOGS) _logBuffer.shift()
+  // 同时推送本地回调（DevPanel 挂载后注入）
+  if (_onLogRef.current) _onLogRef.current(entry)
+  // 推送到传输层
+  _pushTransport(entry)
 }
+
+function _pushTransport(entry) {
+  const t = _transportRef.current
+  if (!t) return
+  try {
+    if (t.readyState === undefined) { t.postMessage(entry) }
+    else if (t.readyState === WebSocket.OPEN) { t.send(JSON.stringify(entry)) }
+  } catch { /* 静默 */ }
+}
+
+const _transportRef = { current: null }
+const _onLogRef = { current: null } // DevPanel 挂载后 setLogs 回调
 
 // ── FPS 跟踪 ──
 function createFpsTracker(onFrame) {
@@ -73,7 +72,7 @@ export default function DevPanel() {
   const [jsHeap, setJsHeap] = useState(0)
   const [drawCalls, setDrawCalls] = useState(0)
   const [loadMs, setLoadMs] = useState(0)
-  const [logs, setLogs] = useState([])
+  const [logs, setLogs] = useState([..._logBuffer]) // 初始化时载入挂载前缓存的日志
   const fpsRef = useRef(null)
   const logEndRef = useRef(null)
 
@@ -86,8 +85,14 @@ export default function DevPanel() {
       : (nav.loadEventEnd || 0) - (nav.fetchStart || 0)
     setLoadMs(Math.round(t))
 
-    const log = (type, msg, extra) => addLogEntry({ type, msg, extra: extra || '' })
-    log('info', 'Page loaded', `${Math.round(t)}ms`)
+    // 注入全局日志回调（此后 devLog() 会同步更新 React state）
+    _onLogRef.current = (entry) => setLogs(prev => [...prev.slice(-MAX_LOGS + 1), entry])
+
+    // 排空挂载前其他组件缓存的日志（如 GlobeSection 的 "Globe loaded"）
+    _logBuffer.forEach(entry => _onLogRef.current(entry))
+
+    // 页面加载日志（现在 _onLogRef 已就绪，后续所有 devLog 调用都会被捕获）
+    devLog('info', 'DevPanel mounted', `${Math.round(t)}ms load`)
 
     // ── FPS 计数器 ──
     const tracker = createFpsTracker((f) => {
@@ -113,17 +118,17 @@ export default function DevPanel() {
       try {
         const ws = new WebSocket(WS_URL + '/ws')
         transportLabel = `WebSocket ${WS_URL}`
-        ws.onopen = () => log('info', 'Log channel active', transportLabel)
+        ws.onopen = () => devLog('info', 'Log channel active', transportLabel)
         ws.onmessage = (ev) => {
           try { setLogs(prev => [...prev.slice(-MAX_LOGS + 1), JSON.parse(ev.data)]) }
           catch { /* 非 JSON 消息忽略 */ }
         }
-        ws.onerror = () => log('warn', 'WebSocket error', 'falling back to BroadcastChannel')
-        ws.onclose = () => { log('warn', 'WebSocket closed', 'reconnecting...') }
+        ws.onerror = () => devLog('warn', 'WebSocket error', 'falling back')
+        ws.onclose = () => { devLog('warn', 'WebSocket closed', 'reconnecting...') }
         transport = ws
         _transportRef.current = ws
       } catch (e) {
-        log('warn', 'WebSocket init failed', e.message)
+        devLog('warn', 'WebSocket init failed', e.message)
       }
     }
 
@@ -138,21 +143,11 @@ export default function DevPanel() {
         bc.onmessageerror = () => {}
         transport = bc
         _transportRef.current = bc
-        log('info', 'Log channel active', transportLabel)
+        devLog('info', 'Log channel active', transportLabel)
       } catch {
-        log('warn', 'BroadcastChannel unavailable', 'cross-tab disabled')
+        devLog('warn', 'BroadcastChannel unavailable', 'cross-tab disabled')
       }
     }
-
-    // ── 从事件总线订阅日志 ──
-    const unsubs = [
-      on('log:info', (data) => log('info', data.msg, data.extra)),
-      on('log:warn', (data) => log('warn', data.msg, data.extra)),
-      on('log:error', (data) => log('error', data.msg, data.extra)),
-      on('log:visitor', (data) => log('visitor', data.msg, data.extra)),
-      on('log:webgl', (data) => { log('webgl', data.msg, data.extra); setDrawCalls(data.draws || 0) }),
-      on('log:lang', (data) => log('lang', data.msg, data.extra)),
-    ]
 
     // ── WebGL 帧数被动跟踪 ──
     // 劫持 BackgroundFX 的 drawArrays 调用来计数
@@ -163,7 +158,7 @@ export default function DevPanel() {
       }
     }, 1000)
 
-    _subRef.current = (entry) => setLogs(prev => [...prev.slice(-MAX_LOGS + 1), entry])
+    _onLogRef.current = (entry) => setLogs(prev => [...prev.slice(-MAX_LOGS + 1), entry])
 
     return () => {
       tracker.stop()
@@ -173,8 +168,7 @@ export default function DevPanel() {
         try { transport.close() } catch { /* already closed */ }
       }
       _transportRef.current = null
-      unsubs.forEach(u => u())
-      _subRef.current = null
+      _onLogRef.current = null
     }
   }, [])
 

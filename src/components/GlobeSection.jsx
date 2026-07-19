@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
-import { emit } from '../utils/eventBus.js'
+import { devLog } from './DevPanel.jsx'
 
 // ============================================================
 //  实时访客地球仪 — Canvas 2D orthographic projection
@@ -29,7 +29,7 @@ const SEED_CITIES = [
 // localStorage key
 const LS_KEY = 'globe_visitors'
 const MAX_STORED = 30 // 最多保留 30 个不重复城市
-const DEBOUNCE_MS = 1000 * 60 * 10 // 10 分钟内不重复记录同一个 IP（API 节流）
+const DEBOUNCE_MS = 1000 * 60 * 2 // 2 分钟节流（ipapi.co 免费额度 1000/天）
 
 function loadStored() {
   try {
@@ -92,16 +92,26 @@ export default function GlobeSection() {
   const fetchLocation = useCallback(async () => {
     // 节流：检查上次请求时间
     const lastFetch = localStorage.getItem('globe_last_fetch')
-    if (lastFetch && Date.now() - Number(lastFetch) < DEBOUNCE_MS) return
+    if (lastFetch && Date.now() - Number(lastFetch) < DEBOUNCE_MS) {
+      devLog('info', 'Geolocation throttled', `${Math.round((DEBOUNCE_MS - (Date.now() - Number(lastFetch))) / 1000)}s until next fetch`)
+      return
+    }
 
+    devLog('info', 'Geolocation fetch started', 'ipapi.co')
     try {
       const ctrl = new AbortController()
       const t = setTimeout(() => ctrl.abort(), 4000)
       const res = await fetch('https://ipapi.co/json/', { signal: ctrl.signal })
       clearTimeout(t)
-      if (!res.ok) return
+      if (!res.ok) {
+        devLog('warn', 'Geolocation API returned error', `HTTP ${res.status}`)
+        return
+      }
       const data = await res.json()
-      if (!data.latitude || !data.longitude) return
+      if (!data.latitude || !data.longitude) {
+        devLog('warn', 'Geolocation API returned no coords', JSON.stringify(data).slice(0, 80))
+        return
+      }
 
       localStorage.setItem('globe_last_fetch', String(Date.now()))
 
@@ -127,11 +137,11 @@ export default function GlobeSection() {
         visitorsRef.current = [...SEED_CITIES, ...stored]
         newVisitorTimeRef.current = performance.now() * 0.001
         setVisitorCount(SEED_CITIES.length + stored.length)
-        emit('log:visitor', { msg: `New visitor from ${entry.city || 'Unknown'}`, extra: entry.country || '' })
+        devLog('visitor', `New visitor from ${entry.city || 'Unknown'}`, entry.country || '')
       }
     } catch {
       // API 静默失败 — 退回到种子+本地已有数据
-      emit('log:warn', { msg: 'Geolocation fetch failed', extra: 'using cached data' })
+      devLog('warn', 'Geolocation fetch failed', e.message || String(e).slice(0, 40))
     }
   }, [])
 
@@ -141,7 +151,7 @@ export default function GlobeSection() {
     visitorsRef.current = [...SEED_CITIES, ...stored]
     setVisitorCount(SEED_CITIES.length + stored.length)
     if (stored.length) {
-      emit('log:visitor', { msg: `Globe loaded`, extra: `${stored.length} past visitors` })
+      devLog('visitor', 'Globe loaded', `${stored.length} past visitors`)
     }
     // 异步获取当前访客 IP（不阻塞首帧渲染）
     fetchLocation()
