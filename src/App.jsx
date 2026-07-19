@@ -15,7 +15,6 @@ import SkillsSection from './components/SkillsSection.jsx'
 import ServicesSection from './components/ServicesSection.jsx'
 import OpenSourceSection from './components/OpenSourceSection.jsx'
 import ContactSection from './components/ContactSection.jsx'
-import GlobeSection from './components/GlobeSection.jsx'
 import DevPanel from './components/DevPanel.jsx'
 import SiteFooter from './components/SiteFooter.jsx'
 
@@ -64,7 +63,6 @@ export default function App() {
         <ServicesSection />
         <OpenSourceSection />
         <ContactSection />
-        <GlobeSection />
         <SiteFooter />
       </main>
       <DevPanel />
