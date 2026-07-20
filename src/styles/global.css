@@ -993,21 +993,6 @@ main { z-index: 1; background: 0 0; position: relative; }
   font-size: 0.6rem;
 }
 
-/* ===== CursorTrail 粒子光标 ===== */
-.cursor-trail {
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 9998;
-}
-/* 隐藏原生光标（触屏设备不生效——CursorTrail 组件内判断） */
-@media (pointer: fine) {
-  html.cursor-custom,
-  html.cursor-custom * {
-    cursor: none !important;
-  }
-}
-
 /* ===== Reveal 入场增强 —— 错峰波浪 + 缩放微动 ===== */
 .reveal {
   transition: opacity .8s cubic-bezier(.22,1,.36,1),
