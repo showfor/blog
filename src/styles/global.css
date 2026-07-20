@@ -836,7 +836,52 @@ main { z-index: 1; background: 0 0; position: relative; }
 .site-footer-link:hover { color: var(--accentColor); }
 
 /* ===== 锚点滚动偏移（避免被固定导航遮挡） ===== */
-#top, #about, #projects, #skills, #services, #opensource, #contact { scroll-margin-top: 84px; }
+#top, #anime, #music, #movies, #novels { scroll-margin-top: 84px; }
+
+/* ===== HobbiesSection 爱好分类 ===== */
+.hobby-intro {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--textMuted);
+  max-width: 720px;
+  margin-bottom: 36px;
+}
+.hobby-list {
+  display: grid;
+  gap: 14px;
+}
+.hobby-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 24px;
+  cursor: default;
+}
+.hobby-index {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accentColor);
+  letter-spacing: 2px;
+  flex-shrink: 0;
+  min-width: 24px;
+}
+.hobby-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+.hobby-title {
+  font-size: 1.05rem;
+  margin: 0;
+  color: var(--paper);
+}
+.hobby-note {
+  font-size: 0.8rem;
+  color: var(--textMuted);
+  margin: 0;
+  opacity: 0.7;
+}
 
 /* ===== DevPanel 开发者面板 ===== */
 /* 折叠态：右下角悬浮胶囊 */
