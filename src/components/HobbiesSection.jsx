@@ -25,15 +25,38 @@ export default function HobbiesSection() {
 
             {/* ── 列表卡片 ── */}
             <div className="hobby-list">
-              {h.items.map((item, i) => (
-                <GlowCard key={i} className="hobby-card" animated={idx === 0}>
-                  <span className="hobby-index">{String(i + 1).padStart(2, '0')}</span>
-                  <div className="hobby-body">
-                    <h3 className="hobby-title">{t(item)}</h3>
-                    {item.note && <p className="hobby-note">{t(item.note)}</p>}
-                  </div>
-                </GlowCard>
-              ))}
+              {h.items.map((item, i) => {
+                // 音乐分类有 embed 字段时内嵌播放器
+                if (h.key === 'music' && item.embed) {
+                  return (
+                    <div key={i} className="hobby-music-item">
+                      <div className="hobby-music-info">
+                        <span className="hobby-index">{String(i + 1).padStart(2, '0')}</span>
+                        <div className="hobby-body">
+                          <h3 className="hobby-title">{t(item)}</h3>
+                          {item.note && <p className="hobby-note">{t(item.note)}</p>}
+                        </div>
+                      </div>
+                      <iframe
+                        className="hobby-music-player"
+                        src={item.embed}
+                        width="100%" height="66"
+                        frameBorder="0"
+                        title={t(item)}
+                      />
+                    </div>
+                  )
+                }
+                return (
+                  <GlowCard key={i} className="hobby-card" animated={idx === 0}>
+                    <span className="hobby-index">{String(i + 1).padStart(2, '0')}</span>
+                    <div className="hobby-body">
+                      <h3 className="hobby-title">{t(item)}</h3>
+                      {item.note && <p className="hobby-note">{t(item.note)}</p>}
+                    </div>
+                  </GlowCard>
+                )
+              })}
             </div>
           </div>
         </section>

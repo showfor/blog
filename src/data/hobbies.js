@@ -30,7 +30,7 @@ export const hobbies = [
     },
     items: [
       { en: 'MONO — Hymn to the Immortal Wind', cn: 'MONO — 不朽之风赞歌', note: { en: 'Post-rock', cn: '后摇' } },
-      { en: 'Joe Hisaishi — Spirited Away OST', cn: '久石让 — 千与千寻原声', note: { en: 'Orchestral', cn: '管弦乐' } },
+      { en: 'Joe Hisaishi — Spirited Away OST', cn: '久石让 — 千与千寻原声', note: { en: 'Orchestral', cn: '管弦乐' }, embed: 'https://music.163.com/outchain/player?type=2&id=443794&auto=0&height=66' },
       { en: 'Nujabes — Modal Soul', cn: 'Nujabes — Modal Soul', note: { en: 'Jazz hip-hop', cn: '爵士嘻哈' } },
       { en: 'Ólafur Arnalds — re:member', cn: 'Ólafur Arnalds — re:member', note: { en: 'Neo-classical', cn: '新古典' } },
       { en: 'Yoko Kanno — Cowboy Bebop OST', cn: '菅野洋子 — 星际牛仔原声', note: { en: 'Jazz fusion', cn: '爵士融合' } },
