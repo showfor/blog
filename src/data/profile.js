@@ -2,7 +2,7 @@
 export const profile = {
   identity: {
     name: { en: 'Amber River', cn: '琥珀川' },
-    role: { en: 'Designer & Creator', cn: '设计师与创作者' },
+    role: { en: 'A Boy', cn: '一个男孩' },
     location: { en: 'Based in Hefei, China.', cn: '位于中国合肥。' },
   },
   hero: {
