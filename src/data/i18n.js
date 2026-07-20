@@ -46,5 +46,17 @@ export const i18n = {
   },
   footer: {
     about: { en: 'About Me', cn: '关于我' },
+    stack: {
+      label: { en: 'Built with', cn: '技术栈' },
+      items: [
+        { en: 'React 18', cn: 'React 18' },
+        { en: 'Vite 5',   cn: 'Vite 5' },
+        { en: 'WebGL',    cn: 'WebGL' },
+        { en: 'GSAP',     cn: 'GSAP' },
+        { en: 'Canvas 2D', cn: 'Canvas 2D' },
+        { en: 'Cloudflare Workers', cn: 'Cloudflare Workers' },
+        { en: 'Durable Objects',   cn: 'Durable Objects' },
+      ],
+    },
   },
 }

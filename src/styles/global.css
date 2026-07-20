@@ -835,6 +835,32 @@ main { z-index: 1; background: 0 0; position: relative; }
 .site-footer-link { color: var(--textMuted); text-decoration: none; font-size: 0.9rem; transition: color .25s ease; }
 .site-footer-link:hover { color: var(--accentColor); }
 
+/* 技术栈 pill 列表 */
+.site-footer-stack { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.site-footer-stack-label {
+  color: var(--textMuted);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+}
+.site-footer-stack-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--textColor);
+  background: color-mix(in srgb, var(--accentColor) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accentColor) 30%, transparent);
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  transition: all .25s var(--ease);
+}
+.site-footer-stack-pill:hover {
+  background: color-mix(in srgb, var(--accentColor) 22%, transparent);
+  border-color: var(--accentColor);
+}
+
 /* ===== 锚点滚动偏移（避免被固定导航遮挡） ===== */
 #top, #anime, #music, #movies, #novels { scroll-margin-top: 84px; }
 
