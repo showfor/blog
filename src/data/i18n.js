@@ -16,12 +16,12 @@ export const i18n = {
     brand: { en: 'Amber River', cn: '琥珀川' },
     mark: 'AR',
     links: [
-      { key: 'anime',   label: { en: 'Anime',   cn: '动漫' }, href: '#anime' },
       { key: 'music',   label: { en: 'Music',   cn: '音乐' }, href: '#music' },
-      { key: 'movies',  label: { en: 'Movies',  cn: '电影' }, href: '#movies' },
       { key: 'novels',  label: { en: 'Novels',  cn: '小说' }, href: '#novels' },
+      { key: 'anime',   label: { en: 'Anime',   cn: '动漫' }, href: '#anime' },
+      { key: 'movies',  label: { en: 'Movies',  cn: '电影' }, href: '#movies' },
     ],
-    cta: { label: { en: 'Anime', cn: '动漫' }, href: '#anime' },
+    cta: { label: { en: 'Music', cn: '音乐' }, href: '#music' },
   },
   titles: {
     hero: { en: 'Hero', cn: '首页' },
