@@ -11,7 +11,7 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="container site-footer-inner">
         <div className="site-footer-brand">
-          <span className="site-footer-name">{profile.identity.name.en}</span>
+          <span className="site-footer-name">{t(i18n.nav.brand)}</span>
           <span className="site-footer-role"> / {t(profile.identity.role)}</span>
         </div>
         <div className="site-footer-meta">
