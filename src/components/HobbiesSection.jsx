@@ -40,7 +40,7 @@ export default function HobbiesSection() {
                       <iframe
                         className="hobby-music-player"
                         src={item.embed}
-                        width="100%" height="66"
+                        width="100%" height="152"
                         frameBorder="0"
                         title={t(item)}
                       />
