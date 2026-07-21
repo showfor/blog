@@ -7,7 +7,7 @@ export const profile = {
   },
   hero: {
     greeting: { en: 'I am hakuriver', cn: '我是 hakuriver！' },
-    name: { en: 'hakuriver', cn: 'hakuriver' },
+    name: { en: 'haku river', cn: 'haku river' },
     tags: [
       { en: 'Developer', cn: '开发者' },
       { en: 'Designer', cn: '设计师' },
