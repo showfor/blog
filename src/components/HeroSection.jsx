@@ -17,14 +17,14 @@ const U = gsap
 
 const da = '/assets/hero-bg.jpg'
 const fa = [
-  { color: '#2a3a2a', label: 'Photography', img: 'https://picsum.photos/seed/photography/400/500' },
-  { color: '#3a3a2a', label: '3D Render', img: 'https://picsum.photos/seed/3drender/400/500' },
-  { color: '#2a2a3a', label: 'Brand Identity', img: 'https://picsum.photos/seed/brand/400/500' },
-  { color: '#3a3a2a', label: 'AI Art', img: 'https://picsum.photos/seed/aiart/400/500' },
-  { color: '#2a3a3a', label: 'UI Design', img: 'https://picsum.photos/seed/uidesign/400/500' },
-  { color: '#3a2a3a', label: 'Game Art', img: 'https://picsum.photos/seed/gameart/400/500' },
-  { color: '#2a3a2a', label: 'Poster', img: 'https://picsum.photos/seed/poster/400/500' },
-  { color: '#2a3a3a', label: 'Illustration', img: 'https://picsum.photos/seed/illustration/400/500' },
+  { color: '#2a3a2a', label: 'Photography',     img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop' },
+  { color: '#3a3a2a', label: '3D Render',        img: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=500&fit=crop' },
+  { color: '#2a2a3a', label: 'Brand Identity',   img: 'https://images.unsplash.com/photo-1636955816868-fcb881e57954?w=400&h=500&fit=crop' },
+  { color: '#3a3a2a', label: 'AI Art',           img: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=500&fit=crop' },
+  { color: '#2a3a3a', label: 'UI Design',        img: 'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=400&h=500&fit=crop' },
+  { color: '#3a2a3a', label: 'Game Art',         img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=500&fit=crop' },
+  { color: '#2a3a2a', label: 'Poster',           img: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=400&h=500&fit=crop' },
+  { color: '#2a3a3a', label: 'Illustration',     img: 'https://images.unsplash.com/photo-1633621641966-238e4e7c14a4?w=400&h=500&fit=crop' },
 ]
 const pa = 180
 const ma = pa + 52
