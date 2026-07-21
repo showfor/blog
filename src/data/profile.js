@@ -2,7 +2,7 @@
 export const profile = {
   identity: {
     name: { en: 'hakuriver', cn: 'hakuriver' },
-    role: { en: 'Haku', cn: '白龙' },
+    role: { en: 'Nigihayami Kohakunushi', cn: '赈早见琥珀主' },
     location: { en: 'Based in Hefei, China.', cn: '位于中国合肥。' },
   },
   hero: {
