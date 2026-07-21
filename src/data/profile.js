@@ -1,13 +1,13 @@
 // 站主身份 / Hero / About / Contact（逐字照搬 aystba 站点实抓 JS，站主名统一改为 Amber River），全部 {en, cn} 双字段。
 export const profile = {
   identity: {
-    name: { en: 'Amber River', cn: '琥珀川' },
+    name: { en: 'hakuriver', cn: 'hakuriver' },
     role: { en: 'Haku', cn: '白龙' },
     location: { en: 'Based in Hefei, China.', cn: '位于中国合肥。' },
   },
   hero: {
-    greeting: { en: 'I am Amber River', cn: '我是琥珀川！' },
-    name: { en: 'Amber River', cn: '琥珀川' },
+    greeting: { en: 'I am hakuriver', cn: '我是 hakuriver！' },
+    name: { en: 'hakuriver', cn: 'hakuriver' },
     tags: [
       { en: 'Developer', cn: '开发者' },
       { en: 'Designer', cn: '设计师' },

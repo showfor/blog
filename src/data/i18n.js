@@ -14,7 +14,7 @@ export const i18n = {
   },
   nav: {
     brand: { en: 'Amber River', cn: '琥珀川' },
-    mark: 'AR',
+    mark: 'hakuriver',
     links: [
       { key: 'music',   label: { en: 'Music',   cn: '音乐' }, href: '#music' },
       { key: 'novels',  label: { en: 'Novels',  cn: '小说' }, href: '#novels' },
