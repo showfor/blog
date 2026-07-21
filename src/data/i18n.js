@@ -13,7 +13,7 @@ export const i18n = {
     switchHint: { en: 'Switch language, current:', cn: '切换语言，当前：' },
   },
   nav: {
-    brand: { en: 'Amber River', cn: '琥珀川' },
+    brand: { en: 'hakuriver', cn: 'hakuriver' },
     mark: 'hakuriver',
     links: [
       { key: 'music',   label: { en: 'Music',   cn: '音乐' }, href: '#music' },
