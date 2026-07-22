@@ -861,6 +861,27 @@ main { z-index: 1; background: 0 0; position: relative; }
   border-color: var(--accentColor);
 }
 
+/* 站点运行时间 */
+.site-footer-uptime {
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid var(--borderColor);
+}
+.site-footer-uptime-label {
+  color: var(--textMuted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  margin-right: 6px;
+}
+.site-footer-uptime-value {
+  color: #ffb347;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
 /* ===== 锚点滚动偏移（避免被固定导航遮挡） ===== */
 #top, #anime, #music, #movies, #novels { scroll-margin-top: 84px; }
 

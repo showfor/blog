@@ -5,6 +5,8 @@ export const profile = {
     role: { en: 'Nigihayami Kohakunushi', cn: '赈早见琥珀主' },
     location: { en: 'Based in Hefei, China.', cn: '位于中国合肥。' },
   },
+  // 建站日期，用于计算站点运行时间
+  siteLaunched: '2026-07-16T23:31:00',
   hero: {
     greeting: { en: 'I am hakuriver', cn: '我是 hakuriver！' },
     name: { en: 'haku river', cn: 'haku river' },
