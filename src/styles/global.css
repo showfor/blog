@@ -522,7 +522,10 @@ a { color: inherit; }
   margin: 12px 0;
 }
 .navbar-mobile-link {
-  padding: 14px 4px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 0;
   font-size: 1rem;
   color: var(--textColor);
   text-decoration: none;
