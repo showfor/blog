@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { i18n } from '../data/i18n.js'
 import { useLang } from '../context/LanguageProvider.jsx'
 import AppIcon from './AppIcon.jsx'
@@ -7,6 +8,8 @@ import AppIcon from './AppIcon.jsx'
 // 复刻原站 aystba-portfolio 的两点核心行为：
 //   1) 滚动时连续变量 --np (0→1) 驱动顶栏平滑收窄/浮起（原站 JS: scrollY/innerHeight 限幅 0~1）。
 //   2) 窄屏（≤760px）用汉堡抽屉菜单替代被隐藏的桌面链接，保证全视口可用（修复"菜单消失"）。
+// 注：抽屉 overlay + panel 通过 createPortal 渲染到 document.body，
+//     避免 .site-nav 的 `contain: layout` 创建新 containing block 导致 fixed 定位失效。
 export default function SiteNav() {
   const { lang, setLang, t } = useLang()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -106,49 +109,55 @@ export default function SiteNav() {
         {langSwitchButton()}
       </div>
 
-      {/* 移动端抽屉：遮罩 + 右侧滑入面板。复刻原站 .navbar-mobile-overlay/panel 行为，
-          替代被隐藏的桌面链接，保证窄屏导航可用。 */}
-      <div
-        className={`navbar-mobile-overlay ${menuOpen ? 'is-open' : ''}`}
-        onClick={() => setMenuOpen(false)}
-        aria-hidden="true"
-      />
-      <aside
-        id="mobile-nav-panel"
-        className={`navbar-mobile-panel ${menuOpen ? 'is-open' : ''}`}
-        aria-hidden={!menuOpen}
-      >
-        <div className="navbar-mobile-header">
-          <span className="navbar-mobile-title">{t(i18n.nav.brand)}</span>
-          <button
-            type="button"
-            className="navbar-mobile-close"
-            aria-label="Close navigation menu"
+      {/* 移动端抽屉：遮罩 + 全屏面板。用 createPortal 渲染到 body，
+          绕过 .site-nav 的 `contain: layout` 创建的 containing block，
+          保证 position: fixed 相对视口定位、铺满全屏。 */}
+      {createPortal(
+        <>
+          <div
+            className={`navbar-mobile-overlay ${menuOpen ? 'is-open' : ''}`}
             onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
+          />
+          <aside
+            id="mobile-nav-panel"
+            className={`navbar-mobile-panel ${menuOpen ? 'is-open' : ''}`}
+            aria-hidden={!menuOpen}
           >
-            ✕
-          </button>
-        </div>
+            <div className="navbar-mobile-header">
+              <span className="navbar-mobile-title">{t(i18n.nav.brand)}</span>
+              <button
+                type="button"
+                className="navbar-mobile-close"
+                aria-label="Close navigation menu"
+                onClick={() => setMenuOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
 
-        <nav className="navbar-mobile-links">
-          {i18n.nav.links.map((l) => (
-            <a key={l.key} href={l.href} className="navbar-mobile-link" onClick={(e) => go(e, l.href)}>
-              {t(l.label)}
-            </a>
-          ))}
-        </nav>
+            <nav className="navbar-mobile-links">
+              {i18n.nav.links.map((l) => (
+                <a key={l.key} href={l.href} className="navbar-mobile-link" onClick={(e) => go(e, l.href)}>
+                  {t(l.label)}
+                </a>
+              ))}
+            </nav>
 
-        <div className="navbar-mobile-actions">
-          {langSwitchButton()}
-          <a
-            className="btn btn-primary"
-            href={i18n.nav.cta.href}
-            onClick={(e) => go(e, i18n.nav.cta.href)}
-          >
-            <AppIcon name="mail" /> {t(i18n.nav.cta.label)}
-          </a>
-        </div>
-      </aside>
+            <div className="navbar-mobile-actions">
+              {langSwitchButton()}
+              <a
+                className="btn btn-primary"
+                href={i18n.nav.cta.href}
+                onClick={(e) => go(e, i18n.nav.cta.href)}
+              >
+                <AppIcon name="mail" /> {t(i18n.nav.cta.label)}
+              </a>
+            </div>
+          </aside>
+        </>,
+        document.body
+      )}
     </header>
   )
 }
