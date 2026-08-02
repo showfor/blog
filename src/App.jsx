@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { LanguageProvider } from './context/LanguageProvider.jsx'
 import { useReveal } from './hooks/useReveal.js'
 import SiteNav from './components/SiteNav.jsx'
@@ -7,9 +7,14 @@ import HeroSection from './components/HeroSection.jsx'
 import HobbiesSection from './components/HobbiesSection.jsx'
 import DevPanel from './components/DevPanel.jsx'
 import SiteFooter from './components/SiteFooter.jsx'
+import Preloader from './components/Preloader.jsx'
 
 // 站点根组件：顶层包裹 LanguageProvider，按序组合 9 个区块（导航 + 7 内容 + 页脚）。
 export default function App() {
+  // Preloader 加载动画：完成后置 ready=true，再触发 Hero 标题进场动画
+  const [ready, setReady] = useState(false)
+  const handleLoaded = useCallback(() => setReady(true), [])
+
   // 原生滚动入场（替代原克隆版的 GSAP ScrollTrigger.batch）：观察 .reveal 加 .is-visible。
   useReveal()
 
@@ -26,6 +31,9 @@ export default function App() {
 
   return (
     <LanguageProvider>
+      {/* 加载动画：全屏遮罩，完成后淡出并触发 Hero 进场 */}
+      <Preloader onDone={handleLoaded} />
+
       {/* 全局原生 WebGL 着色器背景（原站 grainient-bg-wrapper / Yu），逐字取自混淆 bundle */}
       <div className="grainient-bg-wrapper">
         <BackgroundFX
@@ -57,7 +65,7 @@ export default function App() {
 
       <SiteNav />
       <main>
-        <HeroSection />
+        <HeroSection openingComplete={ready} />
         <HobbiesSection />
         <SiteFooter />
       </main>

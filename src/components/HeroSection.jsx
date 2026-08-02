@@ -287,8 +287,9 @@ export default function HeroSection({ openingComplete = true }) {
 
       <div className="hero-content">
         <h1 className="hero-title">
-          <span className="hero-title-line accent" ref={a}>{title1}</span>
-          {hasSubtitle && <span className="hero-title-line outline" ref={o}>{title2}</span>}
+          {/* 初始 opacity:0：等待 openingComplete（preloader 完成后）GSAP 进场动画接管，避免衔接闪烁 */}
+          <span className="hero-title-line accent" ref={a} style={{ opacity: 0 }}>{title1}</span>
+          {hasSubtitle && <span className="hero-title-line outline" ref={o} style={{ opacity: 0 }}>{title2}</span>}
         </h1>
       </div>
 

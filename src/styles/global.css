@@ -69,6 +69,66 @@
   --noise-url: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
+/* ===== Preloader 加载动画 ===== */
+.site-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  background: #000;
+  transition: opacity .6s ease, visibility 0s linear .6s;
+}
+.site-preloader.is-leaving {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.site-preloader-brand {
+  display: flex;
+  gap: .18em;
+  font-weight: 800;
+  font-size: clamp(2.2rem, 9vw, 4rem);
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--paper);
+  margin-right: -.3em; /* 抵消 letter-spacing 右端多出的间隙 */
+}
+.site-preloader-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: preloader-letter-in .55s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 70ms);
+}
+@keyframes preloader-letter-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+.site-preloader-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 24%;
+  transform: translateX(-50%);
+  width: min(240px, 60vw);
+  height: 2px;
+  border-radius: 999px;
+  background: #ffffff1f;
+  overflow: hidden;
+}
+.site-preloader-bar span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--accentColor);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: preloader-bar-grow 1.8s var(--ease) forwards;
+}
+@keyframes preloader-bar-grow {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
 /* ===== 基础重置 ===== */
 *, *::before, *::after { box-sizing: border-box; }
 html {
@@ -1171,4 +1231,7 @@ main { z-index: 1; background: 0 0; position: relative; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1 !important; transform: none !important; }
   * { scroll-behavior: auto !important; }
+  /* preloader 直接隐藏，跳过动画立即进入页面 */
+  .site-preloader { display: none; }
+  .hero-title-line { opacity: 1 !important; }
 }
