@@ -42,6 +42,9 @@ export default function HobbiesSection() {
                         src={item.embed}
                         width="100%" height="152"
                         frameBorder="0"
+                        scrolling="no"
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
                         title={t(item)}
                       />
                     </div>
