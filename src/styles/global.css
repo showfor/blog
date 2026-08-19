@@ -1011,6 +1011,31 @@ main { z-index: 1; background: 0 0; position: relative; }
   border-radius: 8px;
   display: block;
 }
+/* 播放器 + 「在网易云打开」跳转兜底 */
+.hobby-music-player-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hobby-music-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background .2s ease, transform .2s ease;
+  align-self: flex-start;
+}
+.hobby-music-open:hover {
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  transform: translateY(-1px);
+}
 
 /* ===== DevPanel 开发者面板 ===== */
 /* 折叠态：右下角悬浮胶囊 */

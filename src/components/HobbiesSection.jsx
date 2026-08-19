@@ -37,16 +37,29 @@ export default function HobbiesSection() {
                           {item.note && <p className="hobby-note">{t(item.note)}</p>}
                         </div>
                       </div>
-                      <iframe
-                        className="hobby-music-player"
-                        src={item.embed}
-                        width="100%" height="152"
-                        frameBorder="0"
-                        scrolling="no"
-                        loading="lazy"
-                        referrerPolicy="no-referrer"
-                        title={t(item)}
-                      />
+                      <div className="hobby-music-player-wrap">
+                        <iframe
+                          className="hobby-music-player"
+                          src={item.embed}
+                          width="100%" height="152"
+                          frameBorder="0"
+                          scrolling="no"
+                          loading="lazy"
+                          referrerPolicy="no-referrer"
+                          title={t(item)}
+                        />
+                        {/* 受限歌曲（外链无法直接播放）时可跳转到网易云原页收听 */}
+                        {item.url && (
+                          <a
+                            className="hobby-music-open"
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            在网易云打开 →
+                          </a>
+                        )}
+                      </div>
                     </div>
                   )
                 }
