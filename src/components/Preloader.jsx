@@ -15,30 +15,32 @@ export default function Preloader({ onDone }) {
     let timeoutId = null
     let unmountTimer = null
     const start = performance.now()
-    const MAX_WAIT = 2200
+    const MAX_WAIT = 1000
 
     const finish = () => {
       if (timeoutId) return
       const elapsed = performance.now() - start
-      // 保证字母进场动画展示完（~800ms）再淡出，避免一闪而过
-      const minShown = Math.max(0, 800 - elapsed)
+      // 保证字母进场动画展示完（~600ms）再淡出，避免一闪而过
+      const minShown = Math.max(0, 600 - elapsed)
       timeoutId = setTimeout(() => {
         setLeaving(true)
         // 淡出完毕后触发 Hero 进场并完全卸载 Preloader
         unmountTimer = setTimeout(() => {
           doneRef.current?.()
           setMounted(false)
-        }, 600)
+        }, 500)
       }, minShown)
     }
 
-    if (document.readyState === 'complete') {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
       finish()
     } else {
+      window.addEventListener('DOMContentLoaded', finish, { once: true })
       window.addEventListener('load', finish, { once: true })
       // 兜底超时，避免个别网络资源挂起导致一直白屏/黑屏
       const fallbackTimer = setTimeout(finish, MAX_WAIT)
       return () => {
+        window.removeEventListener('DOMContentLoaded', finish)
         window.removeEventListener('load', finish)
         clearTimeout(fallbackTimer)
         clearTimeout(timeoutId)
