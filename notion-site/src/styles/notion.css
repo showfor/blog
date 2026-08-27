@@ -160,8 +160,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid var(--accent-amber);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   background: #ffffff;
   flex-shrink: 0;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
