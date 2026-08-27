@@ -1,29 +1,93 @@
+import { useState, useEffect } from 'react'
 import { useNotion } from '../context/NotionContext.jsx'
 import { ArrowUpRightIcon } from './NotionIcons.jsx'
+
+// 建站启动时间点（2026-07-16 22:59:19）
+const SITE_LAUNCHED = '2026-07-16T22:59:19+08:00'
+
+function calcUptime(launched = SITE_LAUNCHED) {
+  const start = new Date(launched).getTime()
+  const now = Date.now()
+  const diff = Math.max(0, now - start)
+  const days = Math.floor(diff / 86400000)
+  const hours = Math.floor((diff % 86400000) / 3600000)
+  const minutes = Math.floor((diff % 3600000) / 60000)
+  const seconds = Math.floor((diff % 60000) / 1000)
+  return { days, hours, minutes, seconds }
+}
 
 export default function NotionFooter() {
   const { lang } = useNotion()
   const isZh = lang === 'zh'
 
+  const [uptime, setUptime] = useState(() => calcUptime())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setUptime(calcUptime())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
   return (
-    <footer className="notion-footer">
-      <div className="notion-footer-left">
-        <span>{isZh ? '共收录 4 大分类 · 24 个精选作品' : '4 categories · 24 curated items'}</span>
+    <div className="notion-bottom-wrap">
+      {/* Notion 风格建站计时看板 */}
+      <div className="notion-uptime-card">
+        <div className="notion-uptime-header">
+          <div className="notion-uptime-status">
+            <span className="notion-uptime-dot" />
+            <span className="notion-uptime-title">
+              {isZh ? '本站已持续运行' : 'Site Running Time'}
+            </span>
+          </div>
+          <span className="notion-uptime-since">
+            {isZh ? '始于 2026年7月16日' : 'Since Jul 16, 2026'}
+          </span>
+        </div>
+
+        <div className="notion-uptime-digits">
+          <div className="notion-uptime-unit">
+            <span className="notion-uptime-num">{uptime.days}</span>
+            <span className="notion-uptime-lbl">{isZh ? '天' : 'DAYS'}</span>
+          </div>
+          <span className="notion-uptime-sep">:</span>
+          <div className="notion-uptime-unit">
+            <span className="notion-uptime-num">{String(uptime.hours).padStart(2, '0')}</span>
+            <span className="notion-uptime-lbl">{isZh ? '时' : 'HOURS'}</span>
+          </div>
+          <span className="notion-uptime-sep">:</span>
+          <div className="notion-uptime-unit">
+            <span className="notion-uptime-num">{String(uptime.minutes).padStart(2, '0')}</span>
+            <span className="notion-uptime-lbl">{isZh ? '分' : 'MINS'}</span>
+          </div>
+          <span className="notion-uptime-sep">:</span>
+          <div className="notion-uptime-unit">
+            <span className="notion-uptime-num notion-uptime-sec">{String(uptime.seconds).padStart(2, '0')}</span>
+            <span className="notion-uptime-lbl">{isZh ? '秒' : 'SECS'}</span>
+          </div>
+        </div>
       </div>
 
-      <div className="notion-footer-right">
-        <span>{isZh ? '由 React 18 + Vite 驱动' : 'Powered by React 18 + Vite'}</span>
-        <span>•</span>
-        <a
-          href="https://hakuriver.pages.dev"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="notion-footer-link"
-        >
-          <span>{isZh ? '访问视觉主站' : 'Visit Main Site'}</span>
-          <ArrowUpRightIcon size={12} />
-        </a>
-      </div>
-    </footer>
+      {/* 底部版权与元信息 */}
+      <footer className="notion-footer">
+        <div className="notion-footer-left">
+          <span>{isZh ? '共收录 4 大分类 · 24 个精选作品' : '4 categories · 24 curated items'}</span>
+        </div>
+
+        <div className="notion-footer-right">
+          <span>{isZh ? '由 React 18 + Vite 驱动' : 'Powered by React 18 + Vite'}</span>
+          <span>•</span>
+          <a
+            href="https://hakuriver.pages.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="notion-footer-link"
+          >
+            <span>{isZh ? '访问视觉主站' : 'Visit Main Site'}</span>
+            <ArrowUpRightIcon size={12} />
+          </a>
+        </div>
+      </footer>
+    </div>
   )
 }

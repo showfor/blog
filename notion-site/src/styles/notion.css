@@ -449,8 +449,100 @@ body {
 }
 
 /* ===== 页脚属性与元信息 ===== */
-.notion-footer {
+.notion-bottom-wrap {
   margin-top: 64px;
+}
+
+.notion-uptime-card {
+  padding: 16px 20px;
+  background: var(--bg-callout);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notion-uptime-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.notion-uptime-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.notion-uptime-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  animation: uptime-pulse 2s infinite ease-in-out;
+}
+
+@keyframes uptime-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+.notion-uptime-since {
+  font-size: 12px;
+  color: var(--text-subtle);
+}
+
+.notion-uptime-digits {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.notion-uptime-unit {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.notion-uptime-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.notion-uptime-lbl {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-subtle);
+}
+
+.notion-uptime-sep {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-subtle);
+  opacity: 0.6;
+}
+
+@media (max-width: 640px) {
+  .notion-uptime-num {
+    font-size: 20px;
+  }
+  .notion-uptime-digits {
+    gap: 8px;
+  }
+}
+
+.notion-footer {
   padding-top: 24px;
   border-top: 1px solid var(--border-light);
   display: flex;
