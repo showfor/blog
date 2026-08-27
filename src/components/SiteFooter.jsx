@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { i18n } from '../data/i18n.js'
 import { profile } from '../data/profile.js'
 import { useLang } from '../context/LanguageProvider.jsx'

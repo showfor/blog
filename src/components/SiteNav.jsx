@@ -13,6 +13,11 @@ import AppIcon from './AppIcon.jsx'
 export default function SiteNav() {
   const { lang, setLang, t } = useLang()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // 连续 --np：复刻原站 nav 平滑浮起/收窄。写入 .site-nav，子元素通过 CSS 变量继承。
   useEffect(() => {
@@ -112,7 +117,7 @@ export default function SiteNav() {
       {/* 移动端抽屉：遮罩 + 全屏面板。用 createPortal 渲染到 body，
           绕过 .site-nav 的 `contain: layout` 创建的 containing block，
           保证 position: fixed 相对视口定位、铺满全屏。 */}
-      {createPortal(
+      {mounted && typeof document !== 'undefined' && document.body && createPortal(
         <>
           <div
             className={`navbar-mobile-overlay ${menuOpen ? 'is-open' : ''}`}

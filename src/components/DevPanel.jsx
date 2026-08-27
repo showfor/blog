@@ -39,6 +39,9 @@ const _transportRef = { current: null }
 const _onLogRef = { current: null }
 
 export default function DevPanel() {
+  if (!import.meta.env.DEV) {
+    return null
+  }
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState('perf')
   const [fps, setFps] = useState(60)
