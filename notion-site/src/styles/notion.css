@@ -178,12 +178,36 @@ body {
   display: block;
 }
 
-.notion-brand-name {
-  font-family: "Playfair Display", "Plus Jakarta Sans", Georgia, "Times New Roman", serif;
-  font-size: 18px;
+/* 顶部实时精确时间显示 */
+.notion-live-clock {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  user-select: none;
+}
+
+.notion-clock-date {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-subtle);
+  letter-spacing: 0.02em;
+}
+
+.notion-clock-time {
+  font-size: 13.5px;
   font-weight: 700;
   color: var(--text-main);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 480px) {
+  .notion-clock-date {
+    display: none;
+  }
+  .notion-clock-time {
+    font-size: 14px;
+  }
 }
 
 .notion-top-actions {

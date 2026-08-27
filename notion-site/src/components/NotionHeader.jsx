@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useNotion } from '../context/NotionContext.jsx'
 import {
   GlobeIcon,
@@ -7,12 +8,24 @@ import {
 
 export default function NotionHeader() {
   const { lang, theme, toggleLang, toggleTheme } = useNotion()
+  const [now, setNow] = useState(() => new Date())
 
   const isZh = lang === 'zh'
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const pad = (n) => String(n).padStart(2, '0')
+  const dateStr = `${now.getFullYear()}.${pad(now.getMonth() + 1)}.${pad(now.getDate())}`
+  const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
+
   return (
     <>
-      {/* 顶部导航栏：白龙（赈早见琥珀主）定制水墨插画头像 + 艺术品牌字 */}
+      {/* 顶部导航栏：白龙头像 + 实时精确时间跳动 */}
       <header className="notion-topbar">
         <div className="notion-brand">
           <div className="notion-avatar-wrapper">
@@ -22,7 +35,10 @@ export default function NotionHeader() {
               className="notion-haku-avatar"
             />
           </div>
-          <span className="notion-brand-name">hakuriver</span>
+          <div className="notion-live-clock" title="当前实时时间">
+            <span className="notion-clock-date">{dateStr}</span>
+            <span className="notion-clock-time">{timeStr}</span>
+          </div>
         </div>
 
         <div className="notion-top-actions">
