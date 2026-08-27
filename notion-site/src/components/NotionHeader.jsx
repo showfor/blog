@@ -1,13 +1,9 @@
 import { useNotion } from '../context/NotionContext.jsx'
 import {
   NotionSmallLogo,
-  NotionDoodleRow,
   GlobeIcon,
   SunIcon,
   MoonIcon,
-  UserIcon,
-  TagIcon,
-  ZapIcon,
   ArrowUpRightIcon,
 } from './NotionIcons.jsx'
 
@@ -48,7 +44,7 @@ export default function NotionHeader() {
             <span>{theme === 'light' ? (isZh ? '深色' : 'Dark') : (isZh ? '浅色' : 'Light')}</span>
           </button>
 
-          {/* 右侧 Notion 风格主行动按钮 */}
+          {/* 右侧主站外链按钮 */}
           <a
             href="https://hakuriver.pages.dev"
             target="_blank"
@@ -61,14 +57,9 @@ export default function NotionHeader() {
         </div>
       </header>
 
-      {/* Notion 官网同款 Hero 英雄区 */}
+      {/* 英雄区：仅保留名字 + 琥珀色气泡 + 《百年孤独》经典引言 */}
       <div className="notion-hero-section">
-        {/* 顶部手绘涂鸦头像条 */}
-        <div className="notion-hero-doodles">
-          <NotionDoodleRow />
-        </div>
-
-        {/* 官网级超大标题与琥珀色高亮气泡 */}
+        {/* 主名称与琥珀色高亮气泡 */}
         <h1 className="notion-hero-title">
           <span className="notion-title-text">hakuriver</span>
           <span className="notion-amber-badge">
@@ -77,49 +68,27 @@ export default function NotionHeader() {
           </span>
         </h1>
 
-        {/* 官方级精致副标题 */}
-        <p className="notion-hero-desc">
-          {isZh
-            ? '原声带、经典文学、深度动漫与神作电影。在浩瀚的数字世界中，构筑内心的宁静锚点。'
-            : 'Soundtracks, literature, anime, and cinema. Curating moments that inspire creativity and perspective.'}
-        </p>
-
-        {/* 数据库元属性栏（Properties Table） */}
-        <div className="notion-properties">
-          <div className="notion-prop-row">
-            <span className="notion-prop-label">
-              <UserIcon size={13} />
-              <span>{isZh ? '主人' : 'Owner'}</span>
-            </span>
-            <div className="notion-prop-value">
-              <span className="notion-tag">haku river / 赈早见琥珀主</span>
-            </div>
-          </div>
-
-          <div className="notion-prop-row">
-            <span className="notion-prop-label">
-              <TagIcon size={13} />
-              <span>{isZh ? '分类' : 'Category'}</span>
-            </span>
-            <div className="notion-prop-value">
-              <span className="notion-tag tag-music">{isZh ? '音乐' : 'Music'}</span>
-              <span className="notion-tag tag-novels">{isZh ? '小说' : 'Novels'}</span>
-              <span className="notion-tag tag-anime">{isZh ? '动漫' : 'Anime'}</span>
-              <span className="notion-tag tag-movies">{isZh ? '电影' : 'Movies'}</span>
-            </div>
-          </div>
-
-          <div className="notion-prop-row">
-            <span className="notion-prop-label">
-              <ZapIcon size={13} />
-              <span>{isZh ? '状态' : 'Status'}</span>
-            </span>
-            <div className="notion-prop-value">
-              <span className="notion-tag tag-status">
-                <span className="status-dot" />
-                <span>{isZh ? '持续收集中' : 'Curating'}</span>
-              </span>
-            </div>
+        {/* 《百年孤独》经典深邃引言卡片 */}
+        <div className="notion-solitude-quote">
+          <div className="notion-quote-mark">“</div>
+          <p className="notion-quote-text">
+            {isZh ? (
+              <>
+                每个人都是孤独地出生，在这世间恍惚几十年并不漫长的日子转眼就远去了，然后再孤独地死去。
+                生命注定是个悲剧，因为我们从没有融入世界，世界永远是身外之物。如果有幸，能在茫茫人海寻得一个身体与灵魂都与自己万分契合的人，与之存在一种可以称之为爱情的联系，然后一起承受生命中不可逃离不可消除的深沉的宿命的孤独。可是这般的幸运艰深难得。有的已失去了爱的能力，有的爱得深沉却无处安放，有的死在这爱里……在所有的爱里，孤独有增无减。
+                生命只是一场幻梦。
+              </>
+            ) : (
+              <>
+                Everyone is born alone, drifting through a few decades in this world that slip away in the blink of an eye, and then dies alone.
+                Life is destined to be a tragedy, for we have never truly merged into the world; the world remains forever an external reality. If one is fortunate enough to find in the vast sea of humanity a soul and body in total resonance, bound by what may be called love, together they endure the inescapable, indelible solitude of fate. Yet such fortune is arduous and rare. Some lose the capacity to love, some love deeply with nowhere to place it, and some perish in that love... In all forms of love, solitude only multiplies.
+                Life is merely an illusion.
+              </>
+            )}
+          </p>
+          <div className="notion-quote-cite">
+            <span className="cite-line" />
+            <span>{isZh ? '加西亚·马尔克斯《百年孤独》' : 'Gabriel García Márquez, One Hundred Years of Solitude'}</span>
           </div>
         </div>
       </div>

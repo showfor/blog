@@ -319,45 +319,59 @@ body {
   50% { transform: scale(1.3); opacity: 0.6; }
 }
 
-/* 官网级精致副标题 */
-.notion-hero-desc {
-  font-size: clamp(15px, 2.5vw, 18px);
-  font-weight: 450;
-  line-height: 1.6;
-  color: var(--text-muted);
-  max-width: 600px;
-  margin: 0 auto 28px;
-}
-
-/* ===== Notion 属性栏（Properties Table） ===== */
-.notion-properties {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 14px 18px;
+/* 《百年孤独》深邃引言卡片 */
+.notion-solitude-quote {
+  position: relative;
   background: var(--bg-callout);
-  border-radius: 10px;
   border: 1px solid var(--border-light);
-  width: 100%;
-  max-width: 580px;
-  font-size: 13px;
+  border-radius: 16px;
+  padding: 26px 28px 22px;
+  max-width: 720px;
+  margin: 20px auto 0;
   text-align: left;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-.notion-prop-row {
-  display: flex;
-  align-items: center;
-  min-height: 26px;
+.notion-quote-mark {
+  position: absolute;
+  top: 10px;
+  left: 18px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--accent-amber);
+  opacity: 0.4;
+  user-select: none;
+  pointer-events: none;
 }
 
-.notion-prop-label {
-  width: 90px;
-  color: var(--text-subtle);
+.notion-quote-text {
+  font-size: clamp(14px, 2.6vw, 15px);
+  line-height: 1.85;
+  color: var(--text-body);
+  margin: 0;
+  letter-spacing: 0.015em;
+  text-align: justify;
+  position: relative;
+  z-index: 1;
+}
+
+.notion-quote-cite {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 12.5px;
-  flex-shrink: 0;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-amber-text);
+}
+
+.cite-line {
+  width: 24px;
+  height: 1.5px;
+  background: var(--accent-amber);
+  opacity: 0.5;
 }
 
 .notion-prop-value {
