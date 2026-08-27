@@ -1,4 +1,13 @@
 import { useNotion } from '../context/NotionContext.jsx'
+import {
+  MusicIcon,
+  BookIcon,
+  AnimeIcon,
+  FilmIcon,
+  HeadphoneIcon,
+  QuoteIcon,
+  ArrowUpRightIcon,
+} from './NotionIcons.jsx'
 
 export default function HobbySection({ category }) {
   const { t, lang } = useNotion()
@@ -11,21 +20,35 @@ export default function HobbySection({ category }) {
     movies: 'tag-movies',
   }
 
+  const renderCategoryIcon = (key) => {
+    switch (key) {
+      case 'music': return <MusicIcon size={20} />
+      case 'novels': return <BookIcon size={20} />
+      case 'anime': return <AnimeIcon size={20} />
+      case 'movies': return <FilmIcon size={20} />
+      default: return null
+    }
+  }
+
   return (
     <section id={category.id} className="notion-section">
       {/* 章节标题区 */}
       <div className="notion-section-head">
         <h2 className="notion-section-title">
-          <span className="notion-section-icon">{category.icon}</span>
+          <span className="notion-section-icon-badge">
+            {renderCategoryIcon(category.key)}
+          </span>
           <span>{t(category.title)}</span>
         </h2>
         <span className="notion-section-eyebrow">{t(category.eyebrow)}</span>
       </div>
 
       {/* 章节简介 Callout */}
-      <div className="notion-callout" style={{ margin: '10px 0 16px', background: 'transparent', borderStyle: 'dashed' }}>
-        <span className="notion-callout-icon">💬</span>
-        <div className="notion-callout-text" style={{ color: 'var(--text-muted)' }}>
+      <div className="notion-callout notion-callout-subtle">
+        <span className="notion-callout-icon">
+          <QuoteIcon size={16} />
+        </span>
+        <div className="notion-callout-text">
           {t(category.intro)}
         </div>
       </div>
@@ -71,8 +94,9 @@ export default function HobbySection({ category }) {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <span>🎧</span>
-                      <span>{isZh ? '在网易云音乐中收听完整版 →' : 'Listen on NetEase Music →'}</span>
+                      <HeadphoneIcon size={14} />
+                      <span>{isZh ? '在网易云音乐中收听完整版' : 'Listen on NetEase Music'}</span>
+                      <ArrowUpRightIcon size={12} />
                     </a>
                   )}
                 </div>

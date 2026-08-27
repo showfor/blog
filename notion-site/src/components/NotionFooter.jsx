@@ -1,4 +1,5 @@
 import { useNotion } from '../context/NotionContext.jsx'
+import { ArrowUpRightIcon } from './NotionIcons.jsx'
 
 export default function NotionFooter() {
   const { lang } = useNotion()
@@ -7,7 +8,7 @@ export default function NotionFooter() {
   return (
     <footer className="notion-footer">
       <div className="notion-footer-left">
-        <span>📄 {isZh ? '共收录 4 大分类 · 24 个精选作品' : '4 categories · 24 curated items'}</span>
+        <span>{isZh ? '共收录 4 大分类 · 24 个精选作品' : '4 categories · 24 curated items'}</span>
       </div>
 
       <div className="notion-footer-right">
@@ -17,9 +18,10 @@ export default function NotionFooter() {
           href="https://hakuriver.pages.dev"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: 'var(--accent-blue)', textDecoration: 'none' }}
+          className="notion-footer-link"
         >
-          {isZh ? '访问视觉主站 ↗' : 'Visit Main Site ↗'}
+          <span>{isZh ? '访问视觉主站' : 'Visit Main Site'}</span>
+          <ArrowUpRightIcon size={12} />
         </a>
       </div>
     </footer>

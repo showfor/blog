@@ -1,7 +1,17 @@
 import { useNotion } from '../context/NotionContext.jsx'
+import {
+  NotionLogoIcon,
+  GlobeIcon,
+  SunIcon,
+  MoonIcon,
+  UserIcon,
+  TagIcon,
+  ZapIcon,
+  QuoteIcon,
+} from './NotionIcons.jsx'
 
 export default function NotionHeader() {
-  const { lang, theme, toggleLang, toggleTheme, t } = useNotion()
+  const { lang, theme, toggleLang, toggleTheme } = useNotion()
 
   const isZh = lang === 'zh'
 
@@ -11,7 +21,9 @@ export default function NotionHeader() {
       <header className="notion-topbar">
         <div className="notion-breadcrumbs">
           <span className="notion-crumb-item">
-            <span>🐉</span>
+            <span className="notion-crumb-logo">
+              <NotionLogoIcon size={18} />
+            </span>
             <span>hakuriver</span>
           </span>
           <span className="notion-crumb-sep">/</span>
@@ -28,7 +40,7 @@ export default function NotionHeader() {
             onClick={toggleLang}
             title={isZh ? 'Switch to English' : '切换到中文'}
           >
-            <span>🌐</span>
+            <GlobeIcon size={14} />
             <span>{isZh ? 'EN' : '中文'}</span>
           </button>
 
@@ -39,7 +51,7 @@ export default function NotionHeader() {
             onClick={toggleTheme}
             title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
           >
-            <span>{theme === 'light' ? '🌙' : '☀️'}</span>
+            {theme === 'light' ? <MoonIcon size={14} /> : <SunIcon size={14} />}
             <span>{theme === 'light' ? (isZh ? '深色' : 'Dark') : (isZh ? '浅色' : 'Light')}</span>
           </button>
         </div>
@@ -47,7 +59,9 @@ export default function NotionHeader() {
 
       {/* 页面主标题区 */}
       <div className="notion-header">
-        <div className="notion-page-icon" role="img" aria-label="Dragon icon">🐉</div>
+        <div className="notion-page-icon-wrap">
+          <NotionLogoIcon size={58} />
+        </div>
         <h1 className="notion-title">
           {isZh ? 'hakuriver · 兴趣与收藏' : 'hakuriver · Hobbies & Collections'}
         </h1>
@@ -56,7 +70,8 @@ export default function NotionHeader() {
         <div className="notion-properties">
           <div className="notion-prop-row">
             <span className="notion-prop-label">
-              <span>👤</span> {isZh ? '主人' : 'Owner'}
+              <UserIcon size={14} />
+              <span>{isZh ? '主人' : 'Owner'}</span>
             </span>
             <div className="notion-prop-value">
               <span className="notion-tag">haku river / 赈早见琥珀主</span>
@@ -64,7 +79,8 @@ export default function NotionHeader() {
           </div>
           <div className="notion-prop-row">
             <span className="notion-prop-label">
-              <span>🏷️</span> {isZh ? '分类' : 'Category'}
+              <TagIcon size={14} />
+              <span>{isZh ? '分类' : 'Category'}</span>
             </span>
             <div className="notion-prop-value">
               <span className="notion-tag tag-music">{isZh ? '音乐' : 'Music'}</span>
@@ -75,7 +91,8 @@ export default function NotionHeader() {
           </div>
           <div className="notion-prop-row">
             <span className="notion-prop-label">
-              <span>⚡</span> {isZh ? '状态' : 'Status'}
+              <ZapIcon size={14} />
+              <span>{isZh ? '状态' : 'Status'}</span>
             </span>
             <div className="notion-prop-value">
               <span className="notion-tag" style={{ background: 'rgba(35, 131, 226, 0.15)', color: 'var(--accent-blue)' }}>
@@ -87,7 +104,9 @@ export default function NotionHeader() {
 
         {/* 顶部引言 Callout */}
         <div className="notion-callout">
-          <span className="notion-callout-icon">💡</span>
+          <span className="notion-callout-icon">
+            <QuoteIcon size={18} />
+          </span>
           <div className="notion-callout-text">
             {isZh
               ? '这里是关于音乐、文学、动漫与电影的沉浸式清单。在喧嚣的数字世界中，文字、旋律与画面构筑了宁静的内心锚点。'
