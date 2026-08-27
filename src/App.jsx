@@ -54,9 +54,9 @@ export default function App() {
           centerX={0}
           centerY={0}
           zoom={0.9}
-          color1="#78cb6e"
+          color1="#141418"
           color2="#0c0c0c"
-          color3="#664b7e"
+          color3="#15141c"
         />
       </div>
 

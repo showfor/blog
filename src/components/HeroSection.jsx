@@ -281,9 +281,9 @@ export default function HeroSection({ openingComplete = true }) {
           glowRadius={160}
           sparkle={false}
           waveAmplitude={0}
-          gradientFrom="rgba(200, 255, 0, 0.35)"
-          gradientTo="rgba(120, 200, 150, 0.25)"
-          glowColor="#c8ff00"
+          gradientFrom="rgba(255, 255, 255, 0.22)"
+          gradientTo="rgba(255, 255, 255, 0.06)"
+          glowColor="rgba(255, 255, 255, 0.35)"
         />
       </div>
 
