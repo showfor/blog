@@ -56,27 +56,8 @@ export default function HobbySection({ category }) {
         </div>
       </div>
 
-      {/* 悬浮白底 Notion 数据库预览视窗（Notion.com 标志性 Surface） */}
+      {/* 悬浮白底 Notion 预览视窗 */}
       <div className="notion-preview-surface">
-        {/* 视窗顶部数据库视图 Tab 条 */}
-        <div className="notion-surface-header">
-          <div className="notion-surface-title">
-            <span className="notion-surface-icon">{renderCategoryIcon(category.key)}</span>
-            <span>{t(category.title)}</span>
-          </div>
-          <div className="notion-surface-tabs">
-            <span className="notion-tab-active">★ {isZh ? '精选' : 'Featured'}</span>
-            <span className="notion-tab-idle">💡 {isZh ? '收藏' : 'Collection'}</span>
-            <span className="notion-tab-add">+</span>
-          </div>
-        </div>
-
-        {/* 视窗表格表头 */}
-        <div className="notion-table-header">
-          <span className="col-title">{isZh ? '名称' : 'Title'}</span>
-          <span className="col-tag">{isZh ? '属性 / 标签' : 'Properties'}</span>
-        </div>
-
         {/* 视窗条目列表 */}
         <div className="notion-list">
           {category.items.map((item, idx) => (
