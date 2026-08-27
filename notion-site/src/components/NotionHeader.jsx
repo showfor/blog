@@ -1,6 +1,6 @@
 import { useNotion } from '../context/NotionContext.jsx'
 import {
-  NotionSmallLogo,
+  NotionOfficialLogo,
   GlobeIcon,
   SunIcon,
   MoonIcon,
@@ -14,10 +14,10 @@ export default function NotionHeader() {
 
   return (
     <>
-      {/* 顶部 Notion 官方风格导航条 */}
+      {/* 顶部 Notion 官方标志性导航栏 */}
       <header className="notion-topbar">
         <div className="notion-brand">
-          <NotionSmallLogo size={22} />
+          <NotionOfficialLogo size={26} />
           <span className="notion-brand-name">hakuriver</span>
         </div>
 
@@ -44,22 +44,22 @@ export default function NotionHeader() {
             <span>{theme === 'light' ? (isZh ? '深色' : 'Dark') : (isZh ? '浅色' : 'Light')}</span>
           </button>
 
-          {/* 右侧主站外链按钮 */}
+          {/* 官方高对比度蓝色 CTA 按钮 */}
           <a
             href="https://hakuriver.pages.dev"
             target="_blank"
             rel="noopener noreferrer"
             className="notion-btn-primary"
           >
-            <span>{isZh ? '主站' : 'Main'}</span>
+            <span>{isZh ? '访问主站' : 'Main Site'}</span>
             <ArrowUpRightIcon size={11} />
           </a>
         </div>
       </header>
 
-      {/* 英雄区：仅保留名字 + 琥珀色气泡 + 《百年孤独》经典引言 */}
+      {/* 英雄区：名字 + 琥珀色气泡 + 《百年孤独》深邃段落 */}
       <div className="notion-hero-section">
-        {/* 主名称与琥珀色高亮气泡 */}
+        {/* 大标题与琥珀色高亮气泡 */}
         <h1 className="notion-hero-title">
           <span className="notion-title-text">hakuriver</span>
           <span className="notion-amber-badge">
@@ -68,7 +68,7 @@ export default function NotionHeader() {
           </span>
         </h1>
 
-        {/* 《百年孤独》经典深邃引言卡片 */}
+        {/* 《百年孤独》深邃段落引言卡片 */}
         <div className="notion-solitude-quote">
           <div className="notion-quote-mark">“</div>
           <p className="notion-quote-text">
