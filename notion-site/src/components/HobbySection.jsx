@@ -6,7 +6,6 @@ import {
   AnimeIcon,
   FilmIcon,
   HeadphoneIcon,
-  CircleArrowIcon,
   ArrowUpRightIcon,
 } from './NotionIcons.jsx'
 
@@ -55,8 +54,6 @@ export default function HobbySection({ category }) {
             {t(categorySubheadMap[category.key])}
           </h2>
         </div>
-
-        <CircleArrowIcon />
       </div>
 
       {/* 悬浮白底 Notion 数据库预览视窗（Notion.com 标志性 Surface） */}
