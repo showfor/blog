@@ -1,6 +1,6 @@
 import { useNotion } from '../context/NotionContext.jsx'
 import {
-  NotionOfficialLogo,
+  HakuDragonLogo,
   GlobeIcon,
   SunIcon,
   MoonIcon,
@@ -13,10 +13,10 @@ export default function NotionHeader() {
 
   return (
     <>
-      {/* 顶部 Notion 官方标志性导航栏 */}
+      {/* 顶部导航栏：白龙 3D Notion 专属徽标 + 精致 hakuriver 品牌字 */}
       <header className="notion-topbar">
         <div className="notion-brand">
-          <NotionOfficialLogo size={26} />
+          <HakuDragonLogo size={26} />
           <span className="notion-brand-name">hakuriver</span>
         </div>
 
@@ -45,7 +45,7 @@ export default function NotionHeader() {
         </div>
       </header>
 
-      {/* 英雄区：名字 + 琥珀色气泡 + 《百年孤独》深邃段落 */}
+      {/* 英雄区：大标题 + 琥珀色气泡 + 《百年孤独》深邃段落 */}
       <div className="notion-hero-section">
         {/* 大标题与琥珀色高亮气泡 */}
         <h1 className="notion-hero-title">
