@@ -117,6 +117,7 @@ function DotField({
       const t = b.current
       v.current.x = e.pageX - t.offsetX
       v.current.y = e.pageY - t.offsetY
+      T() // 鼠标移动时立刻唤醒 rAF
     }
     function d() {
       const e = v.current
@@ -124,41 +125,33 @@ function DotField({
       const n = e.prevY - e.y
       const r = Math.sqrt(t * t + n * n)
       e.speed += (r - e.speed) * 0.5
-      e.speed < 0.001 && (e.speed = 0)
+      if (e.speed < 0.001) e.speed = 0
       e.prevX = e.x
       e.prevY = e.y
     }
     i = setTimeout(c, 100)
     let p = 0
     function h() {
-      const now = performance.now()
-      if (now - (h._last || 0) < 33.333333333333336) {
-        y.current = requestAnimationFrame(h)
-        return
-      }
-      h._last = now
       p++
-      d() // 光标速度衰减并入 rAF 循环（取代已移除的 setInterval(d,20) 50Hz 定时器）
+      d()
       const e = _.current
       const r = v.current
       const { w: i, h: s } = b.current
       const c = C.current
-      const l = e.length
+      const l = e ? e.length : 0
       const u = p * 0.02
       const dn = Math.min(r.speed / 5, 1)
       S.current += (dn - S.current) * 0.06
-      S.current < 0.001 && (S.current = 0)
+      if (S.current < 0.001) S.current = 0
       const f = S.current
       x.current += (f - x.current) * 0.08
-      // 光标静止（速度+glow 衰减到 0）且无 sparkle/wave → 点阵完全静止，
-      // 跳过 clearRect/遍历/fill 节省 CPU（滚动时主线程让给页面合成）。
-      // rAF 循环继续（满足"背景不停"），仅回调变轻；光标移动时立即恢复重绘。
+
+      // 光标静止且 glow 归零时完全休眠 rAF
       const idle = !c.sparkle && c.waveAmplitude === 0 && x.current < 0.001 && S.current < 0.001
-      if (!idle) {
+      if (!idle && i > 0 && s > 0 && l > 0) {
         t && (t.setAttribute('cx', r.x), t.setAttribute('cy', r.y), (t.style.opacity = x.current))
         n.clearRect(0, 0, i, s)
-        // 复用缓存的静态渐变（仅在 resize 时重建），避免每帧 new createLinearGradient
-        if (!grad && i > 0 && s > 0) {
+        if (!grad) {
           grad = n.createLinearGradient(0, 0, i, s)
           grad.addColorStop(0, c.gradientFrom)
           grad.addColorStop(1, c.gradientTo)
@@ -199,13 +192,23 @@ function DotField({
         }
         n.fill()
       }
-      a && o && (y.current = requestAnimationFrame(h))
+
+      if (!idle && a && o) {
+        y.current = requestAnimationFrame(h)
+      } else {
+        y.current = null
+      }
     }
     const T = () => {
-      y.current === null && a && o && (y.current = requestAnimationFrame(h))
+      if (y.current === null && a && o) {
+        y.current = requestAnimationFrame(h)
+      }
     }
     const D = () => {
-      y.current !== null && (cancelAnimationFrame(y.current), (y.current = null))
+      if (y.current !== null) {
+        cancelAnimationFrame(y.current)
+        y.current = null
+      }
     }
     const O = new IntersectionObserver(([e]) => {
       a = e.isIntersecting
@@ -227,7 +230,7 @@ function DotField({
       e > 0 && t > 0 && l(e, t)
     }
     teardown = () => {
-      cancelAnimationFrame(y.current)
+      if (y.current !== null) cancelAnimationFrame(y.current)
       clearTimeout(i)
       window.removeEventListener('resize', s)
       window.removeEventListener('mousemove', u)

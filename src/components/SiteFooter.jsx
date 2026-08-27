@@ -18,19 +18,23 @@ function calcUptime(launched) {
 // 页脚 SiteFooter：站主名/角色/定位 + 技术栈 pill + 站点运行时间。
 export default function SiteFooter() {
   const { lang, t } = useLang()
-  const [uptime, setUptime] = useState(() => calcUptime(profile.siteLaunched))
+  const uptimeRef = useRef(null)
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setUptime(calcUptime(profile.siteLaunched))
-    }, 1000)
+    const isEn = lang === 'en'
+    const update = () => {
+      const u = calcUptime(profile.siteLaunched)
+      const text = isEn
+        ? `${u.days}d ${String(u.hours).padStart(2, '0')}h ${String(u.minutes).padStart(2, '0')}m ${String(u.seconds).padStart(2, '0')}s`
+        : `${u.days}天 ${String(u.hours).padStart(2, '0')}时 ${String(u.minutes).padStart(2, '0')}分 ${String(u.seconds).padStart(2, '0')}秒`
+      if (uptimeRef.current) uptimeRef.current.textContent = text
+    }
+    update()
+    const id = setInterval(update, 1000)
     return () => clearInterval(id)
-  }, [])
+  }, [lang])
 
   const isEn = lang === 'en'
-  const uptimeText = isEn
-    ? `${uptime.days}d ${String(uptime.hours).padStart(2, '0')}h ${String(uptime.minutes).padStart(2, '0')}m ${String(uptime.seconds).padStart(2, '0')}s`
-    : `${uptime.days}天 ${String(uptime.hours).padStart(2, '0')}时 ${String(uptime.minutes).padStart(2, '0')}分 ${String(uptime.seconds).padStart(2, '0')}秒`
 
   return (
     <footer className="site-footer">
@@ -51,7 +55,7 @@ export default function SiteFooter() {
       </div>
       <div className="container site-footer-uptime">
         <span className="site-footer-uptime-label">{isEn ? 'Site running for' : '本站已运行'}</span>
-        <span className="site-footer-uptime-value">{uptimeText}</span>
+        <span ref={uptimeRef} className="site-footer-uptime-value" />
       </div>
     </footer>
   )

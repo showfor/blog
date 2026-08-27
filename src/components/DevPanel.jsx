@@ -1,34 +1,28 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { WS_URL } from '../utils/wsConfig.js'
 
 // ============================================================
-//  DevPanel — 右下角开发者面板
-//  · PERF 标签：实时 FPS / DOM 节点 / 内存 / WebGL 帧数 / 页面加载耗时
-//  · LOGS 标签：终端式滚动日志流 + WebSocket/BroadcastChannel 实时推送
-//  · 默认折叠为 ▶ DEV 胶囊按钮，点击展开
-//  · 传输策略：wsConfig.js 中配置 WS_URL → 优先 WebSocket；否则退回到 BroadcastChannel
+//  DevPanel — 极低开销开发者面板
+//  · 默认折叠：仅在页面空闲时以最低能耗更新指示器，折叠时不执行重型 DOM 遍历与网络长连接
+//  · 展开态：按需启动 FPS / DOM 节点 / 内存 / WebGL 帧数 / 页面耗时统计与日志
+//  · 快捷键：按下 ? 快速切换
 // ============================================================
 
-const BC_NAME = 'devpanel-logs' // BroadcastChannel 回退名称
-const MAX_LOGS = 200 // 最多保留 200 条日志
+const BC_NAME = 'devpanel-logs'
+const MAX_LOGS = 200
 
-// ── 全局日志缓冲（组件挂载前的事件也能被捕获） ──
 const _logBuffer = []
 function nowISO() {
   const d = new Date()
   return d.toTimeString().slice(0, 8)
 }
 
-/** 在任何组件中调用 devLog(...) 即可推送日志——不依赖 React 生命周期 */
 export function devLog(type, msg, extra) {
   const ts = nowISO()
   const entry = { ts, type, msg, extra: extra || '' }
-  // 先写入全局缓冲
   _logBuffer.push(entry)
   if (_logBuffer.length > MAX_LOGS) _logBuffer.shift()
-  // 同时推送本地回调（DevPanel 挂载后注入）
   if (_onLogRef.current) _onLogRef.current(entry)
-  // 推送到传输层
   _pushTransport(entry)
 }
 
@@ -42,157 +36,144 @@ function _pushTransport(entry) {
 }
 
 const _transportRef = { current: null }
-const _onLogRef = { current: null } // DevPanel 挂载后 setLogs 回调
+const _onLogRef = { current: null }
 
-// ── FPS 跟踪 ──
-function createFpsTracker(onFrame) {
-  let frames = 0, last = performance.now(), rafId = null
-  const loop = (ts) => {
-    frames++
-    if (ts - last >= 500) {
-      const fps = Math.round((frames * 1000) / (ts - last))
-      onFrame(fps)
-      frames = 0
-      last = ts
-    }
-    rafId = requestAnimationFrame(loop)
-  }
-  return {
-    start: () => { rafId = requestAnimationFrame(loop) },
-    stop: () => { if (rafId) cancelAnimationFrame(rafId) },
-  }
-}
-
-// ── 主组件 ──
 export default function DevPanel() {
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState('perf')
-  const [fps, setFps] = useState(0)
+  const [fps, setFps] = useState(60)
   const [domCount, setDomCount] = useState(0)
   const [jsHeap, setJsHeap] = useState(0)
   const [drawCalls, setDrawCalls] = useState(0)
   const [loadMs, setLoadMs] = useState(0)
-  const [logs, setLogs] = useState([..._logBuffer]) // 初始化时载入挂载前缓存的日志
-  const fpsRef = useRef(null)
+  const [logs, setLogs] = useState([..._logBuffer])
+  const fpsTextRef = useRef(null)
+  const fpsDotRef = useRef(null)
   const logEndRef = useRef(null)
 
-  // ── 初始化 ──
+  // 页面加载耗时计算
   useEffect(() => {
-    // 页面加载耗时
-    const nav = performance.getEntriesByType('navigation')[0] || performance.timing
-    const t = typeof nav.domContentLoadedEventEnd === 'number'
-      ? nav.domContentLoadedEventEnd - nav.fetchStart
-      : (nav.loadEventEnd || 0) - (nav.fetchStart || 0)
-    setLoadMs(Math.round(t))
-
-    // 注入全局日志回调（此后 devLog() 会同步更新 React state）
-    _onLogRef.current = (entry) => setLogs(prev => [...prev.slice(-MAX_LOGS + 1), entry])
-
-    // 排空挂载前其他组件缓存的日志（如 GlobeSection 的 "Globe loaded"）
-    _logBuffer.forEach(entry => _onLogRef.current(entry))
-
-    // 页面加载日志（现在 _onLogRef 已就绪，后续所有 devLog 调用都会被捕获）
-    devLog('info', 'DevPanel mounted', `${Math.round(t)}ms load`)
-
-    // ── FPS 计数器 ──
-    const tracker = createFpsTracker((f) => {
-      fpsRef.current = f
-      setFps(f)
-    })
-    tracker.start()
-
-    // ── 定时刷新静态指标 ──
-    const statsTimer = setInterval(() => {
-      setDomCount(document.querySelectorAll('*').length)
-      if (performance.memory) {
-        setJsHeap(Math.round(performance.memory.usedJSHeapSize / 1048576))
-      }
-    }, 2000)
-
-    // ── 传输层：优先 WebSocket（跨设备），否则 BroadcastChannel（同浏览器标签页） ──
-    let transport = null
-    let transportLabel = ''
-
-    if (WS_URL) {
-      // WebSocket 模式
-      try {
-        const ws = new WebSocket(WS_URL + '/ws')
-        transportLabel = `WebSocket ${WS_URL}`
-        ws.onopen = () => devLog('info', 'Log channel active', transportLabel)
-        ws.onmessage = (ev) => {
-          try { setLogs(prev => [...prev.slice(-MAX_LOGS + 1), JSON.parse(ev.data)]) }
-          catch { /* 非 JSON 消息忽略 */ }
-        }
-        ws.onerror = () => devLog('warn', 'WebSocket error', 'falling back')
-        ws.onclose = () => { devLog('warn', 'WebSocket closed', 'reconnecting...') }
-        transport = ws
-        _transportRef.current = ws
-      } catch (e) {
-        devLog('warn', 'WebSocket init failed', e.message)
-      }
+    const calcLoad = () => {
+      const nav = performance.getEntriesByType('navigation')[0] || performance.timing
+      if (!nav) return
+      const t = typeof nav.domContentLoadedEventEnd === 'number'
+        ? nav.domContentLoadedEventEnd - nav.fetchStart
+        : (nav.loadEventEnd || 0) - (nav.fetchStart || 0)
+      if (t > 0) setLoadMs(Math.round(t))
     }
+    if (document.readyState === 'complete') calcLoad()
+    else window.addEventListener('load', calcLoad, { once: true })
+  }, [])
 
-    if (!transport) {
-      // 回退：BroadcastChannel
-      try {
-        const bc = new BroadcastChannel(BC_NAME)
-        transportLabel = 'BroadcastChannel'
-        bc.onmessage = (ev) => {
-          setLogs(prev => [...prev.slice(-MAX_LOGS + 1), ev.data])
-        }
-        bc.onmessageerror = () => {}
-        transport = bc
-        _transportRef.current = bc
-        devLog('info', 'Log channel active', transportLabel)
-      } catch {
-        devLog('warn', 'BroadcastChannel unavailable', 'cross-tab disabled')
-      }
+  // 日志订阅
+  useEffect(() => {
+    _onLogRef.current = (entry) => {
+      setLogs((prev) => [...prev.slice(-MAX_LOGS + 1), entry])
     }
-
-    // ── WebGL 帧数被动跟踪 ──
-    // 劫持 BackgroundFX 的 drawArrays 调用来计数
-    // （通过全局变量，BackgroundFX 在 init 后写入）
-    const webglTimer = setInterval(() => {
-      if (window.__wbGlFrames != null) {
-        setDrawCalls(window.__wbGlFrames)
-      }
-    }, 1000)
-
-    _onLogRef.current = (entry) => setLogs(prev => [...prev.slice(-MAX_LOGS + 1), entry])
-
     return () => {
-      tracker.stop()
-      clearInterval(statsTimer)
-      clearInterval(webglTimer)
-      if (transport) {
-        try { transport.close() } catch { /* already closed */ }
-      }
-      _transportRef.current = null
       _onLogRef.current = null
     }
   }, [])
 
-  // ── 日志区自动滚到底 ──
+  // 展开面板时的详细统计与传输连接
+  useEffect(() => {
+    if (!open) return
+
+    // 更新 DOM 节点数与内存
+    const updateStats = () => {
+      setDomCount(document.querySelectorAll('*').length)
+      if (performance.memory) {
+        setJsHeap(Math.round(performance.memory.usedJSHeapSize / 1048576))
+      }
+      if (window.__wbGlFrames != null) {
+        setDrawCalls(window.__wbGlFrames)
+      }
+    }
+    updateStats()
+    const statsTimer = setInterval(updateStats, 1500)
+
+    // 传输层（展开时按需建立）
+    let transport = null
+    if (WS_URL) {
+      try {
+        const ws = new WebSocket(WS_URL + '/ws')
+        ws.onopen = () => devLog('info', 'Log channel active', `WebSocket ${WS_URL}`)
+        ws.onmessage = (ev) => {
+          try { setLogs((prev) => [...prev.slice(-MAX_LOGS + 1), JSON.parse(ev.data)]) }
+          catch { /* ignore */ }
+        }
+        transport = ws
+        _transportRef.current = ws
+      } catch { /* ignore */ }
+    }
+    if (!transport && 'BroadcastChannel' in window) {
+      try {
+        const bc = new BroadcastChannel(BC_NAME)
+        bc.onmessage = (ev) => {
+          setLogs((prev) => [...prev.slice(-MAX_LOGS + 1), ev.data])
+        }
+        transport = bc
+        _transportRef.current = bc
+      } catch { /* ignore */ }
+    }
+
+    return () => {
+      clearInterval(statsTimer)
+      if (transport) {
+        try { transport.close() } catch { /* ignore */ }
+      }
+      _transportRef.current = null
+    }
+  }, [open])
+
+  // 超轻量 FPS 监测：折叠时不触发 React 渲染，直接更新 DOM
+  useEffect(() => {
+    let frames = 0
+    let last = performance.now()
+    let rafId = null
+
+    const loop = (ts) => {
+      frames++
+      if (ts - last >= 600) {
+        const currentFps = Math.min(144, Math.round((frames * 1000) / (ts - last)))
+        frames = 0
+        last = ts
+
+        const color = currentFps >= 55 ? 'var(--accent)' : currentFps >= 30 ? '#ffe74c' : '#ff7a93'
+        if (fpsTextRef.current) fpsTextRef.current.textContent = String(currentFps)
+        if (fpsDotRef.current) fpsDotRef.current.style.background = color
+
+        if (open) setFps(currentFps)
+      }
+      rafId = requestAnimationFrame(loop)
+    }
+
+    rafId = requestAnimationFrame(loop)
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [open])
+
+  // 日志滚动到底
   useEffect(() => {
     if (tab === 'logs' && logEndRef.current) {
       logEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }, [logs, tab])
 
-  // ── 快捷键 ? 打开面板 ──
+  // 快捷键 ?
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.altKey && document.activeElement === document.body) {
         e.preventDefault()
-        setOpen(v => !v)
+        setOpen((v) => !v)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  // ── 日志条目颜色 ──
-  const logColor = (type) => {
+  const logColor = useCallback((type) => {
     switch (type) {
       case 'visitor': return 'var(--accent)'
       case 'webgl': return '#47daff'
@@ -201,17 +182,15 @@ export default function DevPanel() {
       case 'error': return '#ff7a93'
       default: return 'var(--textMuted)'
     }
-  }
+  }, [])
 
-  // ── FPS 色标 ──
   const fpsColor = fps >= 55 ? 'var(--accent)' : fps >= 30 ? '#ffe74c' : '#ff7a93'
-
   const fpsPercent = Math.min(fps, 60)
   const heapPercent = Math.min(jsHeap, 200)
 
   return (
     <>
-      {/* ── 折叠态：右下角悬浮胶囊 ── */}
+      {/* 折叠态胶囊 */}
       {!open && (
         <button
           className="devpanel-toggle"
@@ -219,16 +198,15 @@ export default function DevPanel() {
           aria-label="Open developer panel"
           title="Open dev panel (press ?)"
         >
-          <span className="devpanel-dot" style={{ background: fpsColor }} />
-          <span className="devpanel-fps">{fps}</span>
+          <span ref={fpsDotRef} className="devpanel-dot" style={{ background: 'var(--accent)' }} />
+          <span ref={fpsTextRef} className="devpanel-fps">60</span>
           <span className="devpanel-arrow">▶</span>
         </button>
       )}
 
-      {/* ── 展开态：glass 面板 ── */}
+      {/* 展开面板 */}
       {open && (
         <aside className="devpanel">
-          {/* ── 头部：标签页切换 + 关闭 ── */}
           <div className="devpanel-header">
             <div className="devpanel-tabs">
               <button
@@ -249,10 +227,8 @@ export default function DevPanel() {
             </button>
           </div>
 
-          {/* ── PERF 标签页 ── */}
           {tab === 'perf' && (
             <div className="devpanel-body">
-              {/* FPS */}
               <div className="devpanel-metric">
                 <div className="devpanel-metric-head">
                   <span>FPS</span>
@@ -263,7 +239,6 @@ export default function DevPanel() {
                 </div>
               </div>
 
-              {/* DOM Nodes */}
               <div className="devpanel-metric">
                 <div className="devpanel-metric-head">
                   <span>DOM Nodes</span>
@@ -271,7 +246,6 @@ export default function DevPanel() {
                 </div>
               </div>
 
-              {/* JS Heap */}
               {performance.memory && (
                 <div className="devpanel-metric">
                   <div className="devpanel-metric-head">
@@ -284,7 +258,6 @@ export default function DevPanel() {
                 </div>
               )}
 
-              {/* WebGL frames */}
               <div className="devpanel-metric">
                 <div className="devpanel-metric-head">
                   <span>WebGL Frames</span>
@@ -298,7 +271,6 @@ export default function DevPanel() {
                 </div>
               </div>
 
-              {/* Page Load */}
               <div className="devpanel-metric">
                 <div className="devpanel-metric-head">
                   <span>Page Load</span>
@@ -306,12 +278,10 @@ export default function DevPanel() {
                 </div>
               </div>
 
-              {/* shortcut hint */}
               <p className="devpanel-hint">Press <kbd>?</kbd> to toggle</p>
             </div>
           )}
 
-          {/* ── LOGS 标签页 ── */}
           {tab === 'logs' && (
             <div className="devpanel-body devpanel-logs">
               {logs.map((l, i) => (

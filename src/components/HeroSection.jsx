@@ -56,56 +56,71 @@ export default function HeroSection({ openingComplete = true }) {
     }
   }, [openingComplete])
 
-  // 自动滚动 + 拖拽惯性 + 轨道位移（rAF 循环，逐字自 bundle）
-  // 交互节流：页面滚动时暂停轮播 rAF，让出主线程给滚动合成；松手空闲 150ms 后恢复。
-  // 仅监听 scroll —— 不监听 pointerdown/touchstart，否则会打断轮播自身的拖拽跟手
-  // （拖拽 onMove 依赖 tick 更新 transform，暂停会导致卡片不跟手）。
+  // 自动滚动 + 拖拽惯性 + 轨道位移（高帧率 delta-time + 视口感知暂停）
   useEffect(() => {
     let rafId = 0
-    let e = 0
-    let last = 0
-    let paused = false
-    let idleTimer = 0
-    const tick = (o) => {
-      if (paused) { rafId = 0; return }
-      const now = performance.now()
-      if (now - last < 33.333333333333336) {
-        rafId = requestAnimationFrame(tick)
+    let lastTime = performance.now()
+    let isIntersecting = true
+    let isVisible = !document.hidden
+
+    const tick = (now) => {
+      if (!isIntersecting || !isVisible) {
+        rafId = 0
         return
       }
-      last = now
-      e = e || o
-      const s = Math.min((o - e) / 1000, 0.1)
-      e = o
-      const c = 25 + 18 * Math.sin(o * 35e-5 + 1.2)
+      const dt = Math.min((now - lastTime) / 1000, 0.1)
+      lastTime = now
+
+      const c = 25 + 18 * Math.sin(now * 35e-5 + 1.2)
       const l = p.current
       if (l === 2) {
         const m = Math.abs(f.current)
         f.current *= m > 250 ? 0.86 : m > 80 ? 0.93 : 0.97
-        d.current += f.current * s
-        m < 6 && (p.current = 0)
+        d.current += f.current * dt
+        if (m < 6) p.current = 0
       } else if (l === 0) {
-        u.current += c * s
-        u.current >= ha && (u.current -= ha)
+        u.current += c * dt
+        if (u.current >= ha) u.current -= ha
       }
       const h = ((u.current + d.current) % ha + ha) % ha
-      n.current && (n.current.style.transform = `translateX(${-h}px)`)
+      if (n.current) {
+        n.current.style.transform = `translate3d(${-h}px, 0, 0)`
+      }
       rafId = requestAnimationFrame(tick)
     }
-    const start = () => { if (rafId === 0 && !paused) rafId = requestAnimationFrame(tick) }
-    const stop = () => { if (rafId !== 0) { cancelAnimationFrame(rafId); rafId = 0 } }
-    const markActive = () => {
-      stop()
-      clearTimeout(idleTimer)
-      paused = true
-      idleTimer = setTimeout(() => { paused = false; start() }, 150)
+
+    const start = () => {
+      if (rafId === 0 && isIntersecting && isVisible) {
+        lastTime = performance.now()
+        rafId = requestAnimationFrame(tick)
+      }
     }
-    rafId = requestAnimationFrame(tick)
-    window.addEventListener('scroll', markActive, { passive: true })
+    const stop = () => {
+      if (rafId !== 0) {
+        cancelAnimationFrame(rafId)
+        rafId = 0
+      }
+    }
+
+    const io = new IntersectionObserver(([entry]) => {
+      isIntersecting = entry.isIntersecting
+      isIntersecting ? start() : stop()
+    }, { threshold: 0 })
+
+    if (r.current) io.observe(r.current)
+
+    const onVisibility = () => {
+      isVisible = !document.hidden
+      isVisible ? start() : stop()
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+
+    start()
+
     return () => {
-      cancelAnimationFrame(rafId)
-      clearTimeout(idleTimer)
-      window.removeEventListener('scroll', markActive)
+      stop()
+      io.disconnect()
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
 

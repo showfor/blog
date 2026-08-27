@@ -188,42 +188,6 @@ export default function GlowCard({
     })
   }, [animated])
 
-  // 进场环扫（原站 qc 的 animated 分支，原生 Kc）
-  useEffect(() => {
-    if (!animated || !p.current) return
-    const e = p.current
-    e.classList.add('sweep-active')
-    e.style.setProperty('--cursor-angle', '110deg')
-    Kc({ duration: 500, onUpdate: (t) => e.style.setProperty('--edge-proximity', t) })
-    Kc({
-      ease: Gc,
-      duration: 1500,
-      end: 50,
-      onUpdate: (t) => {
-        e.style.setProperty('--cursor-angle', `${t / 100 * 355 + 110}deg`)
-      },
-    })
-    Kc({
-      ease: Wc,
-      delay: 1500,
-      duration: 2250,
-      start: 50,
-      end: 100,
-      onUpdate: (t) => {
-        e.style.setProperty('--cursor-angle', `${t / 100 * 355 + 110}deg`)
-      },
-    })
-    Kc({
-      ease: Gc,
-      delay: 2500,
-      duration: 1500,
-      start: 100,
-      end: 0,
-      onUpdate: (t) => e.style.setProperty('--edge-proximity', t),
-      onEnd: () => e.classList.remove('sweep-active'),
-    })
-  }, [animated])
-
   const v = zc(glowColor, glowIntensity)
   return (
     <Tag

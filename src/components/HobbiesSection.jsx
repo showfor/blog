@@ -1,11 +1,66 @@
+import { useRef, useState, useEffect } from 'react'
 import { hobbies } from '../data/hobbies.js'
 import { useLang } from '../context/LanguageProvider.jsx'
 import GlowCard from './GlowCard.jsx'
 
-// 爱好分类展示 —— 4 大板块（动漫 / 音乐 / 电影 / 小说）
-// 复用 section-head / eyebrow / section-title 招牌标题样式
-// 每个分类：标题光晕 → 简介 → GlowCard 列表
+// 延迟懒加载音乐播放器：仅当滚动到视口附近（300px）时才加载 iframe，
+// 彻底解决首屏 6 个网易云外链 iframe 抢占主线程、阻塞初始渲染和首屏滑动的性能瓶颈。
+function MusicPlayerEmbed({ embed, title, url }) {
+  const [inView, setInView] = useState(false)
+  const containerRef = useRef(null)
 
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    if (!('IntersectionObserver' in window)) {
+      setInView(true)
+      return
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setInView(true)
+        observer.disconnect()
+      }
+    }, { rootMargin: '300px' })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div ref={containerRef} className="hobby-music-player-wrap">
+      {inView ? (
+        <iframe
+          className="hobby-music-player"
+          src={embed}
+          width="100%"
+          height="152"
+          frameBorder="0"
+          scrolling="no"
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          title={title}
+        />
+      ) : (
+        <div className="hobby-music-player-placeholder">
+          <span className="hobby-music-loading-dot" />
+          <span>音频就绪中...</span>
+        </div>
+      )}
+      {url && (
+        <a
+          className="hobby-music-open"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          在网易云打开 →
+        </a>
+      )}
+    </div>
+  )
+}
+
+// 爱好分类展示 —— 4 大板块（动漫 / 音乐 / 电影 / 小说）
 export default function HobbiesSection() {
   const { t } = useLang()
 
@@ -26,7 +81,7 @@ export default function HobbiesSection() {
             {/* ── 列表卡片 ── */}
             <div className="hobby-list">
               {h.items.map((item, i) => {
-                // 音乐分类有 embed 字段时内嵌播放器
+                // 音乐分类有 embed 字段时内嵌播放器（视口懒加载）
                 if (h.key === 'music' && item.embed) {
                   return (
                     <div key={i} className="hobby-music-item">
@@ -37,29 +92,7 @@ export default function HobbiesSection() {
                           {item.note && <p className="hobby-note">{t(item.note)}</p>}
                         </div>
                       </div>
-                      <div className="hobby-music-player-wrap">
-                        <iframe
-                          className="hobby-music-player"
-                          src={item.embed}
-                          width="100%" height="152"
-                          frameBorder="0"
-                          scrolling="no"
-                          loading="lazy"
-                          referrerPolicy="no-referrer"
-                          title={t(item)}
-                        />
-                        {/* 受限歌曲（外链无法直接播放）时可跳转到网易云原页收听 */}
-                        {item.url && (
-                          <a
-                            className="hobby-music-open"
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            在网易云打开 →
-                          </a>
-                        )}
-                      </div>
+                      <MusicPlayerEmbed embed={item.embed} title={t(item)} url={item.url} />
                     </div>
                   )
                 }

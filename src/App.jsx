@@ -18,11 +18,17 @@ export default function App() {
   // 原生滚动入场（替代原克隆版的 GSAP ScrollTrigger.batch）：观察 .reveal 加 .is-visible。
   useReveal()
 
-  // 滚动进度条：驱动 CSS 变量 --scroll（0→1），顶栏酸橙绿线随滚读增长
+  // 滚动进度条：rAF 合并驱动 CSS 变量 --scroll（0→1），避免阻断滚动合成
   useEffect(() => {
+    let ticking = false
     const onScroll = () => {
-      const h = document.documentElement.scrollHeight - window.innerHeight
-      document.documentElement.style.setProperty('--scroll', h > 0 ? String(window.scrollY / h) : '0')
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        ticking = false
+        const h = document.documentElement.scrollHeight - window.innerHeight
+        document.documentElement.style.setProperty('--scroll', h > 0 ? String(window.scrollY / h) : '0')
+      })
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })

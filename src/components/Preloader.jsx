@@ -1,41 +1,58 @@
 import { useEffect, useRef, useState } from 'react'
 
 // 品牌加载动画：全屏纯黑遮罩 + "hakuriver" 字母逐字浮现 + 酸橙绿进度线。
-// 页面资源就绪（window load / 最长 2.6s）后淡出，并通过 onDone 通知 App
-// 触发 HeroSection 标题进场动画（两者衔接，形成完整的开屏序列）。
+// 页面资源就绪后平滑淡出，并通过 onDone 通知 App 触发 HeroSection 标题进场动画。
+// 动画结束后完全从 DOM 卸载，释放内存与合成层。
 const BRAND = 'hakuriver'
 
 export default function Preloader({ onDone }) {
+  const [mounted, setMounted] = useState(true)
   const [leaving, setLeaving] = useState(false)
   const doneRef = useRef(onDone)
   doneRef.current = onDone
 
   useEffect(() => {
-    let raf = 0
-    let timeout = 0
+    let timeoutId = null
+    let unmountTimer = null
     const start = performance.now()
-    const MAX_WAIT = 2600
+    const MAX_WAIT = 2200
 
-    const tick = () => {
+    const finish = () => {
+      if (timeoutId) return
       const elapsed = performance.now() - start
-      if (document.readyState === 'complete' || elapsed >= MAX_WAIT) {
-        // 至少让字母动画（约 1s）跑完再淡出，避免加载过快时一闪而过
-        const minShown = Math.max(0, 1000 - elapsed)
-        timeout = setTimeout(() => {
-          setLeaving(true)
-          // 淡出动画结束后通知 App 触发 Hero 进场
-          timeout = setTimeout(() => doneRef.current?.(), 650)
-        }, minShown)
-        return
-      }
-      raf = requestAnimationFrame(tick)
+      // 保证字母进场动画展示完（~800ms）再淡出，避免一闪而过
+      const minShown = Math.max(0, 800 - elapsed)
+      timeoutId = setTimeout(() => {
+        setLeaving(true)
+        // 淡出完毕后触发 Hero 进场并完全卸载 Preloader
+        unmountTimer = setTimeout(() => {
+          doneRef.current?.()
+          setMounted(false)
+        }, 600)
+      }, minShown)
     }
-    raf = requestAnimationFrame(tick)
+
+    if (document.readyState === 'complete') {
+      finish()
+    } else {
+      window.addEventListener('load', finish, { once: true })
+      // 兜底超时，避免个别网络资源挂起导致一直白屏/黑屏
+      const fallbackTimer = setTimeout(finish, MAX_WAIT)
+      return () => {
+        window.removeEventListener('load', finish)
+        clearTimeout(fallbackTimer)
+        clearTimeout(timeoutId)
+        clearTimeout(unmountTimer)
+      }
+    }
+
     return () => {
-      cancelAnimationFrame(raf)
-      clearTimeout(timeout)
+      clearTimeout(timeoutId)
+      clearTimeout(unmountTimer)
     }
   }, [])
+
+  if (!mounted) return null
 
   return (
     <div className={`site-preloader ${leaving ? 'is-leaving' : ''}`} aria-hidden="true">

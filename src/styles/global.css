@@ -406,11 +406,13 @@ a { color: inherit; }
   z-index: -1;
   pointer-events: none;
   opacity: var(--np);
-  background: rgba(18, 18, 18, calc(.72 * var(--np)));
-  -webkit-backdrop-filter: blur(calc(var(--np) * 24px)) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, calc(.08 * var(--np)));
-  box-shadow: 0 calc(var(--np) * 4px) calc(var(--np) * 24px) rgba(0, 0, 0, calc(.4 * var(--np)));
+  background: rgba(18, 18, 18, 0.72);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
   border-radius: 999px;
+  will-change: opacity;
 }
 .site-nav-brand {
   display: flex;
@@ -660,7 +662,15 @@ a { color: inherit; }
 @keyframes ring-pulse { 0%, to { opacity: .5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.04); } }
 
 /* ===== 背景（逐字自 aystba）：原生 WebGL 着色器背景 ===== */
-.grainient-bg-wrapper { z-index: 0; pointer-events: none; position: fixed; inset: 0; }
+.grainient-bg-wrapper {
+  z-index: 0;
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  contain: strict;
+  will-change: transform;
+  transform: translateZ(0);
+}
 .grainient-bg { width: 100%; height: 100%; }
 .grainient-container { width: 100%; height: 100%; position: relative; overflow: hidden; }
 main { z-index: 1; background: 0 0; position: relative; }
@@ -1016,6 +1026,31 @@ main { z-index: 1; background: 0 0; position: relative; }
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+.hobby-music-player-placeholder {
+  height: 152px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  color: var(--textMuted);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+.hobby-music-loading-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse-dot 1.5s infinite ease-in-out;
+}
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.3); opacity: 1; }
 }
 .hobby-music-open {
   display: inline-flex;

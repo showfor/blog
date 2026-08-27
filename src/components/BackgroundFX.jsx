@@ -16,9 +16,9 @@ function hexToRGB(hex) {
 }
 
 const QUALITY_DPR = {
-  low: 1,
-  medium: typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 1) : 1,
-  high: typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 2,
+  low: 0.75,
+  medium: 1,
+  high: 1,
 }
 
 export default function BackgroundFX({
@@ -135,8 +135,8 @@ export default function BackgroundFX({
     const resScale = 1.0
     const resize = () => {
       const rect = container.getBoundingClientRect()
-      const w = Math.max(1, Math.floor(rect.width))
-      const h = Math.max(1, Math.floor(rect.height))
+      const w = Math.min(1920, Math.max(1, Math.floor(rect.width)))
+      const h = Math.min(1080, Math.max(1, Math.floor(rect.height)))
       canvas.width = Math.floor(w * dpr * resScale)
       canvas.height = Math.floor(h * dpr * resScale)
       gl.viewport(0, 0, canvas.width, canvas.height)
