@@ -1,31 +1,36 @@
 /* =========================================================================
-   Notion Design System (Official Product Level Minimalist Aesthetics)
-   Warm Paper Light Mode (#fdfdfc / #ffffff) & Deep Graphite Dark Mode (#191919)
+   Notion Official Marketing Homepage Design System (Notion.com High-End Aesthetic)
+   Warm Paper Light Mode & Obsidian Dark Mode
    ========================================================================= */
 
 :root {
   /* ===== 浅色纸质模式（Notion Official Light） ===== */
   --bg-page: #ffffff;
   --bg-hover: rgba(55, 53, 47, 0.06);
-  --bg-hover-strong: rgba(55, 53, 47, 0.09);
+  --bg-hover-strong: rgba(55, 53, 47, 0.1);
   --bg-callout: #f7f6f5;
-  --bg-card: #ffffff;
-  --bg-card-subtle: #fcfbf9;
-  --bg-card-border: #edece9;
+  --bg-feature-card: #f7f7f5;
+  --bg-surface: #ffffff;
+  --bg-card-border: rgba(55, 53, 47, 0.08);
   --border-light: rgba(55, 53, 47, 0.09);
   --border-strong: rgba(55, 53, 47, 0.16);
   --border-divider: rgba(55, 53, 47, 0.1);
 
   /* 文字层次 */
-  --text-main: #37352f;
+  --text-main: #111111;
+  --text-body: #37352f;
   --text-muted: #6b6a67;
   --text-subtle: #91908d;
-  --text-placeholder: #b4b3b0;
 
-  /* Notion 标志性柔和功能色（官方色彩规范） */
-  --accent-blue: #2383e2;
-  --accent-blue-bg: #e8f3fc;
-  --accent-blue-text: #1d6fb8;
+  /* Notion 官方蓝色与琥珀色高亮 */
+  --accent-blue: #0077d4;
+  --accent-blue-hover: #0060ad;
+  --accent-blue-bg: #e0f2fe;
+
+  --accent-amber: #d97706;
+  --accent-amber-bg: #fef3c7;
+  --accent-amber-text: #92400e;
+  --accent-amber-border: rgba(245, 158, 11, 0.35);
 
   /* 分类标签药丸（Notion 官方柔和低饱和粉彩） */
   --pill-default-bg: rgba(55, 53, 47, 0.08);
@@ -47,8 +52,8 @@
   --pill-movie-text: #2b7852;
   --pill-movie-border: rgba(92, 175, 137, 0.2);
 
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.04);
-  --shadow-icon: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --shadow-surface: 0 8px 30px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-item: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 [data-theme="dark"] {
@@ -57,23 +62,28 @@
   --bg-hover: rgba(255, 255, 255, 0.06);
   --bg-hover-strong: rgba(255, 255, 255, 0.1);
   --bg-callout: #222222;
-  --bg-card: #202020;
-  --bg-card-subtle: #1e1e1e;
-  --bg-card-border: #2c2c2c;
+  --bg-feature-card: #202020;
+  --bg-surface: #171717;
+  --bg-card-border: rgba(255, 255, 255, 0.08);
   --border-light: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.15);
   --border-divider: rgba(255, 255, 255, 0.1);
 
   /* 文字层次 */
-  --text-main: #e6e6e5;
+  --text-main: #ffffff;
+  --text-body: #e6e6e5;
   --text-muted: #9b9a97;
   --text-subtle: #6f6e6b;
-  --text-placeholder: #555553;
 
   /* Notion 深色功能色 */
-  --accent-blue: #529cca;
-  --accent-blue-bg: rgba(35, 131, 226, 0.2);
-  --accent-blue-text: #82c2ee;
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #60a5fa;
+  --accent-blue-bg: rgba(59, 130, 246, 0.2);
+
+  --accent-amber: #f59e0b;
+  --accent-amber-bg: rgba(245, 158, 11, 0.2);
+  --accent-amber-text: #fcd34d;
+  --accent-amber-border: rgba(245, 158, 11, 0.35);
 
   /* 分类标签药丸（深色模式） */
   --pill-default-bg: rgba(255, 255, 255, 0.1);
@@ -95,8 +105,8 @@
   --pill-movie-text: #9ae3be;
   --pill-movie-border: rgba(92, 175, 137, 0.3);
 
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.06);
-  --shadow-icon: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-surface: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-item: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* ===== 基础重置 ===== */
@@ -106,12 +116,12 @@
 
 html {
   background-color: var(--bg-page);
-  color: var(--text-main);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  color: var(--text-body);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 body {
@@ -120,7 +130,7 @@ body {
   min-height: 100vh;
 }
 
-/* ===== 顶部导航栏（Notion Topbar - 移动端零折行保证） ===== */
+/* ===== 顶部导航栏（Notion Topbar） ===== */
 .notion-topbar {
   position: sticky;
   top: 0;
@@ -129,94 +139,85 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  height: 48px;
-  padding: 0 20px;
+  height: 52px;
+  padding: 0 24px;
   background: var(--bg-page);
   border-bottom: 1px solid var(--border-light);
-  font-size: 13px;
   user-select: none;
 }
 
-.notion-breadcrumbs {
+.notion-brand {
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: var(--text-muted);
-  font-size: 13px;
-  min-width: 0;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.notion-crumb-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--text-main);
-  font-weight: 500;
+  gap: 8px;
   text-decoration: none;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.notion-crumb-logo {
-  display: inline-flex;
-  align-items: center;
+.notion-brand-name {
+  font-size: 15px;
+  font-weight: 700;
   color: var(--text-main);
-}
-
-.notion-crumb-sep {
-  color: var(--text-subtle);
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.notion-crumb-current {
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: -0.02em;
 }
 
 .notion-top-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
+  gap: 8px;
 }
 
-.notion-btn-icon {
+.notion-btn-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  height: 28px;
-  padding: 0 9px;
-  font-size: 12px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12.5px;
   font-weight: 500;
   color: var(--text-muted);
   background: transparent;
   border: 1px solid var(--border-light);
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s ease;
 }
 
-.notion-btn-icon:hover {
+.notion-btn-pill:hover {
   background: var(--bg-hover);
   color: var(--text-main);
   border-color: var(--border-strong);
 }
 
+.notion-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff !important;
+  background: var(--accent-blue);
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.notion-btn-primary:hover {
+  background: var(--accent-blue-hover);
+}
+
 /* ===== 页面主容器 ===== */
 .notion-page {
-  max-width: 780px;
+  max-width: 820px;
   margin: 0 auto;
-  padding: 44px 24px 80px;
+  padding: 40px 24px 80px;
 }
 
 @media (max-width: 640px) {
@@ -224,34 +225,108 @@ body {
     padding: 24px 16px 60px;
   }
   .notion-topbar {
-    padding: 0 12px;
+    padding: 0 14px;
   }
 }
 
-/* ===== 页面主标题 ===== */
-.notion-header {
+/* ===== Notion 官网同款 Hero 英雄区 ===== */
+.notion-hero-section {
+  text-align: center;
+  padding: 24px 0 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 手绘涂鸦头像排 */
+.notion-hero-doodles {
   margin-bottom: 24px;
 }
 
-.notion-title {
-  margin: 0 0 18px;
+.notion-doodles-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.notion-title-name {
-  font-size: clamp(32px, 6vw, 42px);
-  font-weight: 750;
-  line-height: 1.1;
+.notion-doodle-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin-left: -8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s;
+  cursor: default;
+}
+
+.notion-doodle-avatar:first-child {
+  margin-left: 0;
+}
+
+.notion-doodle-avatar:hover {
+  transform: translateY(-4px) scale(1.12);
+  z-index: 10;
+}
+
+.notion-doodle-avatar svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 官网级超大标题 */
+.notion-hero-title {
+  font-size: clamp(34px, 7.5vw, 54px);
+  font-weight: 800;
+  line-height: 1.15;
   letter-spacing: -0.035em;
   color: var(--text-main);
-  margin-bottom: 6px;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
 }
 
-.notion-title-sub {
-  font-size: clamp(20px, 4vw, 26px);
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
+/* 琥珀色高亮气泡标签（类似 Notion 官网的「● 思考」蓝色气泡） */
+.notion-amber-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 14px;
+  font-size: clamp(18px, 3.8vw, 26px);
+  font-weight: 700;
+  border-radius: 30px;
+  background: var(--accent-amber-bg);
+  color: var(--accent-amber-text);
+  border: 1px solid var(--accent-amber-border);
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.amber-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  display: inline-block;
+  animation: amber-pulse 2s infinite ease-in-out;
+}
+
+@keyframes amber-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+/* 官网级精致副标题 */
+.notion-hero-desc {
+  font-size: clamp(15px, 2.5vw, 18px);
+  font-weight: 450;
+  line-height: 1.6;
   color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto 28px;
 }
 
 /* ===== Notion 属性栏（Properties Table） ===== */
@@ -259,10 +334,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px 0 16px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--border-divider);
+  padding: 14px 18px;
+  background: var(--bg-callout);
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  width: 100%;
+  max-width: 580px;
   font-size: 13px;
+  text-align: left;
 }
 
 .notion-prop-row {
@@ -272,7 +351,7 @@ body {
 }
 
 .notion-prop-label {
-  width: 96px;
+  width: 90px;
   color: var(--text-subtle);
   display: flex;
   align-items: center;
@@ -282,14 +361,14 @@ body {
 }
 
 .notion-prop-value {
-  color: var(--text-main);
+  color: var(--text-body);
   display: flex;
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
 }
 
-/* ===== 标签药丸（Notion Tags - 官方低饱和粉彩） ===== */
+/* ===== 标签药丸 ===== */
 .notion-tag {
   display: inline-flex;
   align-items: center;
@@ -305,34 +384,15 @@ body {
   border: 1px solid transparent;
 }
 
-.tag-music {
-  background: var(--pill-music-bg);
-  color: var(--pill-music-text);
-  border-color: var(--pill-music-border);
-}
-
-.tag-novels {
-  background: var(--pill-novel-bg);
-  color: var(--pill-novel-text);
-  border-color: var(--pill-novel-border);
-}
-
-.tag-anime {
-  background: var(--pill-anime-bg);
-  color: var(--pill-anime-text);
-  border-color: var(--pill-anime-border);
-}
-
-.tag-movies {
-  background: var(--pill-movie-bg);
-  color: var(--pill-movie-text);
-  border-color: var(--pill-movie-border);
-}
+.tag-music { background: var(--pill-music-bg); color: var(--pill-music-text); border-color: var(--pill-music-border); }
+.tag-novels { background: var(--pill-novel-bg); color: var(--pill-novel-text); border-color: var(--pill-novel-border); }
+.tag-anime { background: var(--pill-anime-bg); color: var(--pill-anime-text); border-color: var(--pill-anime-border); }
+.tag-movies { background: var(--pill-movie-bg); color: var(--pill-movie-text); border-color: var(--pill-movie-border); }
 
 .tag-status {
   background: var(--accent-blue-bg);
-  color: var(--accent-blue-text);
-  border-color: rgba(35, 131, 226, 0.2);
+  color: var(--accent-blue);
+  border-color: rgba(0, 119, 212, 0.2);
 }
 
 .status-dot {
@@ -349,97 +409,106 @@ body {
   50% { transform: scale(1.3); opacity: 0.6; }
 }
 
-/* ===== Callout 强调框 ===== */
-.notion-callout {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(--bg-callout);
-  border-radius: 6px;
-  margin: 16px 0;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--text-main);
+/* ===== Notion.com 官网标志性特性大卡片（Feature Card） ===== */
+.notion-feature-card {
+  background: var(--bg-feature-card);
   border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: 32px 28px;
+  margin-bottom: 32px;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
 }
 
-.notion-callout-icon {
+.notion-feature-card:hover {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 640px) {
+  .notion-feature-card {
+    padding: 20px 16px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+}
+
+.notion-feature-header {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  flex-shrink: 0;
-  margin-top: 2px;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-.notion-callout-text {
+.notion-feature-info {
   flex: 1;
 }
 
-.notion-callout-subtle {
-  background: transparent !important;
-  border: 1px dashed var(--border-light) !important;
-  color: var(--text-muted);
-  padding: 10px 14px;
-  margin: 8px 0 16px;
-}
-
-/* ===== 分类章节（Section） ===== */
-.notion-section {
-  margin-top: 40px;
-}
-
-.notion-section-head {
+.notion-feature-eyebrow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
-.notion-section-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-main);
-  letter-spacing: -0.015em;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.notion-section-icon-badge {
+.notion-feature-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  background: var(--bg-hover);
-  border: 1px solid var(--border-light);
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--text-main);
 }
 
-.notion-section-eyebrow {
-  font-size: 10.5px;
-  font-weight: 600;
+.notion-feature-eyebrow-text {
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--text-subtle);
   text-transform: uppercase;
 }
 
-.notion-divider {
-  height: 1px;
-  background: var(--border-divider);
-  border: none;
-  margin: 10px 0 14px;
+.notion-feature-title {
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+  margin: 0;
 }
 
-/* ===== 清爽图文列表（Inline List） ===== */
+/* 黑色圆形箭头按钮（Notion 官网特征） */
+.notion-circle-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--text-main);
+  color: var(--bg-page);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.15s ease;
+}
+
+.notion-feature-card:hover .notion-circle-arrow {
+  transform: translateX(3px) scale(1.05);
+}
+
+/* 悬浮白底内嵌卡片（Surface） */
+.notion-preview-surface {
+  background: var(--bg-surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow-surface);
+  padding: 14px 16px;
+  border: 1px solid var(--bg-card-border);
+}
+
+/* 条目列表 */
 .notion-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .notion-item {
@@ -447,17 +516,12 @@ body {
   align-items: flex-start;
   gap: 12px;
   padding: 10px 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--bg-card-border);
   border-radius: 6px;
-  box-shadow: var(--shadow-card);
-  transition: all 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .notion-item:hover {
   background: var(--bg-hover);
-  border-color: var(--border-strong);
-  transform: translateY(-1px);
 }
 
 .notion-item-num {
@@ -466,7 +530,7 @@ body {
   color: var(--text-subtle);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   width: 22px;
-  padding-top: 1px;
+  padding-top: 2px;
   flex-shrink: 0;
 }
 
@@ -481,7 +545,7 @@ body {
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .notion-item-title {
@@ -499,7 +563,7 @@ body {
   line-height: 1.5;
 }
 
-/* ===== 内嵌网易云播放器卡片 ===== */
+/* 内嵌网易云播放器 */
 .notion-embed-block {
   margin-top: 8px;
   padding: 8px;
@@ -538,35 +602,35 @@ body {
 }
 
 .notion-uptime-card {
-  padding: 16px 18px;
-  background: var(--bg-callout);
+  padding: 20px 22px;
+  background: var(--bg-feature-card);
   border: 1px solid var(--border-light);
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-radius: 14px;
+  margin-bottom: 24px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .notion-uptime-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
 .notion-uptime-status {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-weight: 500;
+  gap: 8px;
+  font-weight: 600;
   color: var(--text-main);
 }
 
 .notion-uptime-dot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #10b981;
   display: inline-block;
@@ -580,38 +644,38 @@ body {
 }
 
 .notion-uptime-since {
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--text-subtle);
 }
 
 .notion-uptime-digits {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 12px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .notion-uptime-unit {
   display: flex;
   align-items: baseline;
-  gap: 3px;
+  gap: 4px;
 }
 
 .notion-uptime-num {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text-main);
   line-height: 1;
 }
 
 .notion-uptime-lbl {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-subtle);
 }
 
 .notion-uptime-sep {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-subtle);
   opacity: 0.5;
@@ -619,7 +683,7 @@ body {
 
 @media (max-width: 640px) {
   .notion-uptime-num {
-    font-size: 19px;
+    font-size: 20px;
   }
   .notion-uptime-digits {
     gap: 6px;
@@ -633,7 +697,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--text-subtle);
   flex-wrap: wrap;
   gap: 10px;

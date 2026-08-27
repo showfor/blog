@@ -1,15 +1,14 @@
 import { useNotion } from '../context/NotionContext.jsx'
 import {
-  NotionLogoIcon,
   NotionSmallLogo,
-  ChevronRightIcon,
+  NotionDoodleRow,
   GlobeIcon,
   SunIcon,
   MoonIcon,
   UserIcon,
   TagIcon,
   ZapIcon,
-  QuoteIcon,
+  ArrowUpRightIcon,
 } from './NotionIcons.jsx'
 
 export default function NotionHeader() {
@@ -19,26 +18,18 @@ export default function NotionHeader() {
 
   return (
     <>
-      {/* 顶部 Notion 样式操作条（保证移动端永不折行） */}
+      {/* 顶部 Notion 官方风格导航条 */}
       <header className="notion-topbar">
-        <div className="notion-breadcrumbs">
-          <span className="notion-crumb-item">
-            <NotionSmallLogo size={15} />
-            <span>hakuriver</span>
-          </span>
-          <span className="notion-crumb-sep">
-            <ChevronRightIcon size={12} />
-          </span>
-          <span className="notion-crumb-current">
-            {isZh ? '兴趣与收藏' : 'Hobbies & Collections'}
-          </span>
+        <div className="notion-brand">
+          <NotionSmallLogo size={22} />
+          <span className="notion-brand-name">hakuriver</span>
         </div>
 
         <div className="notion-top-actions">
           {/* 语言切换 */}
           <button
             type="button"
-            className="notion-btn-icon"
+            className="notion-btn-pill"
             onClick={toggleLang}
             title={isZh ? 'Switch to English' : '切换到中文'}
           >
@@ -49,26 +40,51 @@ export default function NotionHeader() {
           {/* 明暗模式切换 */}
           <button
             type="button"
-            className="notion-btn-icon"
+            className="notion-btn-pill"
             onClick={toggleTheme}
             title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
           >
             {theme === 'light' ? <MoonIcon size={13} /> : <SunIcon size={13} />}
             <span>{theme === 'light' ? (isZh ? '深色' : 'Dark') : (isZh ? '浅色' : 'Light')}</span>
           </button>
+
+          {/* 右侧 Notion 风格主行动按钮 */}
+          <a
+            href="https://hakuriver.pages.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="notion-btn-primary"
+          >
+            <span>{isZh ? '主站' : 'Main'}</span>
+            <ArrowUpRightIcon size={11} />
+          </a>
         </div>
       </header>
 
-      {/* 页面主标题区（纯粹极简，无大图标，分两行排版） */}
-      <div className="notion-header">
-        <h1 className="notion-title">
-          <div className="notion-title-name">hakuriver</div>
-          <div className="notion-title-sub">
-            {isZh ? '兴趣与收藏' : 'Hobbies & Collections'}
-          </div>
+      {/* Notion 官网同款 Hero 英雄区 */}
+      <div className="notion-hero-section">
+        {/* 顶部手绘涂鸦头像条 */}
+        <div className="notion-hero-doodles">
+          <NotionDoodleRow />
+        </div>
+
+        {/* 官网级超大标题与琥珀色高亮气泡 */}
+        <h1 className="notion-hero-title">
+          <span className="notion-title-text">hakuriver</span>
+          <span className="notion-amber-badge">
+            <span className="amber-dot" />
+            <span>{isZh ? '赈早见琥珀主' : 'Kohaku'}</span>
+          </span>
         </h1>
 
-        {/* Notion 风格属性栏（官方 Database Properties 规范） */}
+        {/* 官方级精致副标题 */}
+        <p className="notion-hero-desc">
+          {isZh
+            ? '原声带、经典文学、深度动漫与神作电影。在浩瀚的数字世界中，构筑内心的宁静锚点。'
+            : 'Soundtracks, literature, anime, and cinema. Curating moments that inspire creativity and perspective.'}
+        </p>
+
+        {/* 数据库元属性栏（Properties Table） */}
         <div className="notion-properties">
           <div className="notion-prop-row">
             <span className="notion-prop-label">
@@ -104,18 +120,6 @@ export default function NotionHeader() {
                 <span>{isZh ? '持续收集中' : 'Curating'}</span>
               </span>
             </div>
-          </div>
-        </div>
-
-        {/* 顶部引言 Callout */}
-        <div className="notion-callout">
-          <span className="notion-callout-icon">
-            <QuoteIcon size={17} />
-          </span>
-          <div className="notion-callout-text">
-            {isZh
-              ? '这里是关于音乐、文学、动漫与电影的沉浸式清单。在喧嚣的数字世界中，文字、旋律与画面构筑了宁静的内心锚点。'
-              : 'A curated personal collection of soundtracks, literature, anime, and cinema. Art and stories that shape perspective and inspire creativity.'}
           </div>
         </div>
       </div>
