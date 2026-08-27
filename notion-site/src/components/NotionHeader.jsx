@@ -1,6 +1,5 @@
 import { useNotion } from '../context/NotionContext.jsx'
 import {
-  HakuDragonLogo,
   GlobeIcon,
   SunIcon,
   MoonIcon,
@@ -13,10 +12,16 @@ export default function NotionHeader() {
 
   return (
     <>
-      {/* 顶部导航栏：白龙 3D Notion 专属立体徽标 + 艺术品牌字 */}
+      {/* 顶部导航栏：白龙（赈早见琥珀主）定制水墨插画头像 + 艺术品牌字 */}
       <header className="notion-topbar">
         <div className="notion-brand">
-          <HakuDragonLogo size={28} />
+          <div className="notion-avatar-wrapper">
+            <img
+              src="/haku-avatar.jpg"
+              alt="赈早见琥珀主"
+              className="notion-haku-avatar"
+            />
+          </div>
           <span className="notion-brand-name">hakuriver</span>
         </div>
 
