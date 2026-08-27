@@ -1,0 +1,208 @@
+// Notion 风格兴趣爱好数据：音乐 / 小说 / 动漫 / 电影（双语）
+
+export const hobbies = [
+  {
+    key: 'music',
+    id: 'music',
+    icon: '🎵',
+    eyebrow: { en: 'PLAYLIST', cn: '播放列表' },
+    title: { en: 'Music', cn: '音乐' },
+    intro: {
+      en: 'Soundtracks, post-rock, and ambient electronica. Music is the emotional undercurrent of every creative session.',
+      cn: '原声带、后摇、氛围电子。音乐是每一次创作时的情感暗流。',
+    },
+    items: [
+      {
+        en: 'Joe Hisaishi — Spirited Away OST',
+        cn: '久石让 — 千与千寻原声',
+        note: { en: 'Orchestral · Studio Ghibli', cn: '管弦乐 · 吉卜力工作室' },
+        tag: 'Ghibli',
+        embed: 'https://music.163.com/outchain/player?type=2&id=443794&auto=0&height=152',
+        url: 'https://music.163.com/song?id=443794',
+      },
+      {
+        en: 'MONO — Hymn to the Immortal Wind',
+        cn: 'MONO — 不朽之风赞歌',
+        note: { en: 'Post-rock · Cinematic', cn: '后摇 · 史诗交响' },
+        tag: 'Post-rock',
+      },
+      {
+        en: 'Nujabes — Modal Soul',
+        cn: 'Nujabes — Modal Soul',
+        note: { en: 'Jazz Hip-Hop · Soulful', cn: '爵士嘻哈 · 灵魂律动' },
+        tag: 'Jazz Hop',
+      },
+      {
+        en: 'Ólafur Arnalds — re:member',
+        cn: 'Ólafur Arnalds — re:member',
+        note: { en: 'Neo-classical · Ambient', cn: '新古典 · 极简氛围' },
+        tag: 'Ambient',
+      },
+      {
+        en: 'Yoko Kanno — Cowboy Bebop OST',
+        cn: '菅野洋子 — 星际牛仔原声',
+        note: { en: 'Jazz Fusion · Bebop', cn: '爵士融合 · 比波普' },
+        tag: 'Anime OST',
+      },
+      {
+        en: 'Radwimps — Your Name OST',
+        cn: 'Radwimps — 你的名字原声',
+        note: { en: 'J-Rock · Cinematic', cn: '日系摇滚 · 动画电影' },
+        tag: 'J-Rock',
+      },
+    ],
+  },
+  {
+    key: 'novels',
+    id: 'novels',
+    icon: '📚',
+    eyebrow: { en: 'BOOKSHELF', cn: '书架' },
+    title: { en: 'Novels', cn: '小说' },
+    intro: {
+      en: 'Science fiction, magical realism, and contemporary literature. The written word is a portal to infinite worlds.',
+      cn: '科幻、魔幻现实主义、当代文学。文字是通往无限世界的入口。',
+    },
+    items: [
+      {
+        en: 'The Three-Body Problem',
+        cn: '三体',
+        author: { en: 'Liu Cixin', cn: '刘慈欣' },
+        note: { en: 'Hard sci-fi · Cosmic Sociology', cn: '硬科幻 · 宇宙社会学' },
+        tag: 'Sci-Fi',
+      },
+      {
+        en: 'Kafka on the Shore',
+        cn: '海边的卡夫卡',
+        author: { en: 'Haruki Murakami', cn: '村上春树' },
+        note: { en: 'Surrealism · Metaphysics', cn: '超现实 · 隐喻与命运' },
+        tag: 'Literature',
+      },
+      {
+        en: 'One Hundred Years of Solitude',
+        cn: '百年孤独',
+        author: { en: 'Gabriel García Márquez', cn: '加西亚·马尔克斯' },
+        note: { en: 'Magical Realism · Macondo', cn: '魔幻现实主义 · 马孔多百年' },
+        tag: 'Masterpiece',
+      },
+      {
+        en: 'Neuromancer',
+        cn: '神经漫游者',
+        author: { en: 'William Gibson', cn: '威廉·吉布森' },
+        note: { en: 'Cyberpunk Pioneer · Matrix', cn: '赛博朋克开山之作 · 赛博空间' },
+        tag: 'Cyberpunk',
+      },
+      {
+        en: 'Norwegian Wood',
+        cn: '挪威的森林',
+        author: { en: 'Haruki Murakami', cn: '村上春树' },
+        note: { en: 'Youth · Melancholy', cn: '青春物语 · 迷茫与救赎' },
+        tag: 'Fiction',
+      },
+      {
+        en: 'The Wind-Up Bird Chronicle',
+        cn: '奇鸟行状录',
+        author: { en: 'Haruki Murakami', cn: '村上春树' },
+        note: { en: 'Deep Exploration · Historical Memory', cn: '长篇巨著 · 潜意识与历史记忆' },
+        tag: 'Mystery',
+      },
+    ],
+  },
+  {
+    key: 'anime',
+    id: 'anime',
+    icon: '🌸',
+    eyebrow: { en: 'WATCH LIST', cn: '追番清单' },
+    title: { en: 'Anime', cn: '动漫' },
+    intro: {
+      en: 'Japanese animation has been a lifelong passion — from Shonen classics to introspective slice-of-life, every frame tells a story.',
+      cn: '日本动画是陪伴我成长的热爱——从热血少年番到细腻日常向，每一帧都在诉说故事。',
+    },
+    items: [
+      {
+        en: 'Attack on Titan',
+        cn: '进击的巨人',
+        note: { en: 'Dark fantasy masterpiece · Wit / MAPPA', cn: '黑暗奇幻巅峰 · 史诗叙事' },
+        tag: 'Action / Epic',
+      },
+      {
+        en: 'Steins;Gate',
+        cn: '命运石之门',
+        note: { en: 'Time-travel sci-fi · White Fox', cn: '时间旅行科幻神作 · 命运石之门的选择' },
+        tag: 'Sci-Fi',
+      },
+      {
+        en: 'Fullmetal Alchemist: Brotherhood',
+        cn: '钢之炼金术师 FA',
+        note: { en: 'Perfect story arc · Bones', cn: '完美结构零差评 · 等价交换' },
+        tag: 'Shonen Classic',
+      },
+      {
+        en: 'Violet Evergarden',
+        cn: '紫罗兰永恒花园',
+        note: { en: 'Visual poetry · Kyoto Animation', cn: '视觉诗篇 · 追寻爱的真谛' },
+        tag: 'Drama / KyoAni',
+      },
+      {
+        en: 'Monogatari Series',
+        cn: '物语系列',
+        note: { en: 'Dialogue-driven art · Shaft', cn: '台词与怪异美学 · 新房昭之' },
+        tag: 'Supernatural',
+      },
+      {
+        en: 'Mushishi',
+        cn: '虫师',
+        note: { en: 'Meditative folklore · Artland', cn: '清冷浮生 · 冥想式民间物语' },
+        tag: 'Slice of Life',
+      },
+    ],
+  },
+  {
+    key: 'movies',
+    id: 'movies',
+    icon: '🎬',
+    eyebrow: { en: 'SCREEN', cn: '银幕' },
+    title: { en: 'Movies', cn: '电影' },
+    intro: {
+      en: 'From Wong Kar-wai to Christopher Nolan — cinema that bends time, challenges perception, and leaves a mark.',
+      cn: '从王家卫到诺兰——改变时间感知、挑战认知边界、留下深刻印记的电影。',
+    },
+    items: [
+      {
+        en: 'In the Mood for Love',
+        cn: '花样年华',
+        note: { en: 'Wong Kar-wai · 2000', cn: '王家卫 导演 · 2000' },
+        tag: 'Classic Romance',
+      },
+      {
+        en: 'Interstellar',
+        cn: '星际穿越',
+        note: { en: 'Christopher Nolan · 2014', cn: '克里斯托弗·诺兰 · 2014' },
+        tag: 'Hard Sci-Fi',
+      },
+      {
+        en: 'Spirited Away',
+        cn: '千与千寻',
+        note: { en: 'Hayao Miyazaki · 2001', cn: '宫崎骏 导演 · 2001' },
+        tag: 'Ghibli Animation',
+      },
+      {
+        en: 'Parasite',
+        cn: '寄生虫',
+        note: { en: 'Bong Joon-ho · 2019', cn: '奉俊昊 导演 · 2019' },
+        tag: 'Thriller / Palme d\'Or',
+      },
+      {
+        en: 'Blade Runner 2049',
+        cn: '银翼杀手 2049',
+        note: { en: 'Denis Villeneuve · 2017', cn: '丹尼斯·维伦纽瓦 · 2017' },
+        tag: 'Neo-Noir Sci-Fi',
+      },
+      {
+        en: 'Your Name',
+        cn: '你的名字。',
+        note: { en: 'Makoto Shinkai · 2016', cn: '新海诚 导演 · 2016' },
+        tag: 'Romance Fantasy',
+      },
+    ],
+  },
+]
