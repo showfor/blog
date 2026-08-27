@@ -59,14 +59,13 @@ export default function NotionHeader() {
         </div>
       </header>
 
-      {/* 页面主标题区 */}
+      {/* 页面主标题区（纯粹极简，无大图标，分两行排版） */}
       <div className="notion-header">
-        <div className="notion-page-icon-wrap">
-          <NotionLogoIcon size={56} />
-        </div>
-
         <h1 className="notion-title">
-          {isZh ? 'hakuriver · 兴趣与收藏' : 'hakuriver · Hobbies & Collections'}
+          <div className="notion-title-name">hakuriver</div>
+          <div className="notion-title-sub">
+            {isZh ? '兴趣与收藏' : 'Hobbies & Collections'}
+          </div>
         </h1>
 
         {/* Notion 风格属性栏（官方 Database Properties 规范） */}

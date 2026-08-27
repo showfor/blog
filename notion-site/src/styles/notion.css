@@ -228,38 +228,30 @@ body {
   }
 }
 
-/* ===== 页面图标与标题 ===== */
+/* ===== 页面主标题 ===== */
 .notion-header {
-  margin-bottom: 28px;
-}
-
-.notion-page-icon-wrap {
-  margin-bottom: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  box-shadow: var(--shadow-icon);
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.notion-page-icon-wrap:hover {
-  transform: translateY(-2px);
+  margin-bottom: 24px;
 }
 
 .notion-title {
-  font-size: 36px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
-  margin: 0 0 16px;
-  color: var(--text-main);
+  margin: 0 0 18px;
 }
 
-@media (max-width: 640px) {
-  .notion-title {
-    font-size: 26px;
-  }
+.notion-title-name {
+  font-size: clamp(32px, 6vw, 42px);
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.notion-title-sub {
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text-muted);
 }
 
 /* ===== Notion 属性栏（Properties Table） ===== */
