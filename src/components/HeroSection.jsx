@@ -46,15 +46,17 @@ export default function HeroSection({ openingComplete = true }) {
   const T = useRef({ scale: 1, rotate: 0 }) // 源卡片 transform
   const E = useMemo(() => fa.concat(fa), [])
 
-  // 标题进场（GSAP，受 openingComplete 控制）
+  // 标题进场动画（挂载时平滑进场）
   useEffect(() => {
-    if (openingComplete) {
-      U.set([a.current, o.current], { opacity: 0, x: -100, scaleX: 0.8, skewX: -10 })
-      U.timeline({ defaults: { ease: 'power4.out', duration: 0.8 } })
-        .to(a.current, { opacity: 1, x: 0, scaleX: 1, skewX: 0, duration: 1 })
-        .to(o.current, { opacity: 1, x: 0, scaleX: 1, skewX: 0, duration: 1 }, 0.2)
+    const targets = [a.current, o.current].filter(Boolean)
+    if (targets.length) {
+      U.fromTo(
+        targets,
+        { opacity: 0, x: -40, scaleX: 0.95 },
+        { opacity: 1, x: 0, scaleX: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out' }
+      )
     }
-  }, [openingComplete])
+  }, [])
 
   // 自动滚动 + 拖拽惯性 + 轨道位移（高帧率 delta-time + 视口感知暂停）
   useEffect(() => {
@@ -294,9 +296,8 @@ export default function HeroSection({ openingComplete = true }) {
 
       <div className="hero-content">
         <h1 className="hero-title">
-          {/* 初始 opacity:0：等待 openingComplete（preloader 完成后）GSAP 进场动画接管，避免衔接闪烁 */}
-          <span className="hero-title-line accent" ref={a} style={{ opacity: 0 }}>{title1}</span>
-          {hasSubtitle && <span className="hero-title-line outline" ref={o} style={{ opacity: 0 }}>{title2}</span>}
+          <span className="hero-title-line accent" ref={a}>{title1}</span>
+          {hasSubtitle && <span className="hero-title-line outline" ref={o}>{title2}</span>}
         </h1>
       </div>
 

@@ -1,58 +1,25 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-// 品牌加载动画：全屏纯黑遮罩 + "hakuriver" 字母逐字浮现 + 酸橙绿进度线。
-// 页面资源就绪后平滑淡出，并通过 onDone 通知 App 触发 HeroSection 标题进场动画。
-// 动画结束后完全从 DOM 卸载，释放内存与合成层。
+// 品牌加载动画：极速淡出，绝不阻塞用户浏览或引发黑屏
 const BRAND = 'hakuriver'
 
 export default function Preloader({ onDone }) {
   const [mounted, setMounted] = useState(true)
   const [leaving, setLeaving] = useState(false)
-  const doneRef = useRef(onDone)
-  doneRef.current = onDone
 
   useEffect(() => {
-    let timeoutId = null
-    let unmountTimer = null
-    const start = performance.now()
-    const MAX_WAIT = 1000
+    // 挂载后立即通知外部组件就绪，避免任何子组件因等待而空白
+    onDone?.()
 
-    const finish = () => {
-      if (timeoutId) return
-      const elapsed = performance.now() - start
-      // 保证字母进场动画展示完（~600ms）再淡出，避免一闪而过
-      const minShown = Math.max(0, 600 - elapsed)
-      timeoutId = setTimeout(() => {
-        setLeaving(true)
-        // 淡出完毕后触发 Hero 进场并完全卸载 Preloader
-        unmountTimer = setTimeout(() => {
-          doneRef.current?.()
-          setMounted(false)
-        }, 500)
-      }, minShown)
-    }
-
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      finish()
-    } else {
-      window.addEventListener('DOMContentLoaded', finish, { once: true })
-      window.addEventListener('load', finish, { once: true })
-      // 兜底超时，避免个别网络资源挂起导致一直白屏/黑屏
-      const fallbackTimer = setTimeout(finish, MAX_WAIT)
-      return () => {
-        window.removeEventListener('DOMContentLoaded', finish)
-        window.removeEventListener('load', finish)
-        clearTimeout(fallbackTimer)
-        clearTimeout(timeoutId)
-        clearTimeout(unmountTimer)
-      }
-    }
+    // 0.4s 后开始淡出，0.7s 后彻底从 DOM 移除
+    const t1 = setTimeout(() => setLeaving(true), 400)
+    const t2 = setTimeout(() => setMounted(false), 750)
 
     return () => {
-      clearTimeout(timeoutId)
-      clearTimeout(unmountTimer)
+      clearTimeout(t1)
+      clearTimeout(t2)
     }
-  }, [])
+  }, [onDone])
 
   if (!mounted) return null
 
