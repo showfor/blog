@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useMemo } from 'react'
 import { useLang } from '../context/LanguageProvider.jsx'
 import { gsap } from 'gsap'
 import { profile } from '../data/profile.js'
+import { carouselCards } from '../data/carousel.js'
 import BackgroundFX from './BackgroundFX.jsx'
 import DotField from './DotField.jsx'
 
@@ -16,16 +17,7 @@ import DotField from './DotField.jsx'
 const U = gsap
 
 const da = '/assets/hero-bg.jpg'
-const fa = [
-  { color: '#2a3a2a', label: 'Photography',     img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop' },
-  { color: '#3a3a2a', label: '3D Render',        img: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=500&fit=crop' },
-  { color: '#2a2a3a', label: 'Brand Identity',   img: 'https://images.unsplash.com/photo-1636955816868-fcb881e57954?w=400&h=500&fit=crop' },
-  { color: '#3a3a2a', label: 'AI Art',           img: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=500&fit=crop' },
-  { color: '#2a3a3a', label: 'UI Design',        img: 'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=400&h=500&fit=crop' },
-  { color: '#3a2a3a', label: 'Game Art',         img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=500&fit=crop' },
-  { color: '#2a3a2a', label: 'Poster',           img: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=400&h=500&fit=crop' },
-  { color: '#2a3a3a', label: 'Illustration',     img: 'https://images.unsplash.com/photo-1633621641966-238e4e7c14a4?w=400&h=500&fit=crop' },
-]
+const fa = carouselCards
 const pa = 180
 const ma = pa + 52
 const ha = fa.length * ma
@@ -299,9 +291,9 @@ export default function HeroSection({ openingComplete = true }) {
             <div className="hero-carousel-item" key={idx} ref={(el) => D(el, idx)} style={{ background: item.color }}>
               {/* placeholder：图片未加载时的纯色 + 文字占位（复刻原站 .hero-carousel-placeholder），
                   避免空白卡片 + 让首屏零外部图片请求 */}
-              <div className="hero-carousel-placeholder">{item.label}</div>
-              <img data-src={item.img} alt={item.label} className="hero-carousel-image" loading="lazy" decoding="async" />
-              <div className="hero-carousel-label">{item.label}</div>
+              <div className="hero-carousel-placeholder">{t(item.label)}</div>
+              <img data-src={item.img} alt={t(item.label)} className="hero-carousel-image" loading="lazy" decoding="async" />
+              <div className="hero-carousel-label">{t(item.label)}</div>
             </div>
           ))}
         </div>
@@ -310,8 +302,8 @@ export default function HeroSection({ openingComplete = true }) {
       {b && v && (
         <div ref={s} className="hero-card-modal" style={{ opacity: 0 }} onClick={j}>
           <div ref={c} className="hero-card-modal-content" onClick={(e) => e.stopPropagation()}>
-            <img src={v.img} alt={v.label} className="hero-card-modal-image" />
-            <div className="hero-card-modal-label">{v.label}</div>
+            <img src={v.img} alt={t(v.label)} className="hero-card-modal-image" />
+            <div className="hero-card-modal-label">{t(v.label)}</div>
             <button className="hero-card-modal-close" onClick={j}>✕</button>
           </div>
         </div>

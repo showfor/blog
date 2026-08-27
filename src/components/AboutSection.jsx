@@ -58,7 +58,7 @@ export default function AboutSection() {
               <a className="about-contact-row" href={`mailto:${profile.contact.email}`}>
                 <AppIcon name="mail" /> {profile.contact.email}
               </a>
-              <a className="about-contact-row" href="https://github.com/" target="_blank" rel="noreferrer">
+              <a className="about-contact-row" href="https://github.com/showfor" target="_blank" rel="noreferrer">
                 <AppIcon name="github" /> GitHub
               </a>
             </div>

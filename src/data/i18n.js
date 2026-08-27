@@ -42,7 +42,7 @@ export const i18n = {
       { en: 'Open source contributor', cn: '开源贡献' },
       { en: 'Participating in the open source community', cn: '参与开源社区。' },
     ],
-    url: 'https://github.com/',
+    url: 'https://github.com/showfor',
   },
   footer: {
     about: { en: 'About Me', cn: '关于我' },

@@ -20,7 +20,7 @@ export const profile = {
       en: 'A developer passionate about creating practical and beautiful digital products.',
       cn: '专注于构建实用且美观的数字产品。',
     },
-    primaryCta: { en: 'Send Message', cn: '发送消息', href: 'mailto:hello@amberriver.dev' },
+    primaryCta: { en: 'Send Message', cn: '发送消息', href: 'mailto:2561937323@qq.com' },
     secondaryCta: { en: 'Selected Projects', cn: '精选作品', href: '#projects' },
     scrollHint: { en: 'Scroll to About', cn: '滚动查看关于', href: '#about' },
   },
@@ -63,7 +63,7 @@ export const profile = {
     ],
   },
   contact: {
-    email: 'hello@amberriver.dev',
+    email: '2561937323@qq.com',
     phone: '',
     welcome: {
       en: 'Welcome to collaborate on creative projects and interesting conversations.',
