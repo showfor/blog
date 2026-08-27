@@ -13,6 +13,12 @@ export const hobbies = [
     },
     items: [
       {
+        en: 'Joe Hisaishi — Spirited Away OST',
+        cn: '久石让 — 千与千寻原声',
+        note: { en: 'Orchestral · Studio Ghibli', cn: '管弦乐 · 吉卜力工作室' },
+        tag: 'Ghibli',
+      },
+      {
         en: 'MONO — Hymn to the Immortal Wind',
         cn: 'MONO — 不朽之风赞歌',
         note: { en: 'Post-rock · Cinematic', cn: '后摇 · 史诗交响' },
