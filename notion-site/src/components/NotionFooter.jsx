@@ -76,16 +76,6 @@ export default function NotionFooter() {
 
         <div className="notion-footer-right">
           <span>{isZh ? '由 React 18 + Vite 驱动' : 'Powered by React 18 + Vite'}</span>
-          <span>•</span>
-          <a
-            href="https://hakuriver.pages.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="notion-footer-link"
-          >
-            <span>{isZh ? '访问视觉主站' : 'Visit Main Site'}</span>
-            <ArrowUpRightIcon size={12} />
-          </a>
         </div>
       </footer>
     </div>

@@ -4,7 +4,6 @@ import {
   GlobeIcon,
   SunIcon,
   MoonIcon,
-  ArrowUpRightIcon,
 } from './NotionIcons.jsx'
 
 export default function NotionHeader() {
@@ -43,17 +42,6 @@ export default function NotionHeader() {
             {theme === 'light' ? <MoonIcon size={13} /> : <SunIcon size={13} />}
             <span>{theme === 'light' ? (isZh ? '深色' : 'Dark') : (isZh ? '浅色' : 'Light')}</span>
           </button>
-
-          {/* 官方高对比度蓝色 CTA 按钮 */}
-          <a
-            href="https://hakuriver.pages.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="notion-btn-primary"
-          >
-            <span>{isZh ? '访问主站' : 'Main Site'}</span>
-            <ArrowUpRightIcon size={11} />
-          </a>
         </div>
       </header>
 
