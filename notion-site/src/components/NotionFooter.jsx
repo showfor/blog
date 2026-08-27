@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNotion } from '../context/NotionContext.jsx'
 import { ArrowUpRightIcon } from './NotionIcons.jsx'
 
-// 建站启动时间点（2026-07-16 22:59:19）
-const SITE_LAUNCHED = '2026-07-16T22:59:19+08:00'
+// 本 Notion 站独立诞生时间点（2026-08-27 21:46:00）
+const SITE_LAUNCHED = '2026-08-27T21:46:00+08:00'
 
 function calcUptime(launched = SITE_LAUNCHED) {
   const start = new Date(launched).getTime()
@@ -41,7 +41,7 @@ export default function NotionFooter() {
             </span>
           </div>
           <span className="notion-uptime-since">
-            {isZh ? '始于 2026年7月16日' : 'Since Jul 16, 2026'}
+            {isZh ? '始于 2026年8月27日' : 'Since Aug 27, 2026'}
           </span>
         </div>
 
