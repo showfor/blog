@@ -21,10 +21,22 @@ export default function HobbySection({ category }) {
   }
 
   const categorySubheadMap = {
-    music: { en: 'Immerse every creative session in soundtracks and post-rock.', cn: '用纯粹的原声带与后摇，沉浸每一次专注与创作。' },
-    novels: { en: 'Navigate through boundless time and thought via literature.', cn: '用文字的罗盘，在浩瀚时空里漫游探索。' },
-    anime: { en: 'Revisit emotional peaks through unforgettable storytelling.', cn: '用跌宕的故事，重温触动灵魂的每一次感动。' },
-    movies: { en: 'Experience another life in a parallel dimension through cinema.', cn: '用两小时的银幕，体验平行时空的另一种人生。' },
+    music: {
+      en: 'Melody is the emotional undercurrent, resonating through quietude.',
+      cn: '旋律是情绪的暗流，在寂静中激荡出无尽的声浪。',
+    },
+    novels: {
+      en: 'Within the boundless cosmos of words, wandering with solitary souls.',
+      cn: '在文字构筑的浩瀚宇宙里，与千百种深邃的灵魂相逢。',
+    },
+    anime: {
+      en: 'Timeless light and indelible bonds, frozen beyond reality.',
+      cn: '那些超越现实的光影与羁绊，定格了永不褪色的感动。',
+    },
+    movies: {
+      en: 'Borrowing two hours of light and shadow to live another life.',
+      cn: '借两小时的光影幻梦，在平行时空里体验另一种人生。',
+    },
   }
 
   const renderCategoryIcon = (key) => {
@@ -39,7 +51,7 @@ export default function HobbySection({ category }) {
 
   return (
     <section id={category.id} className="notion-feature-card">
-      {/* 顶部标题区（Notion.com 官网大卡片风格） */}
+      {/* 顶部标题区（优雅质感文学排版） */}
       <div className="notion-feature-header">
         <div className="notion-feature-info">
           <div className="notion-feature-eyebrow">
@@ -80,7 +92,7 @@ export default function HobbySection({ category }) {
                   <p className="notion-item-note">{t(item.note)}</p>
                 )}
 
-                {/* 针对千与千寻的网易云内嵌播放器 */}
+                {/* 针对特定条目的音频链接 */}
                 {item.embed && (
                   <div className="notion-embed-block">
                     <iframe
