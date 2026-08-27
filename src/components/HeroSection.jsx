@@ -16,7 +16,7 @@ import DotField from './DotField.jsx'
  */
 const U = gsap
 
-const da = '/assets/hero-bg.jpg'
+const da = `${import.meta.env.BASE_URL || '/'}assets/hero-bg.jpg`.replace(/\/{2,}/g, '/')
 const fa = carouselCards
 const pa = 180
 const ma = pa + 52

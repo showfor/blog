@@ -78,19 +78,29 @@ export default function BackgroundFX({
 
     const compile = (type, src) => {
       const sh = gl.createShader(type)
+      if (!sh) return null
       gl.shaderSource(sh, src)
       gl.compileShader(sh)
       if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-        console.error('[BackgroundFX] shader compile error:', gl.getShaderInfoLog(sh))
+        console.warn('[BackgroundFX] shader compile fallback:', gl.getShaderInfoLog(sh))
+        return null
       }
       return sh
     }
+    const vs = compile(gl.VERTEX_SHADER, VERTEX_SHADER)
+    const fs = compile(gl.FRAGMENT_SHADER, FRAGMENT_SHADER)
+    if (!vs || !fs) {
+      if (canvas.parentNode) canvas.parentNode.removeChild(canvas)
+      return
+    }
     const program = gl.createProgram()
-    gl.attachShader(program, compile(gl.VERTEX_SHADER, VERTEX_SHADER))
-    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAGMENT_SHADER))
+    gl.attachShader(program, vs)
+    gl.attachShader(program, fs)
     gl.linkProgram(program)
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error('[BackgroundFX] program link error:', gl.getProgramInfoLog(program))
+      console.warn('[BackgroundFX] program link error:', gl.getProgramInfoLog(program))
+      if (canvas.parentNode) canvas.parentNode.removeChild(canvas)
+      return
     }
     gl.useProgram(program)
 

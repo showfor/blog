@@ -76,8 +76,9 @@
   z-index: 99999;
   display: grid;
   place-items: center;
-  background: #000;
-  transition: opacity .6s ease, visibility 0s linear .6s;
+  pointer-events: none;
+  background: transparent;
+  transition: opacity .4s ease, visibility 0s linear .4s;
 }
 .site-preloader.is-leaving {
   opacity: 0;
@@ -1237,8 +1238,8 @@ main { z-index: 1; background: 0 0; position: relative; }
   transform: translateY(0) scale(1) !important;
 }
 
-/* ===== 响应式（断点逐字对齐原站 aystba：1100 / 768） ===== */
-@media (width<=1100px) {
+/* ===== 响应式（断点逐字对齐原站 aystba：1100 / 768 / 480） ===== */
+@media (max-width: 1100px) {
   .container { padding: 0 20px; }
   .skills-layout { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; }
@@ -1251,7 +1252,7 @@ main { z-index: 1; background: 0 0; position: relative; }
     bottom: -140px;
   }
 }
-@media (width<=768px) {
+@media (max-width: 768px) {
   .container { padding: 0 20px; }
   /* 窄屏隐藏桌面端链接 / CTA / 语言键，改用汉堡抽屉替代（不再"无替代直接消失"） */
   .site-nav-links { display: none; }
@@ -1277,7 +1278,7 @@ main { z-index: 1; background: 0 0; position: relative; }
 }
 
 /* 复刻原站 ≤480 断点：超窄屏（手机）背景元素进一步收缩 */
-@media (width<=480px) {
+@media (max-width: 480px) {
   .hero-title { font-size: clamp(26px, 13vw, 44px); }
   .hero-carousel-item { border-radius: 8px; width: 90px; height: 125px; transform: none !important; }
   .hero-carousel-track { gap: 12px; }
