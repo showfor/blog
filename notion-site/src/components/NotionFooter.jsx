@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useNotion } from '../context/NotionContext.jsx'
-import { hobbies } from '../data/hobbies.js'
 
 // 本 Notion 站独立诞生时间点（2026-08-27 21:46:00）
 const SITE_LAUNCHED = '2026-08-27T21:46:00+08:00'
@@ -21,7 +20,6 @@ export default function NotionFooter() {
   const isZh = lang === 'zh'
 
   const [uptime, setUptime] = useState(() => calcUptime())
-  const totalItems = hobbies.reduce((acc, cat) => acc + cat.items.length, 0)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -70,15 +68,7 @@ export default function NotionFooter() {
       </div>
 
       {/* 底部版权与元信息 */}
-      <footer className="notion-footer">
-        <div className="notion-footer-left">
-          <span>
-            {isZh
-              ? `共收录 ${hobbies.length} 大分类 · ${totalItems} 个精选作品`
-              : `${hobbies.length} categories · ${totalItems} curated items`}
-          </span>
-        </div>
-
+      <footer className="notion-footer" style={{ justifyContent: 'center' }}>
         <div className="notion-footer-right">
           <span>{isZh ? '由 React 18 + Vite 驱动' : 'Powered by React 18 + Vite'}</span>
         </div>
