@@ -5,6 +5,7 @@ import { profile } from '../data/profile.js'
 import { carouselCards } from '../data/carousel.js'
 import BackgroundFX from './BackgroundFX.jsx'
 import DotField from './DotField.jsx'
+import MacondoQuote from './MacondoQuote.jsx'
 
 /**
  * HeroSection（#top）。逐字复刻原站 ga 组件：
@@ -299,6 +300,7 @@ export default function HeroSection({ openingComplete = true }) {
           <span className="hero-title-line accent" ref={a}>{title1}</span>
           {hasSubtitle && <span className="hero-title-line outline" ref={o}>{title2}</span>}
         </h1>
+        <MacondoQuote />
       </div>
 
       <div className="hero-carousel" ref={r}>
