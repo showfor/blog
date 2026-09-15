@@ -5,6 +5,7 @@ import {
   SunIcon,
   MoonIcon,
 } from './NotionIcons.jsx'
+import SolitudeQuote from './SolitudeQuote.jsx'
 
 export default function NotionHeader() {
   const { lang, theme, toggleLang, toggleTheme } = useNotion()
@@ -77,29 +78,8 @@ export default function NotionHeader() {
           </span>
         </h1>
 
-        {/* 《百年孤独》深邃段落引言卡片 */}
-        <div className="notion-solitude-quote">
-          <div className="notion-quote-mark">“</div>
-          <p className="notion-quote-text">
-            {isZh ? (
-              <>
-                每个人都是孤独地出生，在这世间恍惚几十年并不漫长的日子转眼就远去了，然后再孤独地死去。
-                生命注定是个悲剧，因为我们从没有融入世界，世界永远是身外之物。如果有幸，能在茫茫人海寻得一个身体与灵魂都与自己万分契合的人，与之存在一种可以称之为爱情的联系，然后一起承受生命中不可逃离不可消除的深沉的宿命的孤独。可是这般的幸运艰深难得。有的已失去了爱的能力，有的爱得深沉却无处安放，有的死在这爱里……在所有的爱里，孤独有增无减。
-                生命只是一场幻梦。
-              </>
-            ) : (
-              <>
-                Everyone is born alone, drifting through a few decades in this world that slip away in the blink of an eye, and then dies alone.
-                Life is destined to be a tragedy, for we have never truly merged into the world; the world remains forever an external reality. If one is fortunate enough to find in the vast sea of humanity a soul and body in total resonance, bound by what may be called love, together they endure the inescapable, indelible solitude of fate. Yet such fortune is arduous and rare. Some lose the capacity to love, some love deeply with nowhere to place it, and some perish in that love... In all forms of love, solitude only multiplies.
-                Life is merely an illusion.
-              </>
-            )}
-          </p>
-          <div className="notion-quote-cite">
-            <span className="cite-line" />
-            <span>{isZh ? '加西亚·马尔克斯《百年孤独》' : 'Gabriel García Márquez, One Hundred Years of Solitude'}</span>
-          </div>
-        </div>
+        {/* 《百年孤独》精选名言随机展示与深度考据组件 */}
+        <SolitudeQuote />
       </div>
     </>
   )

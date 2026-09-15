@@ -374,6 +374,182 @@ body {
   opacity: 0.5;
 }
 
+/* 引言卡片顶部工具栏与标签 */
+.notion-quote-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 2;
+}
+
+.notion-quote-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.notion-tag-char {
+  background: var(--accent-amber-bg);
+  color: var(--accent-amber-text);
+  border: 1px solid var(--accent-amber-border);
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.notion-tag-chap {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.notion-quote-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.notion-quote-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+.notion-quote-action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-main);
+  border-color: var(--border-strong);
+}
+.notion-quote-action-btn.copied {
+  color: #10b981;
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.08);
+}
+.notion-quote-action-btn .btn-icon {
+  font-size: 11px;
+  line-height: 1;
+}
+
+.notion-quote-body {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+.notion-quote-body.fading {
+  opacity: 0;
+  transform: translateY(3px);
+}
+
+.notion-quote-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  position: relative;
+  z-index: 2;
+}
+
+.notion-quote-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 2px 0;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  outline: none;
+  transition: color 0.15s ease;
+}
+.notion-quote-toggle:hover {
+  color: var(--accent-amber-text);
+}
+
+.notion-quote-chevron {
+  display: inline-block;
+  font-size: 8.5px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.notion-quote-chevron.open {
+  transform: rotate(90deg);
+}
+
+.notion-quote-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease;
+  opacity: 0;
+  overflow: hidden;
+}
+.notion-quote-expand.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.notion-quote-expand-inner {
+  min-height: 0;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notion-expand-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.notion-expand-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+}
+
+.notion-expand-es {
+  font-family: "Playfair Display", "Times New Roman", Georgia, serif;
+  font-style: italic;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-main);
+  opacity: 0.92;
+  margin: 0;
+}
+
+.notion-expand-note {
+  font-size: 12.5px;
+  line-height: 1.68;
+  color: var(--text-muted);
+  margin: 0;
+}
+
 /* ===== Notion.com 官网标志性特性大卡片（Feature Card） ===== */
 .notion-feature-card {
   background: var(--bg-feature-card);
