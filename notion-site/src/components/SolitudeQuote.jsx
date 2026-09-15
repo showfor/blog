@@ -215,6 +215,20 @@ export default function SolitudeQuote() {
               {current.contextNote}
             </p>
           </div>
+
+          {/* 直达马孔多原著资料库与意象辞书 */}
+          <div className="notion-context-footer">
+            <a
+              href="https://macondo-guide.pages.dev/lexicon"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="notion-lexicon-link"
+              title="进入《百年孤独》马孔多原著全景百科与意象辞书"
+            >
+              <QuillIcon />
+              <span>{isZh ? '探索《百年孤独》全景资料库与魔幻意象辞书 →' : 'Explore Macondo Lexicon & Motifs →'}</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

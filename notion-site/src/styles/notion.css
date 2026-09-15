@@ -630,6 +630,34 @@ body {
   border: 1px solid var(--border-light);
 }
 
+.notion-context-footer {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.notion-lexicon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--accent-amber);
+  background: var(--bg-hover);
+  border: 1px solid var(--border-light);
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.16s ease;
+}
+
+.notion-lexicon-link:hover {
+  background: var(--accent-amber-light);
+  border-color: var(--accent-amber);
+  transform: translateY(-1px);
+}
+
+
 @media (max-width: 640px) {
   .notion-solitude-quote {
     padding: 18px 18px 16px;
