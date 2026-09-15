@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "npm --prefix notion-site run dev",
+    "build": "npm --prefix notion-site run build && node -e \"const fs = require('fs'); fs.cpSync('notion-site/dist', 'dist', {recursive: true});\"",
+    "preview": "npm --prefix notion-site run preview",
+    "build:portfolio": "vite build",
     "test": "vitest run",
     "test:watch": "vitest"
   },
